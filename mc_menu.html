@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마크 명령어 연습장</title>
+    <style>
+        @font-face { font-family: 'ONEMobilePOP'; src: url('ONE Mobile POP.ttf') format('truetype'); }
+        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+        
+        /* ⭐️ 원래의 연두색 테마 */
+        body { background-color: #f0fff4; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: 'Pretendard', sans-serif; position: relative; padding: 40px 0; box-sizing: border-box; }
+        
+        /* 제목 스타일 */
+        .page-title { 
+            font-family: 'ONEMobilePOP', sans-serif; 
+            font-size: 50px; 
+            color: #4ecc71; 
+            margin-bottom: 40px; 
+            text-shadow: 2px 2px 0px #fff;
+        }
+
+        .home-btn { 
+            position: absolute; top: 25px; left: 25px; background-color: #FFF; 
+            color: #4ecc71; padding: 20px 40px; border-radius: 30px; 
+            text-decoration: none; font-size: 28px; font-weight: bold; 
+            box-shadow: 0 6px 0 #b3e6c0; border: 4px solid #4ecc71; z-index: 999; 
+        }
+
+        /* 13개의 카드가 6개씩 2줄로 예쁘게 정렬되도록 수정 (max-width 확장) */
+        .container { 
+            display: grid; 
+            grid-template-columns: repeat(6, 200px); 
+            gap: 20px; 
+            justify-content: center; 
+            max-width: 1350px; 
+            margin: 0 auto;
+        }
+        
+        .card { 
+            width: 200px; height: 200px; background: white; border-radius: 40px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: 0 10px 20px rgba(78, 204, 113, 0.15); text-decoration: none; transition: 0.3s; 
+            border: 2px solid #4ecc71; position: relative;
+        }
+        .card:hover { transform: scale(1.05); background-color: #f9fffb; }
+        
+        .number { font-size: 20px; color: #4ecc71; font-weight: bold; margin-bottom: 5px; }
+        .title { font-size: 20px; color: #333; font-weight: bold; text-align: center; padding: 0 10px; }
+        .kr-title { font-size: 15px; color: #777; margin-top: 5px; text-align: center; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-btn">🏠 처음으로</a>
+    
+    <div class="page-title">마인크래프트 치트명령어 연습</div>
+
+    <div class="container">
+        <!-- 01. 특수기호 연습 (기초 타자) -->
+        <a href="mc_special_typing.html" class="card">
+            <div class="number">01</div>
+            <div class="title">Symbols</div>
+            <div class="kr-title">특수기호 연습</div>
+        </a>
+        <!-- 02. 로그인 연습 (기본 세팅) -->
+        <a href="mc_login.html" class="card">
+            <div class="number">02</div>
+            <div class="title">Login</div>
+            <div class="kr-title">로그인 연습</div>
+        </a>
+        <!-- 03. weather (짧고 쉬운 단어) -->
+        <a href="mc_weather.html" class="card">
+            <div class="number">03</div>
+            <div class="title">weather</div>
+            <div class="kr-title">날씨 변경</div>
+        </a>
+        <!-- 04. timeset (짧은 단어 조합) -->
+        <a href="mc_timeset.html" class="card">
+            <div class="number">04</div>
+            <div class="title">timeset</div>
+            <div class="kr-title">시간 바꾸기</div>
+        </a>
+        <!-- 05. kill (간단한 대상 지정 @s, @e) -->
+        <a href="mc_kill.html" class="card">
+            <div class="number">05</div>
+            <div class="title">kill</div>
+            <div class="kr-title">대상 제거</div>
+        </a>
+        <!-- 06. summon (간단한 이름 입력) -->
+        <a href="mc_summon.html" class="card">
+            <div class="number">06</div>
+            <div class="title">summon</div>
+            <div class="kr-title">엔티티 소환</div>
+        </a>
+        <!-- 07. tp (대상 지정 심화 @a @s 등) -->
+        <a href="mc_tp.html" class="card">
+            <div class="number">07</div>
+            <div class="title">tp</div>
+            <div class="kr-title">순간이동</div>
+        </a>
+        <!-- 08. give (대상 + 아이템 이름) -->
+        <a href="mc_give.html" class="card">
+            <div class="number">08</div>
+            <div class="title">give</div>
+            <div class="kr-title">아이템 받기</div>
+        </a>
+        <!-- 09. enchant (대상 + 효과 이름) -->
+        <a href="mc_enchant.html" class="card">
+            <div class="number">09</div>
+            <div class="title">enchant</div>
+            <div class="kr-title">아이템 마법 부여</div>
+        </a>
+        <!-- 10. effect (가장 긴 명령어 + 숫자 포함) -->
+        <a href="mc_effect.html" class="card">
+            <div class="number">10</div>
+            <div class="title">effect</div>
+            <div class="kr-title">상태 효과 부여</div>
+        </a>
+        <!-- 11. locate (구조물 찾기) -->
+        <a href="mc_locate_s.html" class="card">
+            <div class="number">11</div>
+            <div class="title" style="font-size: 17px;">locate (구조물)</div>
+            <div class="kr-title">구조물 위치 찾기</div>
+        </a>
+        <!-- 12. locate (바이옴 찾기) -->
+        <a href="mc_locate_b.html" class="card">
+            <div class="number">12</div>
+            <div class="title" style="font-size: 17px;">locate (바이옴)</div>
+            <div class="kr-title">바이옴 위치 찾기</div>
+        </a>
+        <!-- 13. fill (어려운 상대 좌표 ~ ~ ~ 입력) -->
+        <a href="mc_fill.html" class="card">
+            <div class="number">13</div>
+            <div class="title">fill</div>
+            <div class="kr-title">블록 채우기</div>
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마인크래프트 명령어 타자 연습 - fill</title>
+    <style>
+        /* 화면에 딱 맞게 고정하고 스크롤이 생기지 않도록 설정 (위에서 아래로 흐르는 초록빛 그라데이션) */
+        body { 
+            background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            padding: 10px; 
+            font-family: sans-serif; 
+            position: relative; 
+            height: 100vh; 
+            overflow: hidden; 
+            box-sizing: border-box; 
+        }
+        
+        /* 처음으로 버튼 스타일 */
+        .home-btn { 
+            position: absolute; top: 20px; left: 20px; background-color: #FFF; 
+            color: #55a03b; padding: 15px 35px; border-radius: 30px; 
+            text-decoration: none; font-size: 24px; font-weight: bold; 
+            box-shadow: 0 5px 0 #c8e6c9; border: 4px solid #55a03b; z-index: 999; 
+        }
+
+        /* 미션카드와 키보드의 너비를 동일하게(1100px) 맞추어 전체 비율을 깔끔하게 정돈 */
+        .container { 
+            background: white; 
+            padding: 30px 45px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
+            width: 1100px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        /* 단계 표시(명령어 연습: 1 / 5)를 우측 상단으로 배치하여 깔끔하게 분리 */
+        #status-text { 
+            position: absolute;
+            top: 30px;
+            right: 45px;
+            font-size: 24px; 
+            color: #7f8c8d; 
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* 한글 설명 텍스트 스타일 (왼쪽 정렬) */
+        #desc-text { 
+            font-size: 26px; 
+            color: #55a03b; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            background-color: #e8f5e9; 
+            display: inline-block; 
+            padding: 8px 22px; 
+            border-radius: 20px; 
+        }
+        
+        /* 제시어와 입력란을 왼쪽 정렬로 위아래 한 줄 배치 */
+        .target-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        /* 제시되는 명령어 문장 스타일 (폰트 패밀리, 굵기, 자간을 입력창과 완전히 일치시킴) */
+        #target { 
+            font-size: 42px; 
+            font-weight: bold; 
+            font-family: sans-serif;
+            letter-spacing: normal;
+            color: #000000; 
+            text-align: left;
+            padding-left: 24px;
+        }
+        
+        /* 명령어 입력칸 스타일 (제시어와 글꼴, 굵기, 자간을 완벽히 동기화하여 글자 크기와 간격이 정확히 겹치도록 설정) */
+        #input-field { 
+            font-size: 42px; 
+            font-weight: bold; 
+            font-family: sans-serif;
+            letter-spacing: normal;
+            width: 100%; 
+            padding: 14px 24px; 
+            border: 4px solid #c8e6c9; 
+            border-radius: 20px; 
+            color: #000000; 
+            box-sizing: border-box;
+            text-align: left;
+            outline: none;
+        }
+        
+        /* 오타 시 글자색 및 테두리를 빨간색으로 변경 */
+        .text-error { color: #e74c3c !important; border-color: #e74c3c !important; }
+        
+        /* 배경을 어둡게 만들어 팝업 집중도를 높이는 오버레이 배경 */
+        #popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 199;
+        }
+
+        /* 일반 칭찬 팝업 스타일 (더 크고 뚜렷하게, 통통 튀는 애니메이션 적용) */
+        #popup { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(0.9); 
+            background: linear-gradient(135deg, #ffffff 0%, #fff0f6 100%); 
+            color: #33691e; 
+            padding: 60px 85px; 
+            border-radius: 35px; 
+            font-size: 44px; 
+            font-weight: bold; 
+            z-index: 200; 
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); 
+            border: 7px solid #c8e6c9;
+            text-align: center; 
+            line-height: 1.5; 
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* 마지막 완료 전용 팝업 스타일 */
+        #finish-popup { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(0.9); 
+            background: linear-gradient(135deg, #ffffff 0%, #fff0f6 100%); 
+            color: #33691e; 
+            padding: 60px 85px; 
+            border-radius: 35px; 
+            font-size: 44px; 
+            font-weight: bold; 
+            z-index: 200; 
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); 
+            border: 7px solid #c8e6c9;
+            text-align: center; 
+            line-height: 1.5; 
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .finish-btns {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .finish-btn {
+            background-color: #55a03b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 5px 0 #388e3c;
+            border: none;
+            cursor: pointer;
+        }
+
+        .finish-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #388e3c;
+        }
+        
+        /* 키보드 판넬 너비를 미션카드와 동일한 1100px로 맞춰 통일감 부여 */
+        #keyboard { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            background: #bcaaa4; 
+            padding: 22px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            width: 1100px;
+            box-sizing: border-box;
+        }
+        .row { display: flex; gap: 8px; justify-content: center; }
+        .key { 
+            width: 62px; 
+            height: 62px; 
+            border-radius: 10px; 
+            background: #efebe9; 
+            border: 2px solid #d7ccc8; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 16px; 
+            color: #4e342e; 
+            box-shadow: 0 4px 0 #d7ccc8; 
+        }
+        .w-space { width: 440px; }
+        .guide { background: #ffe082 !important; transform: scale(1.1); border-color: #ffa000; box-shadow: 0 0 12px #ffa000; color: #000 !important; }
+    </style>
+</head>
+<body>
+
+    <!-- 처음으로 버튼 -->
+    <a href="mc_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <div class="container">
+        <!-- 우측 상단 진행 단계 표시 -->
+        <div id="status-text">명령어 연습: 1 / 5</div>
+        
+        <!-- 한글 설명 텍스트 영역 -->
+        <div id="desc-text">🟫 흙 블록으로 내 주변 채우기</div>
+        
+        <!-- 제시어와 입력란을 왼쪽 정렬 수직 배치 (폰트 크기 및 간격 일치) -->
+        <div class="target-input-wrapper">
+            <div id="target">/fill ~ ~ ~ ~5 ~5 ~5 dirt</div>
+            <input type="text" id="input-field" placeholder="명령어를 입력하세요" autocomplete="off" autofocus spellcheck="false">
+        </div>
+    </div>
+
+    <!-- 팝업 배경 어두운 오버레이 -->
+    <div id="popup-overlay"></div>
+
+    <!-- 일반 단계 완료 팝업 -->
+    <div id="popup">참 잘했어요! ✨</div>
+
+    <!-- 마지막 단계 완료 팝업 (버튼 포함) -->
+    <div id="finish-popup">
+        참 잘했어요! ✨<br>
+        <span style="font-size: 26px; color: #55a03b;">🏆 채우기 미션 완벽하게 성공!</span>
+        <div class="finish-btns">
+            <a href="mc_menu.html" class="finish-btn">🏠 처음으로</a>
+            <button class="finish-btn" onclick="location.reload()">🔄 다시하기</button>
+        </div>
+    </div>
+
+    <div id="keyboard">
+        <div class="row" id="r1"></div>
+        <div class="row" id="r2"></div>
+        <div class="row" id="r3"></div>
+        <div class="row" id="r4"></div>
+        <div class="row"><div class="key w-space" id="key-Space">Space</div></div>
+    </div>
+
+    <script>
+        const tasks = [
+            { cmd: "/fill ~ ~ ~ ~5 ~5 ~5 dirt", desc: "🟫 흙 블록으로 내 주변 채우기" },
+            { cmd: "/fill ~ ~-1 ~ ~5 ~-1 ~5 stone", desc: "🪨 발아래에 넓은 돌 바닥 만들기" },
+            { cmd: "/fill ~ ~ ~ ~ ~5 ~ glass", desc: "🧊 내 위로 투명한 유리 기둥 세우기" },
+            { cmd: "/fill ~1 ~ ~1 ~5 ~5 ~5 air", desc: "💨 공기로 채워서 블록 지우기" },
+            { cmd: "/fill ~ ~ ~ ~5 ~5 ~5 gold_block", desc: "✨ 반짝반짝 황금 블록으로 채우기" }
+        ];
+        
+        let taskIndex = 0;
+        const input = document.getElementById('input-field');
+        const statusText = document.getElementById('status-text');
+        const targetDiv = document.getElementById('target');
+        const descDiv = document.getElementById('desc-text');
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        const finishPopup = document.getElementById('finish-popup');
+        
+        const layout = [
+            ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+            ['Caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
+            ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift']
+        ];
+
+        const kb = document.getElementById('keyboard');
+        layout.forEach((row, i) => {
+            const rowDiv = document.getElementById('r' + (i + 1));
+            row.forEach(k => {
+                const div = document.createElement('div');
+                div.className = 'key';
+                div.innerText = k;
+                div.id = 'key-' + k;
+                rowDiv.appendChild(div);
+            });
+        });
+
+        function updateGuide() {
+            let currentTarget = tasks[taskIndex].cmd;
+            let val = input.value;
+            
+            // 오타 검사
+            if (val.length > 0 && currentTarget.substring(0, val.length) !== val) {
+                input.classList.add('text-error');
+            } else {
+                input.classList.remove('text-error');
+            }
+
+            // 가이드 하이라이트 초기화
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('guide'));
+            let currentIdx = val.length;
+            
+            // 키보드 가이드 표시
+            if (currentIdx < currentTarget.length) {
+                let char = currentTarget[currentIdx];
+                if (char === '@') {
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key-2').classList.add('guide');
+                } else if (char === '_') {
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key--').classList.add('guide');
+                } else if (char === '~') { 
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key-~').classList.add('guide');
+                } else if (char === ' ') {
+                    document.getElementById('key-Space').classList.add('guide');
+                } else {
+                    const keyEl = document.getElementById('key-' + char.toUpperCase());
+                    if (keyEl) keyEl.classList.add('guide');
+                }
+            } else if (val === currentTarget) {
+                input.disabled = true;
+
+                // 마지막 미션인지 체크
+                if (taskIndex === tasks.length - 1) {
+                    popupOverlay.style.display = 'block';
+                    finishPopup.style.display = 'block';
+                } else {
+                    if (taskIndex === 0) {
+                        popup.innerHTML = `참 잘했어요! ✨<br><span style="font-size: 26px; color: #55a03b;">다음은 발아래에 넓은 돌 바닥을 만들어볼까요? 🪨</span>`;
+                    } else if (taskIndex === 1) {
+                        popup.innerHTML = `참 잘했어요! ✨<br><span style="font-size: 26px; color: #55a03b;">다음은 내 위로 투명한 유리 기둥을 세워볼까요? 🧊</span>`;
+                    } else if (taskIndex === 2) {
+                        popup.innerHTML = `참 잘했어요! ✨<br><span style="font-size: 26px; color: #55a03b;">다음은 공기로 채워서 블록을 지워볼까요? 💨</span>`;
+                    } else if (taskIndex === 3) {
+                        popup.innerHTML = `참 잘했어요! ✨<br><span style="font-size: 26px; color: #55a03b;">마지막으로 반짝반짝 황금 블록으로 채워볼까요? ✨</span>`;
+                    }
+
+                    popupOverlay.style.display = 'block';
+                    popup.style.display = 'block';
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                        popupOverlay.style.display = 'none';
+                        input.disabled = false; 
+                        input.value = ""; 
+                        taskIndex++;
+                        statusText.innerText = `명령어 연습: ${taskIndex + 1} / ${tasks.length}`;
+                        targetDiv.innerText = tasks[taskIndex].cmd;
+                        descDiv.innerText = tasks[taskIndex].desc;
+                        input.focus(); 
+                        updateGuide();
+                    }, 2800);
+                }
+            }
+        }
+
+        input.addEventListener('input', updateGuide);
+        updateGuide(); // 초기 화면 설정
+    </script>
+</body>
+</html>

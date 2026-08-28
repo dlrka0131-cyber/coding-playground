@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 정보 입력 연습</title>
+    <style>
+        /* 화면에 딱 맞게 고정하고 스크롤이 생기지 않도록 설정 (위에서 아래로 흐르는 초록빛 그라데이션) */
+        body { 
+            background: linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            padding: 10px; 
+            font-family: sans-serif; 
+            position: relative; 
+            height: 100vh; 
+            overflow: hidden; 
+            box-sizing: border-box; 
+        }
+        
+        /* 처음으로 버튼 스타일 */
+        .home-btn { 
+            position: absolute; top: 20px; left: 20px; background-color: #FFF; 
+            color: #55a03b; padding: 15px 35px; border-radius: 30px; 
+            text-decoration: none; font-size: 24px; font-weight: bold; 
+            box-shadow: 0 5px 0 #c8e6c9; border: 4px solid #55a03b; z-index: 999; 
+        }
+
+        /* 미션카드와 키보드의 너비를 동일하게(1100px) 맞추어 전체 비율을 깔끔하게 정돈 */
+        .container { 
+            background: white; 
+            padding: 30px 45px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
+            width: 1100px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        /* 단계 표시를 우측 상단으로 배치하여 깔끔하게 분리 */
+        #status-text { 
+            position: absolute;
+            top: 30px;
+            right: 45px;
+            font-size: 24px; 
+            color: #7f8c8d; 
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* 한글 설명 텍스트 스타일 (왼쪽 정렬) */
+        #char-name { 
+            font-size: 26px; 
+            color: #55a03b; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            background-color: #e8f5e9; 
+            display: inline-block; 
+            padding: 8px 22px; 
+            border-radius: 20px; 
+        }
+        
+        /* 제시어와 입력란을 왼쪽 정렬로 위아래 한 줄 배치 */
+        .target-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        /* 제시되는 명령어 문장 스타일 */
+        #target { 
+            font-size: 42px; 
+            font-weight: bold; 
+            font-family: sans-serif;
+            letter-spacing: normal;
+            color: #000000; 
+            text-align: left;
+            padding-left: 24px;
+            word-break: break-all;
+        }
+        
+        /* 명령어 입력칸 스타일 */
+        #input-field { 
+            font-size: 42px; 
+            font-weight: bold; 
+            font-family: sans-serif;
+            letter-spacing: normal;
+            width: 100%; 
+            padding: 14px 24px; 
+            border: 4px solid #c8e6c9; 
+            border-radius: 20px; 
+            color: #000000; 
+            box-sizing: border-box;
+            text-align: left;
+            outline: none;
+        }
+        
+        /* 오타 시 글자색 및 테두리를 빨간색으로 변경 */
+        .input-error { color: #e74c3c !important; border-color: #e74c3c !important; }
+        
+        /* 배경을 어둡게 만들어 팝업 집중도를 높이는 오버레이 배경 */
+        #popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 199;
+        }
+
+        /* 일반 칭찬 팝업 스타일 (통통 튀는 애니메이션 적용) */
+        #popup { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(0.9); 
+            background: linear-gradient(135deg, #ffffff 0%, #fff0f6 100%); 
+            color: #33691e; 
+            padding: 60px 85px; 
+            border-radius: 35px; 
+            font-size: 44px; 
+            font-weight: bold; 
+            z-index: 200; 
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); 
+            border: 7px solid #c8e6c9;
+            text-align: center; 
+            line-height: 1.5; 
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .popup-home-btn { 
+            display: none; 
+            margin-top: 30px; 
+            padding: 15px 30px; 
+            background-color: #55a03b; 
+            color: white; 
+            border-radius: 20px; 
+            text-decoration: none; 
+            font-size: 24px; 
+            font-weight: bold;
+            box-shadow: 0 5px 0 #388e3c;
+            border: none;
+            cursor: pointer;
+        }
+
+        .popup-home-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #388e3c;
+        }
+        
+        /* 키보드 판넬 너비를 미션카드와 동일한 1100px로 맞춰 통일감 부여 */
+        #keyboard { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            background: #bcaaa4; 
+            padding: 22px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            width: 1100px;
+            box-sizing: border-box;
+        }
+        .row { display: flex; gap: 8px; justify-content: center; }
+        .key { 
+            width: 62px; 
+            height: 62px; 
+            border-radius: 10px; 
+            background: #efebe9; 
+            border: 2px solid #d7ccc8; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 16px; 
+            color: #4e342e; 
+            box-shadow: 0 4px 0 #d7ccc8; 
+        }
+        .w-space { width: 440px; }
+        .guide { background: #ffe082 !important; transform: scale(1.1); border-color: #ffa000; box-shadow: 0 0 12px #ffa000; color: #000 !important; }
+    </style>
+</head>
+<body>
+
+    <!-- 처음으로 버튼 -->
+    <a href="mc_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <div class="container">
+        <!-- 우측 상단 진행 단계 표시 -->
+        <div id="status-text">로그인 연습: 아이디 1/3</div>
+        
+        <!-- 한글 설명 텍스트 영역 -->
+        <div id="char-name">🔑 학교 계정 아이디 입력하기</div>
+        
+        <!-- 제시어와 입력란을 왼쪽 정렬 수직 배치 -->
+        <div class="target-input-wrapper">
+            <div id="target">meta00@sl2024.onmicrosoft.com</div>
+            <input type="text" id="input-field" placeholder="아이디를 입력하세요" autocomplete="off" autofocus spellcheck="false">
+        </div>
+    </div>
+
+    <!-- 팝업 배경 어두운 오버레이 -->
+    <div id="popup-overlay"></div>
+
+    <!-- 팝업 창 -->
+    <div id="popup">
+        <div id="popup-msg">성공!</div>
+        <a href="mc_menu.html" id="popup-btn" class="popup-home-btn">🏠 처음으로</a>
+    </div>
+
+    <div id="keyboard">
+        <div class="row" id="r1"></div>
+        <div class="row" id="r2"></div>
+        <div class="row" id="r3"></div>
+        <div class="row" id="r4"></div>
+        <div class="row"><div class="key w-space" id="key-Space">Space</div></div>
+    </div>
+
+    <script>
+        const idText = "meta00@sl2024.onmicrosoft.com";
+        const pwText = "Book4u2026@";
+        
+        let currentMode = 'id';
+        let count = 1;
+        
+        const input = document.getElementById('input-field');
+        const statusText = document.getElementById('status-text');
+        const charName = document.getElementById('char-name');
+        const targetDiv = document.getElementById('target');
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupMsg = document.getElementById('popup-msg');
+        const popupBtn = document.getElementById('popup-btn');
+
+        const layout = [
+            ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+            ['Caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
+            ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift']
+        ];
+
+        const kb = document.getElementById('keyboard');
+        layout.forEach((row, i) => { 
+            const rowDiv = document.getElementById('r' + (i + 1)); 
+            row.forEach(k => { 
+                const div = document.createElement('div'); 
+                div.className = 'key'; 
+                div.innerText = k; 
+                div.id = 'key-' + k; 
+                rowDiv.appendChild(div); 
+            }); 
+        });
+
+        function updateGuide() {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('guide'));
+            let currentText = (currentMode === 'id') ? idText : pwText;
+            let currentVal = input.value;
+            
+            if (currentVal.length > 0 && currentText.substring(0, currentVal.length) !== currentVal) {
+                input.classList.add('input-error');
+            } else {
+                input.classList.remove('input-error');
+            }
+            
+            let nextChar = currentText[currentVal.length];
+            if (nextChar) {
+                if (nextChar === '@') { 
+                    document.getElementById('key-Shift').classList.add('guide'); 
+                    document.getElementById('key-2').classList.add('guide'); 
+                } else if ((nextChar >= 'A' && nextChar <= 'Z') || "!#$%^&*()_+~".includes(nextChar)) { 
+                    document.getElementById('key-Shift').classList.add('guide'); 
+                    const keyEl = document.getElementById('key-' + (nextChar === ' ' ? 'Space' : nextChar.toUpperCase())); 
+                    if (keyEl) keyEl.classList.add('guide'); 
+                } else { 
+                    const keyEl = document.getElementById('key-' + (nextChar === ' ' ? 'Space' : nextChar.toUpperCase())); 
+                    if (keyEl) keyEl.classList.add('guide'); 
+                }
+            }
+        }
+
+        input.addEventListener('input', (e) => {
+            let targetText = (currentMode === 'id') ? idText : pwText;
+            if (e.target.value === targetText) {
+                if (count < 3) {
+                    popupMsg.innerText = `${currentMode === 'id' ? '아이디' : '비밀번호'} ${count}번째 성공! ✨`;
+                    popupOverlay.style.display = 'block';
+                    popup.style.display = 'block';
+                    input.disabled = true;
+                    setTimeout(() => { 
+                        popup.style.display = 'none'; 
+                        popupOverlay.style.display = 'none';
+                        input.disabled = false; 
+                        input.value = ""; 
+                        count++;
+                        statusText.innerText = `로그인 연습: ${currentMode === 'id' ? '아이디' : '비밀번호'} ${count}/3`;
+                        charName.innerText = currentMode === 'id' ? '🔑 학교 계정 아이디 입력하기' : '🔒 학교 계정 비밀번호 입력하기';
+                        targetDiv.innerText = targetText; 
+                        input.focus(); 
+                        updateGuide(); 
+                    }, 2000);
+                } else if (currentMode === 'id') {
+                    // innerHTML을 사용하여 태그가 정상적으로 렌더링되도록 수정
+                    popupMsg.innerHTML = `아이디 연습 완료! ✨<br><span style="font-size: 26px; color: #55a03b;">이제 비밀번호 연습을 시작할게요! 🔒</span>`;
+                    popupOverlay.style.display = 'block';
+                    popup.style.display = 'block';
+                    input.disabled = true;
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                        popupOverlay.style.display = 'none';
+                        input.disabled = false; 
+                        input.value = "";
+                        currentMode = 'pw'; 
+                        count = 1;
+                        statusText.innerText = `로그인 연습: 비밀번호 1/3`;
+                        charName.innerText = '🔒 학교 계정 비밀번호 입력하기';
+                        targetDiv.innerText = pwText;
+                        input.placeholder = "비밀번호를 입력하세요";
+                        input.focus(); 
+                        updateGuide();
+                    }, 2500);
+                } else {
+                    popupMsg.innerHTML = `참 잘했어요! ✨<br><span style="font-size: 26px; color: #55a03b;">🏆 모든 로그인 연습 완벽하게 성공!</span>`;
+                    popupOverlay.style.display = 'block';
+                    popupBtn.style.display = 'inline-block';
+                    popup.style.display = 'block';
+                    input.disabled = true;
+                }
+            } else { 
+                updateGuide(); 
+            }
+        });
+        
+        updateGuide();
+    </script>
+</body>
+</html>

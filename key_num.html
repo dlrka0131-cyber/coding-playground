@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>숫자 키패드 마스터</title>
+    <style>
+        @import url('https://webfontworld.github.io/baemin/BMJUA.css');
+        
+        @font-face {
+            font-family: 'OneMobilePOP';
+            src: url('ONE Mobile POP.ttf') format('truetype');
+        }
+        
+        body { 
+            background-color: #fcfaff; display: flex; align-items: center; justify-content: center; 
+            height: 100vh; margin: 0; font-family: 'BMJUA', sans-serif !important; 
+        }
+
+        .main-wrapper { display: flex; gap: 60px; align-items: center; }
+
+        .mission-box { 
+            background: white; padding: 30px 40px; border-radius: 40px; border: 6px solid #e1d5ff; 
+            width: 720px; min-height: 520px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 10px 30px rgba(103,58,183,0.05); transition: all 0.3s ease;
+        }
+        #mission-title { font-size: 45px; color: #673ab7; font-weight: bold; margin-bottom: 10px; }
+        
+        #mission-target-num { font-size: 130px; color: #d81b60; font-weight: bold; margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
+        .char-span { color: #cccccc; transition: color 0.2s; }
+        .char-span.completed { color: #d81b60; }
+
+        #next-key { font-size: 28px; color: #7e57c2; margin-bottom: 10px; font-weight: bold; }
+        #mission-desc { font-size: 24px; color: #424242; line-height: 1.4; font-weight: bold; margin-bottom: 8px; }
+        
+        .check-box { 
+            font-size: 32px; color: #673ab7; margin-top: 20px; font-weight: bold; 
+            background-color: #f3edff; padding: 20px 30px; border-radius: 30px; line-height: 1.4;
+        }
+
+        .numpad-area { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        
+        .led-box { 
+            display: flex; align-items: center; gap: 15px; font-weight: bold; color: #7e57c2; 
+            font-size: 28px; background: #fff; padding: 15px 30px; border-radius: 30px; border: 3px dashed #e1d5ff;
+        }
+        .led-light { width: 24px; height: 24px; background: #ccc; border-radius: 50%; border: 4px solid #fff; }
+        .led-light.on { background: #4caf50; box-shadow: 0 0 20px #4caf50; }
+
+        .numpad-container { 
+            display: grid; grid-template-columns: repeat(4, 85px); grid-template-rows: repeat(5, 85px); gap: 15px;
+            background: #fffaf2; padding: 30px; border-radius: 30px; border: 6px solid #e2d4c9;
+        }
+        .key { display: flex; align-items: center; justify-content: center; background: #f8bbd0; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 32px; box-shadow: 0 5px 0 #e0a3b8; }
+        .key.tall { grid-row: span 2; }
+        #key-0 { grid-column: span 2; }
+        .key.active { background: #9575cd !important; color: white; transform: translateY(5px); box-shadow: none !important; }
+        .key.guide { border: 6px solid #9575cd; box-shadow: 0 0 20px #9575cd; }
+        .key.error { background: #ff5252 !important; color: white; }
+
+        #popup-msg { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(149, 117, 205, 0.95); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .popup-content {
+            background: white; color: #673ab7; padding: 60px; border-radius: 80px;
+            font-size: 60px; text-align: center; border: 15px solid #e1d5ff; width: 800px;
+            font-family: 'OneMobilePOP', sans-serif !important; font-weight: normal;
+        }
+        
+        /* ✨ 커스텀 경고 팝업 스타일 ✨ */
+        #alert-popup {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 10000; justify-content: center; align-items: center;
+        }
+        .alert-content {
+            background: white; padding: 60px 80px; border-radius: 50px; border: 8px solid #ff5252;
+            text-align: center; box-shadow: 0 15px 50px rgba(0,0,0,0.3); max-width: 800px;
+            animation: bounceDown 0.5s ease-out forwards;
+        }
+        .alert-text {
+            font-size: 40px; color: #d81b60; font-weight: bold; line-height: 1.5; 
+            font-family: 'OneMobilePOP', sans-serif !important; margin: 20px 0 40px 0;
+        }
+
+        .btn-group { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
+        
+        .btn { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
+            padding: 15px 40px; border-radius: 30px; cursor: pointer; font-size: 30px; 
+            border: none; background: #673ab7; color: white; font-family: 'OneMobilePOP', sans-serif !important; 
+            transition: all 0.2s; position: relative; z-index: 999999; pointer-events: auto;
+            box-shadow: 0 8px 0 #512da8;
+        }
+        .btn:active { transform: translateY(5px); box-shadow: none !important; }
+        .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+
+        .btn-alert {
+            background: #ff5252; box-shadow: 0 8px 0 #c62828;
+        }
+
+        .home-btn { position: absolute; top: 25px; left: 25px; background-color: #FFF; color: #e91e63; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-size: 24px; font-weight: bold; box-shadow: 0 6px 0 #f8bbd0; border: 4px solid #e91e63; z-index: 999; cursor: pointer; }
+
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(15px); }
+        }
+
+        .css-kb {
+            background: #fdfaf6; border: 6px solid #eaddd3; border-radius: 20px; padding: 20px 25px;
+            display: inline-block; box-shadow: 0 10px 25px rgba(103,58,183,0.1); margin: 10px 0;
+            user-select: none; font-family: sans-serif; pointer-events: none;
+        }
+        .css-led-box { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #888; font-weight: bold; gap: 4px; }
+        .css-led { width: 12px; height: 12px; background: #d0c8c0; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        
+        @keyframes blinkLed {
+            0% { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
+            50% { background: #00cc00; box-shadow: 0 0 5px #00cc00; }
+            100% { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
+        }
+        .css-led.on { animation: blinkLed 1.2s infinite; }
+        
+        @keyframes glowNum {
+            0%, 100% { background: #ffcdd2; box-shadow: 0 3px 0 #e6b3b8; }
+            50% { background: #ff4081; box-shadow: 0 0 25px #ff4081; color: white; transform: scale(1.15); }
+        }
+        .css-key.num-highlight { animation: glowNum 1.2s infinite ease-in-out; position: relative; }
+
+        .css-kb-layout { display: flex; gap: 15px; }
+        .css-kb-main { width: 620px; display: flex; flex-direction: column; gap: 5px; }
+        .css-kb-nav { width: 118px; display: flex; flex-direction: column; gap: 5px; }
+        .css-kb-numpad { display: grid; grid-template-columns: repeat(4, 36px); grid-template-rows: repeat(5, 36px); gap: 5px; }
+        .css-row { display: flex; gap: 5px; }
+        .css-row.space-between { justify-content: space-between; }
+        .css-key {
+            width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: bold; color: #555; text-transform: capitalize;
+        }
+        .css-key.coral { background: #ffa089; box-shadow: 0 3px 0 #e28169; color: white; }
+        .css-key.mint { background: #bdf0cb; box-shadow: 0 3px 0 #a2d6b1; }
+        .css-key.yellow { background: #ffeaa7; box-shadow: 0 3px 0 #e5d292; }
+        .css-key.blue { background: #b3e5fc; box-shadow: 0 3px 0 #95cbe3; }
+        .css-key.purple { background: #dcd0ff; box-shadow: 0 3px 0 #c2b5e6; }
+        .css-key.pink { background: #ffcdd2; box-shadow: 0 3px 0 #e6b3b8; }
+        .css-key.tall { grid-row: span 2; height: 77px; }
+        .css-key.wide { grid-column: span 2; width: 77px; }
+        .flex-1 { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <button class="home-btn" onclick="location.href='key_menu.html'">🏠 처음으로</button>
+
+    <div class="main-wrapper">
+        <div class="mission-box" id="mission-box">
+            <!-- 자바스크립트로 동적 렌더링 -->
+        </div>
+
+        <div class="numpad-area" id="numpad-area">
+            <div class="led-box"><div id="led-light" class="led-light"></div> 💡 화면 불빛 확인!</div>
+            <div class="numpad-container">
+                <div class="key" id="key-NumLock">Num</div>
+                <div class="key" id="key-/">/</div><div class="key" id="key-*">*</div><div class="key" id="key--">-</div>
+                <div class="key" id="key-7">7</div><div class="key" id="key-8">8</div><div class="key" id="key-9">9</div>
+                <div class="key tall" id="key-+">+</div>
+                <div class="key" id="key-4">4</div><div class="key" id="key-5">5</div><div class="key" id="key-6">6</div>
+                <div class="key" id="key-1">1</div><div class="key" id="key-2">2</div><div class="key" id="key-3">3</div>
+                <div class="key tall" id="key-Enter">Ent</div>
+                <div class="key" id="key-0" style="grid-column: span 2;">0</div><div class="key" id="key-.">.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 첫 화면 마카롱 키보드 디자인 템플릿 -->
+    <template id="macaron-template">
+        <div class="css-kb">
+            <div class="css-kb-layout">
+                <div class="css-kb-main">
+                    <div class="css-row space-between">
+                        <div class="css-key coral">Esc</div>
+                        <div class="css-row"><div class="css-key mint">F1</div><div class="css-key mint">F2</div><div class="css-key mint">F3</div><div class="css-key mint">F4</div></div>
+                        <div class="css-row"><div class="css-key mint">F5</div><div class="css-key mint">F6</div><div class="css-key mint">F7</div><div class="css-key mint">F8</div></div>
+                        <div class="css-row"><div class="css-key mint">F9</div><div class="css-key mint">F10</div><div class="css-key mint">F11</div><div class="css-key mint">F12</div></div>
+                    </div>
+                    <div class="css-row">
+                        <div class="css-key yellow">~</div><div class="css-key yellow">1</div><div class="css-key yellow">2</div><div class="css-key yellow">3</div><div class="css-key yellow">4</div><div class="css-key yellow">5</div><div class="css-key yellow">6</div><div class="css-key yellow">7</div><div class="css-key yellow">8</div><div class="css-key yellow">9</div><div class="css-key yellow">0</div><div class="css-key yellow">-</div><div class="css-key yellow">=</div><div class="css-key purple flex-1">←</div>
+                    </div>
+                    <div class="css-row">
+                        <div class="css-key purple" style="width: 55px;">Tab</div><div class="css-key blue">Q</div><div class="css-key blue">W</div><div class="css-key blue">E</div><div class="css-key blue">R</div><div class="css-key blue">T</div><div class="css-key blue">Y</div><div class="css-key blue">U</div><div class="css-key blue">I</div><div class="css-key blue">O</div><div class="css-key blue">P</div><div class="css-key blue">[</div><div class="css-key blue">]</div><div class="css-key blue flex-1">\</div>
+                    </div>
+                    <div class="css-row">
+                        <div class="css-key purple" style="width: 70px;">Caps</div><div class="css-key blue">A</div><div class="css-key blue">S</div><div class="css-key blue">D</div><div class="css-key blue">F</div><div class="css-key blue">G</div><div class="css-key blue">H</div><div class="css-key blue">J</div><div class="css-key blue">K</div><div class="css-key blue">L</div><div class="css-key blue">;</div><div class="css-key blue">'</div><div class="css-key purple flex-1">Enter</div>
+                    </div>
+                    <div class="css-row">
+                        <div class="css-key purple" style="width: 90px;">Shift</div><div class="css-key blue">Z</div><div class="css-key blue">X</div><div class="css-key blue">C</div><div class="css-key blue">V</div><div class="css-key blue">B</div><div class="css-key blue">N</div><div class="css-key blue">M</div><div class="css-key blue">,</div><div class="css-key blue">.</div><div class="css-key blue">/</div><div class="css-key purple flex-1">Shift</div>
+                    </div>
+                    <div class="css-row">
+                        <div class="css-key purple" style="width: 45px;">Ctrl</div><div class="css-key purple" style="width: 45px;">Win</div><div class="css-key purple" style="width: 45px;">Alt</div><div class="css-key yellow flex-1">Space</div><div class="css-key purple" style="width: 45px;">한/영</div><div class="css-key purple" style="width: 45px;">Alt</div><div class="css-key purple" style="width: 45px;">Ctrl</div>
+                    </div>
+                </div>
+                
+                <div class="css-kb-nav">
+                    <div style="height: 36px;"></div> 
+                    <div class="css-row"><div class="css-key purple">Ins</div><div class="css-key purple">Hm</div><div class="css-key purple">Pu</div></div>
+                    <div class="css-row"><div class="css-key purple">Del</div><div class="css-key purple">End</div><div class="css-key purple">Pd</div></div>
+                    <div style="height: 36px;"></div>
+                    <div class="css-row" style="justify-content: center;"><div class="css-key mint">↑</div></div>
+                    <div class="css-row"><div class="css-key mint">←</div><div class="css-key mint">↓</div><div class="css-key mint">→</div></div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="height: 36px; display: flex; justify-content: space-around; align-items: center; padding: 0 10px;">
+                        <div class="css-led-box"><div class="css-led on"></div><span>Num</span></div>
+                        <div class="css-led-box"><div class="css-led"></div><span>Caps</span></div>
+                        <div class="css-led-box"><div class="css-led"></div><span>Scroll</span></div>
+                    </div>
+                    <div class="css-kb-numpad">
+                        <div class="css-key pink num-highlight">Num</div><div class="css-key pink">/</div><div class="css-key pink">*</div><div class="css-key pink">-</div>
+                        <div class="css-key pink">7</div><div class="css-key pink">8</div><div class="css-key pink">9</div><div class="css-key pink tall">+</div>
+                        <div class="css-key pink">4</div><div class="css-key pink">5</div><div class="css-key pink">6</div>
+                        <div class="css-key pink">1</div><div class="css-key pink">2</div><div class="css-key pink">3</div><div class="css-key pink tall">Ent</div>
+                        <div class="css-key pink wide">0</div><div class="css-key pink">.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- 정답 및 전환 팝업 -->
+    <div id="popup-msg"><div class="popup-content" id="popup-text"></div></div>
+
+    <!-- ✨ 체크박스 미확인 시 뜨는 커스텀 경고 팝업 ✨ -->
+    <div id="alert-popup">
+        <div class="alert-content">
+            <div style="font-size: 80px; margin-bottom: 10px;">💡</div>
+            <div class="alert-text">
+                앗!<br>먼저 초록불이 켜졌는지 확인하고<br>네모 박스에 체크(✔)를 해주세요!
+            </div>
+            <button class="btn btn-alert" onclick="document.getElementById('alert-popup').style.display='none'">네, 확인할게요!</button>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            { title: "✨ 준비 단계 (초록불 확인)", desc: "", targets: ["NumLock"], displayNum: [""], popup: "🎉 준비 완료!" },
+            { title: "🔢 숫자 연습", desc: "", targets: ["0","1","2","3","4","5","6","7","8","9"], displayNum: ["0","1","2","3","4","5","6","7","8","9"], popup: "🚀 시작! 🚀" },
+            { title: "🎯 소수 연습", desc: "", targets: ["0",".","1", "0",".","2", "0",".","3", "0",".","4", "0",".","5", "0",".","6", "0",".","7", "0",".","8", "0",".","9"], displayNum: ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9"], popup: "⭐ 소수 연습 시작! ⭐" },
+            { title: "➖ 마이너스 연습", desc: "", targets: ["-","1", "-","2", "-","3", "-","4", "-","5", "-","6", "-","7", "-","8", "-","9"], displayNum: ["-1", "-2", "-3", "-4", "-5", "-6", "-7", "-8", "-9"], popup: "🔥 마이너스(빼기) 연습! 🔥" }
+        ];
+
+        let stageIdx = 0, stepIdx = 0;
+        let isWaiting = false;
+
+        function showPopup(text, isFinal = false) {
+            const p = document.getElementById('popup-msg');
+            const t = document.getElementById('popup-text');
+            if (isFinal) {
+                t.innerHTML = text + '<div class="btn-group"><button class="btn" onclick="location.reload()">🔄 다시하기</button><button class="btn" onclick="location.href=\'key_menu.html\'">🏠 처음으로</button></div>';
+            } else {
+                t.innerHTML = text;
+                setTimeout(() => { p.style.display = 'none'; }, 1000); 
+            }
+            p.style.display = 'flex';
+        }
+
+        window.startNextStage = function() {
+            stageIdx++; 
+            stepIdx = 0;
+            showPopup(stages[stageIdx].popup);
+            updateUI();
+        };
+
+        // ✨ 체크박스 확인 함수 수정 (기본 alert 대신 커스텀 팝업 띄우기) ✨
+        window.checkAndStart = function() {
+            const checkbox = document.getElementById('check-light');
+            if (checkbox && checkbox.checked) {
+                startNextStage();
+            } else {
+                document.getElementById('alert-popup').style.display = 'flex';
+            }
+        };
+
+        function updateUI(showCompletedIdx) {
+            const missionBox = document.getElementById('mission-box');
+            const numpadArea = document.getElementById('numpad-area');
+            let displayVal = "";
+            let nextKeyText = "";
+            let statusText = "💖 열심히 해봐요!";
+            
+            if (stageIdx > 0) {
+                if (showCompletedIdx !== undefined) {
+                    let fullStr = stages[stageIdx].displayNum[showCompletedIdx];
+                    displayVal = fullStr.split('').map(ch => `<span class="char-span completed">${ch}</span>`).join('');
+                    statusText = "🎉 정답이에요!";
+                } else {
+                    let targetKey = stages[stageIdx].targets[stepIdx];
+                    let currentItemIdx = 0;
+                    
+                    if (stageIdx === 1) {
+                        currentItemIdx = stepIdx;
+                        let fullStr = stages[stageIdx].displayNum[currentItemIdx];
+                        displayVal = `<span class="char-span">${fullStr}</span>`;
+                    } else if (stageIdx === 2) {
+                        currentItemIdx = Math.floor(stepIdx / 3);
+                        let fullStr = stages[stageIdx].displayNum[currentItemIdx];
+                        let typedCount = stepIdx % 3;
+                        
+                        displayVal = "";
+                        for(let i=0; i<fullStr.length; i++) {
+                            let colorClass = (i < typedCount) ? "char-span completed" : "char-span";
+                            displayVal += `<span class="${colorClass}">${fullStr[i]}</span>`;
+                        }
+                    } else if (stageIdx === 3) {
+                        currentItemIdx = Math.floor(stepIdx / 2);
+                        let fullStr = stages[stageIdx].displayNum[currentItemIdx];
+                        let typedCount = stepIdx % 2;
+                        
+                        displayVal = "";
+                        for(let i=0; i<fullStr.length; i++) {
+                            let colorClass = (i < typedCount) ? "char-span completed" : "char-span";
+                            displayVal += `<span class="${colorClass}">${fullStr[i]}</span>`;
+                        }
+                    }
+                    
+                    nextKeyText = "";
+                }
+            }
+
+            if (stageIdx === 0) {
+                numpadArea.style.display = 'none';
+                missionBox.style.width = '1250px';
+                missionBox.style.minHeight = '720px'; 
+                
+                missionBox.innerHTML = `
+                    <div id="mission-title" style="margin-top: 5px; font-size: 45px;">${stages[stageIdx].title}</div>
+                    
+                    <div style="text-align: left; background: #fffaf2; padding: 20px 35px; border-radius: 25px; border: 4px dashed #ffb6c1; font-size: 26px; line-height: 1.5; color: #424242; font-weight: bold; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-top: 10px;">
+                        <div style="margin-bottom: 8px;">
+                            <span style="color:#673ab7">1.</span> 키보드 맨 위를 볼까요? 화면처럼 내 키보드에도 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 켜져 있나요?
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color:#673ab7">2.</span> 내 키보드에도 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 들어왔다면 <b style="color:#d81b60;">아래 네모 박스에 체크</b>해 주세요.
+                        </div>
+                        <div>
+                            <span style="color:#673ab7">3.</span> 내 키보드에 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 안들어와있다면 <span style="color:#d81b60; font-size: 30px;">Num</span> 버튼을 눌러 <span style="color:#2e7d32; font-size: 30px;">초록불</span>을 켜주세요.
+                        </div>
+                    </div>
+
+                    <div style="transform: scale(1.1); transform-origin: center; margin: 25px 0 5px 0;">
+                        ${document.getElementById('macaron-template').innerHTML}
+                    </div>
+                    
+                    <div style="font-size: 45px; animation: bounceDown 1s infinite; margin-bottom: 5px;">👇</div>
+                    
+                    <label style="cursor: pointer; font-size: 30px; color: #d81b60; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; background: #fce4ec; padding: 15px 30px; border-radius: 20px; border: 4px solid #f8bbd0;">
+                        <input type="checkbox" id="check-light" style="width: 35px; height: 35px; cursor: pointer; accent-color: #d81b60;">
+                        네! 내 키보드에 초록불이 켜진 것을 확인했어요!
+                    </label>
+
+                    <div style="margin-bottom: 10px;">
+                        <button class="btn" onclick="checkAndStart()">✨ 시작하기</button>
+                    </div>
+                `;
+            } else {
+                numpadArea.style.display = 'flex';
+                missionBox.style.width = '720px';
+                missionBox.style.minHeight = '520px';
+                
+                missionBox.innerHTML = `
+                    <div id="mission-title">${stages[stageIdx].title}</div>
+                    ${displayVal ? `<div id="mission-target-num">${displayVal}</div>` : ""}
+                    ${nextKeyText}
+                    <div id="mission-desc">${stages[stageIdx].desc}</div>
+                    <div id="check-status" class="check-box">${statusText}</div>
+                `;
+            }
+            
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('guide', 'error'));
+            if (stageIdx > 0 && !isWaiting) {
+                let currentTarget = stages[stageIdx].targets[stepIdx];
+                document.getElementById('key-' + currentTarget)?.classList.add('guide');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            // 알림 팝업이 떠있을 때는 다른 키보드 입력을 무시하도록 추가
+            if (document.getElementById('alert-popup').style.display === 'flex') {
+                if(e.key === 'Enter' || e.key === 'Escape') {
+                    document.getElementById('alert-popup').style.display = 'none';
+                }
+                return;
+            }
+
+            const isNumLocked = e.getModifierState("NumLock");
+            const ledLight = document.getElementById('led-light');
+            if(ledLight) {
+                ledLight.className = isNumLocked ? 'led-light on' : 'led-light';
+            }
+
+            if (stageIdx === 0 || isWaiting) {
+                return;
+            }
+
+            if (stageIdx > 0) {
+                let pressedKey = e.key;
+                let targetKey = stages[stageIdx].targets[stepIdx];
+
+                if (pressedKey === targetKey) {
+                    document.getElementById('key-' + targetKey)?.classList.add('active');
+                    setTimeout(() => document.getElementById('key-' + targetKey)?.classList.remove('active'), 200);
+                    
+                    let isItemFinished = false;
+                    let isStageFinished = false;
+
+                    if (stageIdx === 1) {
+                        let completedIdx = stepIdx;
+                        stepIdx++;
+                        isWaiting = true;
+                        updateUI(completedIdx);
+                        setTimeout(() => {
+                            isWaiting = false;
+                            if (stepIdx >= stages[stageIdx].targets.length) {
+                                stageIdx++;
+                                stepIdx = 0;
+                                if (stageIdx < stages.length) {
+                                    showPopup(stages[stageIdx].popup);
+                                    updateUI();
+                                } else {
+                                    showPopup("👑 마스터 성공! 👑<br>정말 멋져요!", true);
+                                }
+                            } else {
+                                updateUI();
+                            }
+                        }, 500);
+                        return;
+                    } else if (stageIdx === 2) {
+                        let subStep = stepIdx % 3;
+                        stepIdx++;
+                        if (subStep === 2) isItemFinished = true;
+                        if (stepIdx >= stages[stageIdx].targets.length) isStageFinished = true;
+                    } else if (stageIdx === 3) {
+                        let subStep = stepIdx % 2;
+                        stepIdx++;
+                        if (subStep === 1) isItemFinished = true;
+                        if (stepIdx >= stages[stageIdx].targets.length) isStageFinished = true;
+                    }
+
+                    let itemLen = (stageIdx === 2) ? 3 : 2;
+                    let completedItemIdx = Math.floor((stepIdx - 1) / itemLen);
+
+                    if (isStageFinished) {
+                        isWaiting = true;
+                        updateUI(completedItemIdx);
+                        setTimeout(() => {
+                            stageIdx++; stepIdx = 0;
+                            isWaiting = false;
+                            if (stageIdx < stages.length) { showPopup(stages[stageIdx].popup); updateUI(); } 
+                            else { showPopup("👑 마스터 성공! 👑<br>정말 멋져요!", true); }
+                        }, 500); 
+                    } else if (isItemFinished) {
+                        isWaiting = true;
+                        updateUI(completedItemIdx); 
+                        setTimeout(() => {
+                            isWaiting = false;
+                            updateUI(); 
+                        }, 500);
+                    } else {
+                        updateUI();
+                    }
+                } else {
+                    const errorKey = document.getElementById('key-' + pressedKey);
+                    if (errorKey) {
+                        errorKey.classList.add('error');
+                        setTimeout(() => errorKey.classList.remove('error'), 300);
+                    }
+                }
+            }
+        });
+        
+        updateUI();
+    </script>
+</body>
+</html>

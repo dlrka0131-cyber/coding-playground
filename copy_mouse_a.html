@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>귀여운 동물 우클릭 복사하기 게임!</title>
+    <style>
+        /* ⚠️ 시스템 기본 글꼴 사용 */
+        body, button, h1, h2, h3, p, div, span, a, b {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 30px 20px;
+            user-select: none;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* 🏠 왼쪽 상단 처음으로 버튼 */
+        .home-btn {
+            position: absolute; 
+            top: 25px; 
+            left: 25px; 
+            background-color: #222546;
+            color: #ffde7d; 
+            padding: 15px 30px; 
+            border-radius: 20px;
+            text-decoration: none; 
+            font-size: 24px; 
+            font-weight: bold;
+            box-shadow: 0 4px 0 #16213e; 
+            border: 3px solid #ffde7d; 
+            z-index: 999;
+            transition: all 0.1s;
+        }
+        .home-btn:hover { background-color: #2a2e5c; }
+        .home-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #16213e; }
+
+        h1 { color: #4ecc71; margin-top: 10px; margin-bottom: 5px; font-size: 44px; text-shadow: 2px 2px 0px #000, 4px 4px 10px rgba(78, 204, 113, 0.3); }
+        .info { font-size: 24px; margin-bottom: 25px; color: #e0e0e0; font-weight: bold;}
+        
+        /* 📐 전체 레이아웃 */
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .copy-zone {
+            background: #16213e;
+            border: 5px dashed #4ecc71;
+            border-radius: 40px;
+            padding: 25px;
+            width: 420px;
+            height: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .copy-zone h3 {
+            font-size: 26px;
+            line-height: 1.6;
+            margin: 0 0 10px 0;
+            color: #4ecc71;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-source {
+            font-size: 130px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            outline: none;
+            animation: floatItem 2.5s ease-in-out infinite;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-source.selected {
+            background-color: rgba(78, 204, 113, 0.2);
+            box-shadow: 0 0 40px #4ecc71;
+            animation: none;
+            transform: scale(1.1);
+        }
+
+        #copy-hint {
+            font-size: 24px;
+            color: #BA9B8A;
+            height: 60px;
+            line-height: 60px;
+            margin-top: 15px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            border-radius: 20px;
+            background: transparent;
+        }
+
+        #copy-hint.complete {
+            background-color: #4ecc71; 
+            color: #FFF;
+            font-size: 30px; 
+            font-weight: bold;
+            box-shadow: 0 12px 25px rgba(78, 204, 113, 0.5);
+            animation: popBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border: 3px solid #FFF;
+        }
+
+        .paste-zone {
+            position: relative;
+            background: #0f3460;
+            outline: 6px solid #ff6b6b; 
+            border-radius: 40px;
+            width: 750px;
+            height: 520px;
+            overflow: hidden;
+            cursor: crosshair;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .paste-zone h3 {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            font-size: 32px;
+            color: #ff6b6b;
+            margin: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .cage-bg {
+            font-size: 260px;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.15;
+            pointer-events: none;
+            animation: floatBag 3s ease-in-out infinite;
+        }
+        
+        .target-marker {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border: 3px dashed #ffde7d;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            pointer-events: none;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .target-marker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ffde7d;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .pasted-item {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 65px;
+            transform: translate(-50%, -50%);
+            animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        /* 🖱️ 가상 우클릭 메뉴 스타일 */
+        .custom-context-menu {
+            position: absolute;
+            background: #222546;
+            border: 3px solid #ffde7d;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 9999;
+            padding: 5px;
+            min-width: 150px;
+        }
+        .menu-item {
+            padding: 12px 18px;
+            font-size: 20px;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.1s;
+        }
+        .menu-item:hover {
+            background-color: #ff6b6b;
+            color: #fff;
+        }
+
+        #status-message {
+            margin-top: 35px;
+            font-size: 36px;
+            color: #fff; 
+            height: 55px;
+            transition: all 0.1s;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .highlight-text {
+            color: #ffde7d;
+            font-size: 36px;
+            font-weight: bold;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(255, 222, 125, 0.6);
+        }
+
+        #score-board {
+            font-size: 36px;
+            margin-top: 15px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .success-content {
+            background: #222546;
+            border: 8px solid #ffde7d;
+            border-radius: 40px;
+            padding: 50px 70px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(255, 222, 125, 0.3);
+            animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-content h2 {
+            font-size: 70px;
+            color: #ffde7d;
+            margin: 0 0 15px 0;
+        }
+        .success-content p {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+        
+        .btn-box { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+        .restart-btn, .home-popup-btn {
+            width: 250px; height: 75px; font-size: 26px; font-weight: bold;
+            border-radius: 20px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            transition: all 0.1s;
+        }
+        .restart-btn {
+            background: #4ecc71; color: white; box-shadow: 0 6px #27ae60;
+        }
+        .restart-btn:hover { background: #5edb81; }
+        .restart-btn:active { transform: translateY(4px); box-shadow: 0 2px #27ae60; }
+
+        .home-popup-btn {
+            background: #ff6b6b; color: white; box-shadow: 0 6px #c0392b;
+        }
+        .home-popup-btn:hover { background: #ff8585; }
+        .home-popup-btn:active { transform: translateY(4px); box-shadow: 0 2px #c0392b; }
+
+        .disabled-zone {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(40%);
+        }
+
+        @keyframes pulseBorderLeft {
+            0% { border-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            50% { border-color: #ffde7d; box-shadow: 0 0 45px rgba(255, 222, 125, 0.9); }
+            100% { border-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        }
+        .active-pulse-left {
+            animation: pulseBorderLeft 1.2s infinite !important;
+            border-color: #ffde7d !important;
+        }
+
+        @keyframes pulseBorderRight {
+            0% { outline-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            50% { outline-color: #ffde7d; box-shadow: 0 0 50px rgba(255, 222, 125, 0.9); }
+            100% { outline-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        }
+        .active-pulse-right {
+            animation: pulseBorderRight 1.2s infinite !important;
+            outline: 6px solid #ffde7d !important;
+        }
+
+        @keyframes floatItem {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes floatBag {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            50% { transform: translate(-50%, -52%) scale(1.03) rotate(-2deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes popBounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes bounce {
+            0% { transform: scale(0.3); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🏠 왼쪽 상단 처음으로 버튼 -->
+    <a href="copy_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <h1>🦁 귀여운 동물 복사하기 게임! 🐰</h1>
+    <p class="info">동물을 우클릭해서 복사하고 동물원에 붙여넣어 주세요!</p>
+
+    <div class="game-container">
+        <!-- 왼쪽: 복사 영역 -->
+        <div class="copy-zone active-pulse-left" id="zone-left">
+            <h3><span>① 동물에 마우스 우클릭</span></h3>
+            <div id="item-box" class="item-source" tabindex="0">🐶</div>
+            <div id="copy-hint">👆 동물을 우클릭해보세요!</div>
+        </div>
+
+        <!-- 오른쪽: 붙여넣기 영역 -->
+        <div class="paste-zone disabled-zone" id="zone-right">
+            <h3>② 동물원에 우클릭 후 붙여넣기!</h3>
+            <div class="cage-bg">🏡</div>
+            <div id="target" class="target-marker"></div>
+        </div>
+    </div>
+
+    <!-- 하단 안내 문구 -->
+    <div id="status-message">👉 <b>①번 동물</b>을 마우스 <span class="highlight-text">우클릭!</span> 👈</div>
+    <div id="score-board">🏡 동물원에 모인 동물: <span id="count" style="color:#4ecc71; font-size:42px;">0</span> / 10 마리</div>
+
+    <!-- 커스텀 우클릭 메뉴 -->
+    <div id="context-menu" class="custom-context-menu">
+        <div id="menu-copy" class="menu-item" onclick="handleCopy()">📋 복사하기</div>
+        <div id="menu-paste" class="menu-item" onclick="handlePaste()" style="display:none;">📥 붙여넣기</div>
+    </div>
+
+    <!-- 성공 팝업 -->
+    <div id="success-screen" class="success-overlay">
+        <div class="success-content">
+            <h2>🎉 미션 성공! 🎉</h2>
+            <p style="font-size: 80px; margin: 15px 0;">🐶🐱🐰🦁🐵</p>
+            <p>우클릭 [복사]와 [붙여넣기]를 완벽하게 성공했어요!<br>정말 멋져요! 👍</p>
+            <div class="btn-box">
+                <button class="restart-btn" onclick="resetGame()">한 번 더 놀기 🔄</button>
+                <a href="copy_menu.html" class="home-popup-btn">🏠 처음으로</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 다양한 동물 종류 배열
+        const animals = ['🐶', '🐱', '🐰', '🦁', '🐵', '🐼', '🦊', '🐯', '🐨', '🐸', '🦄'];
+        let currentAnimal = '🐶';
+
+        let isCopied = false;
+        let isSelected = false;
+        let targetX = 0;
+        let targetY = 0;
+        let itemCount = 0;
+        let gameFinished = false;
+
+        const itemBox = document.getElementById('item-box');
+        const zoneLeft = document.getElementById('zone-left');
+        const zoneRight = document.getElementById('zone-right');
+        const zoo = document.getElementById('zone-right');
+        const target = document.getElementById('target');
+        const msg = document.getElementById('status-message');
+        const countTxt = document.getElementById('count');
+        const copyHint = document.getElementById('copy-hint');
+        const successScreen = document.getElementById('success-screen');
+        const contextMenu = document.getElementById('context-menu');
+        const menuCopy = document.getElementById('menu-copy');
+        const menuPaste = document.getElementById('menu-paste');
+
+        function setRandomAnimal() {
+            const randomIndex = Math.floor(Math.random() * animals.length);
+            currentAnimal = animals[randomIndex];
+            itemBox.innerText = currentAnimal;
+        }
+
+        // 기본 브라우저 우클릭 메뉴 방지 및 커스텀 메뉴 띄우기
+        window.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        // 1. 왼쪽 동물 상자 우클릭 이벤트
+        itemBox.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if(gameFinished) return;
+
+            isSelected = true;
+            itemBox.classList.add('selected');
+
+            // 메뉴 위치 설정
+            contextMenu.style.display = 'flex';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+            
+            menuCopy.style.display = 'block';
+            menuPaste.style.display = 'none';
+        });
+
+        // 복사하기 실행
+        function handleCopy() {
+            isCopied = true;
+            contextMenu.style.display = 'none';
+            msg.innerHTML = "👉 ②번 동물원 안을 마우스 <span class='highlight-text'>우클릭</span> 하세요! 👈";
+            
+            copyHint.innerText = "복사 완료! 👍";
+            copyHint.classList.add('complete');
+            
+            zoneLeft.classList.remove('active-pulse-left');
+            zoneRight.classList.remove('disabled-zone');
+            zoneRight.classList.add('active-pulse-right');
+        }
+
+        // 2. 오른쪽 동물원 영역 우클릭 이벤트
+        zoo.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if(gameFinished) return;
+
+            // 좌표 저장
+            const rect = zoo.getBoundingClientRect();
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
+
+            target.style.left = targetX + 'px';
+            target.style.top = targetY + 'px';
+            target.style.display = 'block';
+
+            if (isCopied) {
+                // 우클릭 메뉴에 붙여넣기 노출
+                contextMenu.style.display = 'flex';
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+                
+                menuCopy.style.display = 'none';
+                menuPaste.style.display = 'block';
+                msg.innerHTML = "👉 메뉴에서 <span class='highlight-text'>[붙여넣기]</span>를 누르세요! 👈";
+            } else {
+                msg.innerHTML = "⚠️ 먼저 ①번 동물을 우클릭해서 복사해야 해요!";
+            }
+        });
+
+        // 붙여넣기 실행
+        function handlePaste() {
+            if (!isCopied) return;
+            contextMenu.style.display = 'none';
+
+            const newItem = document.createElement('div');
+            newItem.className = 'pasted-item';
+            newItem.innerText = currentAnimal;
+            newItem.style.left = targetX + 'px';
+            newItem.style.top = targetY + 'px';
+            zoo.appendChild(newItem);
+
+            itemCount++;
+            countTxt.innerText = itemCount;
+
+            if (itemCount >= 10) {
+                gameFinished = true;
+                zoneRight.classList.remove('active-pulse-right');
+                setTimeout(() => {
+                    successScreen.style.display = 'flex';
+                }, 200);
+            } else {
+                setRandomAnimal();
+                isCopied = false;
+                isSelected = false;
+                itemBox.classList.remove('selected');
+                target.style.display = 'none';
+                
+                copyHint.innerText = "👆 다음 동물을 우클릭!";
+                copyHint.classList.remove('complete');
+                
+                zoneRight.classList.add('disabled-zone');
+                zoneRight.classList.remove('active-pulse-right');
+                zoneLeft.classList.add('active-pulse-left');
+
+                msg.innerHTML = "👉 <b>다음 동물</b>을 마우스 <span class='highlight-text'>우클릭!</span> (복사 ➔ 붙여넣기 반복!) 👈";
+            }
+        }
+
+        function resetGame() {
+            isCopied = false;
+            isSelected = false;
+            itemCount = 0;
+            gameFinished = false;
+            
+            countTxt.innerText = '0';
+            successScreen.style.display = 'none';
+            itemBox.classList.remove('selected');
+            target.style.display = 'none';
+            
+            setRandomAnimal();
+            copyHint.innerText = "👆 동물을 우클릭해보세요!";
+            copyHint.classList.remove('complete');
+            
+            zoneRight.classList.add('disabled-zone');
+            zoneRight.classList.remove('active-pulse-right');
+            zoneLeft.classList.add('active-pulse-left');
+            
+            msg.innerHTML = "👉 <b>①번 동물</b>을 마우스 <span class='highlight-text'>우클릭!</span> 👈";
+
+            const pastedItems = document.querySelectorAll('.pasted-item');
+            pastedItems.forEach(el => el.remove());
+        }
+
+        setRandomAnimal();
+    </script>
+</body>
+</html>

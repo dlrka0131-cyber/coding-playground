@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍭 스마일 깨우기 게임 v7.0 🍭</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+        body {
+            font-family: 'Jua', sans-serif;
+            background-color: #aee2ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1000 600' preserveAspectRatio='xMidYMid slice'%3E%3Crect width='1000' height='600' fill='%23aee2ff'/%3E%3Ccircle cx='150' cy='150' r='80' fill='%23ffdf73'/%3E%3Cg fill='white'%3E%3Ccircle cx='300' cy='150' r='30'/%3E%3Ccircle cx='340' cy='130' r='40'/%3E%3Ccircle cx='380' cy='150' r='30'/%3E%3Crect x='300' y='150' width='80' height='30'/%3E%3Ccircle cx='700' cy='250' r='40'/%3E%3Ccircle cx='750' cy='220' r='50'/%3E%3Ccircle cx='800' cy='250' r='40'/%3E%3Crect x='700' y='250' width='100' height='40'/%3E%3C/g%3E%3Cellipse cx='800' cy='600' rx='600' ry='300' fill='%23b1e5a5'/%3E%3Cellipse cx='200' cy='600' rx='700' ry='250' fill='%2388d49e'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center bottom;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        #game-container {
+            background-color: #ffffff;
+            border: 6px solid #ffb6c1; 
+            border-radius: 40px; 
+            padding: 30px 40px;
+            box-shadow: 0 15px 0 #ffb6c1, 0 20px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 800px; 
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        h1 { 
+            color: #ff6b81; 
+            font-size: 52px; 
+            margin-bottom: 20px; 
+            text-shadow: 2px 2px 0px #ffeaa7; 
+        }
+
+        #status-panel {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 32px; 
+            background-color: #f1f2f6;
+            padding: 15px;
+            border-radius: 20px;
+            border: 3px dashed #ced6e0; 
+        }
+
+        #score-display { color: #1e90ff; font-weight: bold; font-size: 40px; }
+        #time-display { color: #ff4757; font-weight: bold; font-size: 40px; }
+
+        #game-area {
+            background-color: #e2f0cb; 
+            border: 5px solid #a8e6cf;
+            border-radius: 30px;
+            height: 550px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        /* 중앙 시작 화면 오버레이 */
+        #start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            border-radius: 25px;
+        }
+
+        #start-overlay h2 {
+            font-size: 50px;
+            color: #ffa502;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px #ffeaa7;
+        }
+
+        #start-overlay p {
+            font-size: 34px;
+            color: #57606f;
+            line-height: 1.5;
+            margin-bottom: 50px;
+        }
+
+        .highlight-text {
+            color: #ff4757;
+            font-size: 40px;
+            background-color: #ffeaa7; 
+            padding: 0 15px;
+            border-radius: 15px;
+        }
+
+        .big-action-button {
+            background-color: #7bed9f;
+            color: #2f3542;
+            border: 4px solid #2ed573;
+            border-radius: 40px;
+            padding: 20px 60px;
+            font-size: 40px; 
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 0 #2ed573; 
+        }
+        .big-action-button:hover { 
+            background-color: #2ed573; 
+            color: white;
+            transform: translateY(2px); 
+            box-shadow: 0 6px 0 #20bf6b;
+        }
+        .big-action-button:active { 
+            transform: translateY(8px); 
+            box-shadow: 0 0 0 #20bf6b; 
+        }
+
+        /* 버튼을 나란히 놓기 위한 스타일 */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* 홈 버튼만의 특별한 색상 설정 */
+        .home-btn {
+            background-color: #ff9ff3;
+            border-color: #f368e0;
+            box-shadow: 0 8px 0 #f368e0;
+            color: #2f3542;
+        }
+        .home-btn:hover {
+            background-color: #f368e0;
+            box-shadow: 0 6px 0 #e056ce;
+        }
+        .home-btn:active {
+            box-shadow: 0 0 0 #e056ce;
+        }
+
+        /* 결과 화면 오버레이 */
+        #result-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 25px;
+        }
+        #result-overlay h2 { font-size: 60px; color: #ff6348; margin: 0; text-shadow: 2px 2px 0px #ffeaa7;}
+        #result-overlay p.score-text { font-size: 40px; color: #2f3542; margin: 25px 0 15px; }
+        
+        #feedback-msg {
+            font-size: 32px;
+            color: #1e90ff;
+            margin-bottom: 45px;
+            padding: 0 20px;
+            line-height: 1.5;
+        }
+
+        /* ⭐️ 스마일 스타일 (아이들이 조준하기 쉽도록 완전 고정 및 마우스 피드백 추가) */
+        .smile {
+            font-size: 85px; 
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s, opacity 0.4s; 
+        }
+        .smile:active {
+            transform: scale(0.85); /* 마우스 누를 때 통통 튀는 효과 */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>🍭 스마일 깨우기 🍭</h1>
+        
+        <div id="status-panel">
+            <span>⭐ 점수: <span id="score-display">0</span></span>
+            <span>⏰ 시간: <span id="time-display">30초</span></span>
+        </div>
+
+        <div id="game-area">
+            
+            <div id="start-overlay">
+                <h2>🐭 마우스 따닥! 연습 🐭</h2>
+                <p>
+                    잠든 스마일을 빠르게 <span class="highlight-text">두 번(따닥!)</span> 눌러요!
+                </p>
+                <button class="big-action-button" onclick="startGame()">▶ 시작!</button>
+            </div>
+
+            <div id="result-overlay">
+                <h2>게임 끝!</h2>
+                <p class="score-text">내 점수는: <span id="final-score">0</span>점!</p>
+                <p id="feedback-msg"></p>
+                
+                <div class="btn-group">
+                    <button class="big-action-button" onclick="startGame()" style="font-size: 36px; padding: 20px 50px;">다시 할래!</button>
+                    <button class="big-action-button home-btn" onclick="location.href='coding_mouseplay.html'" style="font-size: 36px; padding: 20px 50px;">🏠 홈으로</button>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const scoreDisplay = document.getElementById('score-display');
+        const timeDisplay = document.getElementById('time-display');
+        const gameArea = document.getElementById('game-area');
+        const startOverlay = document.getElementById('start-overlay');
+        const resultOverlay = document.getElementById('result-overlay');
+        const finalScoreText = document.getElementById('final-score');
+        const feedbackMsg = document.getElementById('feedback-msg');
+
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+
+        function playSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                function playNote(freq, startTime, duration) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine'; 
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.15, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + duration);
+                }
+
+                const now = audioCtx.currentTime;
+                playNote(1046.50, now, 0.4);        
+                playNote(1318.51, now + 0.04, 0.4); 
+                playNote(1567.98, now + 0.08, 0.4); 
+                playNote(2093.00, now + 0.12, 0.6); 
+
+            } catch (e) {
+                console.log("오디오 재생 오류:", e);
+            }
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = timeLeft + '초';
+            
+            startOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none'; 
+            
+            gameArea.querySelectorAll('.smile').forEach(s => s.remove()); 
+
+            gameInterval = setInterval(updateTime, 1000);
+            spawnSmile(); // ⭐️ 시작할 때 스마일 1개 생성 (더 이상 타이머로 강제 생성하지 않음)
+        }
+
+        function updateTime() {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft + '초';
+            if (timeLeft <= 0) endGame();
+        }
+
+        function spawnSmile() {
+            // 화면에 혹시 남아있을 스마일 청소
+            gameArea.querySelectorAll('.smile').forEach(s => s.remove());
+
+            const smile = document.createElement('div');
+            smile.className = 'smile';
+            smile.textContent = '😴'; 
+            
+            smile.ondblclick = function() { catchSmile(this); }; 
+
+            // 넓어진 게임 영역 안에서 안전하게 램덤 배치
+            const randomX = Math.random() * (gameArea.offsetWidth - 120);
+            const randomY = Math.random() * (gameArea.offsetHeight - 120);
+            smile.style.left = randomX + 'px';
+            smile.style.top = randomY + 'px';
+
+            gameArea.appendChild(smile);
+        }
+
+        function catchSmile(clickedSmile) {
+            if(clickedSmile.classList.contains('wake')) return;
+            score++;
+            scoreDisplay.textContent = score;
+            
+            playSound(); 
+            
+            clickedSmile.classList.add('wake');
+            clickedSmile.textContent = '🤩'; // 깨어났을 때 눈이 반짝이는 이모지로 변경!
+            clickedSmile.style.transform = 'scale(1.2)'; 
+
+            // ⭐️ 깨어난 스마일이 축하해 준 뒤 0.5초 후에 사라지고 다음 스마일 생성
+            setTimeout(() => { 
+                clickedSmile.style.opacity = '0';
+                setTimeout(() => {
+                    if (timeLeft > 0) { 
+                        spawnSmile(); 
+                    } 
+                }, 200);
+            }, 500); 
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            gameArea.querySelectorAll('.smile').forEach(s => s.remove());
+            finalScoreText.textContent = score;
+            
+            // ⭐️ 움직이지 않으므로 아이들이 더 많이 잡을 수 있어서 피드백 기준을 조금 현실적으로 잡았습니다.
+            if (score >= 15) {
+                feedbackMsg.textContent = "와우! 더블클릭 박사님이네요! 최고! 🏆";
+            } else if (score >= 8) {
+                feedbackMsg.textContent = "참 잘했어요! 마우스랑 아주 친해졌네요! 👏";
+            } else if (score >= 4) {
+                feedbackMsg.textContent = "좋아요! 조금만 더 연습하면 엄청 빨라질 거예요! 😉";
+            } else {
+                feedbackMsg.textContent = "아쉬워요! 마우스를 '따닥!' 누르는 연습을 해봐요! 💪";
+            }
+
+            resultOverlay.style.display = 'flex'; 
+        }
+    </script>
+</body>
+</html>

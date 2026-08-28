@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마우스 놀이터</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+        @font-face { font-family: 'ONEMobilePOP'; src: url('ONE Mobile POP.ttf') format('truetype'); }
+        @import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #fff9e3; 
+            margin: 0; padding: 0; color: #4a4a4a; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* 🏠 처음으로 버튼 */
+        .home-btn {
+            position: absolute; top: 25px; left: 25px;
+            background-color: white; color: #ff9ff3;
+            padding: 20px 40px; border-radius: 30px;
+            text-decoration: none; font-family: 'ONEMobilePOP', sans-serif;
+            font-size: 28px; box-shadow: 0 6px 0 #ffd1f4;
+            border: 4px solid #ff9ff3; z-index: 999;
+        }
+
+        /* 중앙 정렬 헤더 */
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 60px; color: #00b894; margin: 0 0 10px 0; font-family: 'ONEMobilePOP', sans-serif; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        header p { font-size: 26px; background-color: white; padding: 15px 30px; border-radius: 40px; color: #636e72; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'ONEMobilePOP', sans-serif; }
+
+        /* 카드 컨테이너 */
+        .card-container { display: flex; gap: 40px; justify-content: center; align-items: center; margin-bottom: 50px; }
+        .card { background-color: white; border-radius: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 40px 20px; text-align: center; width: 270px; height: 380px; display: flex; flex-direction: column; align-items: center; position: relative; border: 4px solid white; transition: 0.3s; }
+        .card:hover { transform: scale(1.05); }
+
+        /* 카드별 테두리 색상 */
+        .card.pink:hover { border-color: #ff9ff3; }
+        .card.mint:hover { border-color: #48dbfb; }
+        .card.yellow:hover { border-color: #feca57; }
+        .card.purple:hover { border-color: #a29bfe; }
+
+        .card-icon { font-family: 'Tossface', sans-serif; font-size: 90px; margin-top: 20px; margin-bottom: 15px; }
+        
+        .tag { font-size: 18px; font-weight: 800; padding: 8px 20px; border-radius: 20px; margin-bottom: 15px; }
+        .tag.pink { background-color: #ffeaa7; color: #d63031; }
+        .tag.mint { background-color: #c7ecee; color: #009432; }
+        .tag.yellow { background-color: #fef0cd; color: #f39c12; }
+        .tag.purple { background-color: #e0ece4; color: #5f27cd; }
+
+        .card h3 { font-size: 28px; color: #2d3436; margin: 0 0 10px 0; font-family: 'ONEMobilePOP', sans-serif; }
+        .card p { font-size: 16px; color: #636e72; line-height: 1.4; margin-bottom: auto; padding: 0 10px; }
+
+        .start-btn { display: block; color: white; text-decoration: none; padding: 15px 0; border-radius: 20px; font-size: 20px; font-family: 'ONEMobilePOP', sans-serif; width: 85%; margin-top: 20px; }
+        .start-btn.pink { background-color: #ff9ff3; box-shadow: 0 6px 0 #f368e0; }
+        .start-btn.mint { background-color: #48dbfb; box-shadow: 0 6px 0 #0abde3; }
+        .start-btn.yellow { background-color: #feca57; box-shadow: 0 6px 0 #ff9f43; }
+        .start-btn.purple { background-color: #a29bfe; box-shadow: 0 6px 0 #6c5ce7; }
+
+        .footer { text-align: center; font-size: 17px; color: #a4b0be; font-weight: 600; font-family: 'ONEMobilePOP', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn">🏠 처음으로</a>
+
+    <header>
+        <h1>🖱️ 마우스 놀이터</h1>
+        <p>어떤 마우스 마법을 연습해 볼까요? 원하는 놀이를 골라보세요!</p>
+    </header>
+
+    <div class="card-container">
+        <div class="card pink">
+            <div class="tag pink">더블클릭 연습</div>
+            <div class="card-icon">😴</div>
+            <h3>스마일 깨우기</h3>
+            <p>잠든 스마일을 마우스 왼쪽 버튼으로 빠르게 두 번 눌러서 깨워주세요.</p>
+            <a href="smile_game.html" class="start-btn pink">시작하기</a>
+        </div>
+        <div class="card mint">
+            <div class="tag mint">마우스휠 연습</div>
+            <div class="card-icon">🚀</div>
+            <h3>우주선 왕복 여행</h3>
+            <p>마우스 가운데 바퀴를 쓱쓱 굴려서 달나라에 무사히 다녀오세요.</p>
+            <a href="space_shuttle.html" class="start-btn mint">시작하기</a>
+        </div>
+        <div class="card yellow">
+            <div class="tag yellow">우클릭 연습</div>
+            <div class="card-icon">🎁</div>
+            <h3>비밀의 보물상자</h3>
+            <p>마우스 오른쪽 버튼을 딸깍! 눌러서 상자 속 숨겨진 보물을 찾아요.</p>
+            <a href="treasure_box.html" class="start-btn yellow">시작하기</a>
+        </div>
+        <div class="card purple">
+            <div class="tag purple">드래그 연습</div>
+            <div class="card-icon">🦆</div>
+            <h3>마우스 받아쓰기</h3>
+            <p>화면에 둥둥 떠 있는 글자를 꾹 누른 채로 빈칸까지 쭈욱 끌어오세요.</p>
+            <a href="mouse_dictation.html" class="start-btn purple">시작하기</a>
+        </div>
+    </div>
+
+    <div class="footer">제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</div>
+
+</body>
+</html>

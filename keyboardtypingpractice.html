@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마카롱 키보드 - 3분 타자 연습</title>
+    <style>
+        /* 제목에만 적용할 웹 폰트 불러오기 */
+        @font-face { 
+            font-family: 'ONEMobilePOP'; 
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.0/ONE-Mobile-POP.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body { 
+            background-image: linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%);
+            display: flex; 
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px 0 50px 0; 
+            font-family: sans-serif; 
+            position: relative;
+            box-sizing: border-box;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* 🏠 왼쪽 상단 처음으로 버튼 */
+        .home-btn {
+            position: absolute; top: 35px; left: 140px; background-color: #FFF;
+            color: #7b61ff; padding: 12px 24px; border-radius: 20px;
+            text-decoration: none; font-size: 18px; font-weight: bold;
+            box-shadow: 0 4px 0 #dcd6ff; border: 3px solid #7b61ff; z-index: 999; cursor: pointer;
+        }
+
+        /* 📌 상단 제목 스타일 */
+        .header-section { text-align: center; margin-top: 5px; margin-bottom: 5px; }
+        .main-title { font-family: 'ONEMobilePOP', sans-serif; font-size: 60px; color: #7b61ff; }
+
+        /* 🎯 게임 영역 전체 컨테이너 (게임판과 사이드 카드를 좌우로 배치) */
+        .game-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* 🎯 타자 연습 게임판 비율 및 디자인 개선 */
+        .typing-board {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            width: 720px; 
+            background: rgba(255, 255, 255, 0.85); 
+            padding: 25px 40px 30px 40px; 
+            border-radius: 30px;
+            border: 4px dashed #b39ddb; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+            position: relative; 
+        }
+        
+        /* 🏆 외부에 오른쪽에 따로 배치되는 정보 카드 스타일 */
+        .info-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 160px;
+        }
+
+        .score-card, .timer-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 18px 15px;
+            border-radius: 25px;
+            border: 4px solid #b39ddb;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #5e35b1;
+            font-family: 'ONEMobilePOP', sans-serif;
+        }
+
+        .card-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #7b61ff;
+            font-family: 'ONEMobilePOP', sans-serif;
+        }
+
+        .timer-card {
+            border-color: #b39ddb;
+        }
+        .timer-card .card-label {
+            color: #5e35b1;
+        }
+        .timer-card .card-value {
+            color: #d84315;
+        }
+        
+        #target-word { 
+            font-size: 50px; font-weight: 900; color: #d84315; 
+            letter-spacing: 4px; margin-top: 5px; 
+        }
+
+        /* 💡 지정 단어 전용 쌍자음 안내 메시지 스타일 */
+        #guide-msg {
+            font-size: 16px; font-weight: bold; color: #e91e63;
+            background: #fce4ec; padding: 6px 16px; border-radius: 15px;
+            min-height: 24px; visibility: hidden; 
+        }
+        
+        #typing-input {
+            font-size: 26px; padding: 12px 25px; text-align: center; 
+            width: 420px; 
+            border: 4px solid #7b61ff; border-radius: 20px; outline: none; background: #fffaf2;
+            color: #333; font-weight: bold;
+        }
+        #typing-input:focus { border-color: #ff9800; box-shadow: 0 0 15px rgba(255, 152, 0, 0.4); }
+
+        /* 정답 시 애니메이션 효과 */
+        .correct-effect { animation: pop 0.3s ease-in-out; color: #4caf50 !important; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+        /* 🏆 3분 종료 후 뜨는 결과 팝업창 (모달) 스타일 */
+        #result-modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.5); display: none; /* 평소엔 숨김 */
+            justify-content: center; align-items: center; z-index: 9999;
+        }
+        .modal-content {
+            background: #fffaf2; padding: 40px 50px; border-radius: 35px;
+            border: 6px solid #e2d4c9; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 400px;
+            display: flex; flex-direction: column; gap: 20px; align-items: center;
+        }
+        .modal-title { font-family: 'ONEMobilePOP', sans-serif; font-size: 35px; color: #7b61ff; }
+        .modal-score { font-size: 22px; font-weight: bold; color: #333; }
+        .modal-score span { color: #d84315; font-size: 32px; font-weight: 900; }
+        .modal-btn-group { display: flex; gap: 15px; margin-top: 10px; }
+        .modal-btn {
+            padding: 12px 24px; border-radius: 20px; font-size: 18px; font-weight: bold;
+            cursor: pointer; text-decoration: none; border: 3px solid; font-family: 'ONEMobilePOP';
+        }
+        .btn-retry { background-color: #7b61ff; color: #fff; border-color: #5e35b1; box-shadow: 0 4px 0 #5e35b1; }
+        .btn-retry:hover { background-color: #6549e0; }
+        .btn-home { background-color: #FFF; color: #7b61ff; border-color: #7b61ff; box-shadow: 0 4px 0 #dcd6ff; }
+        .btn-home:hover { background-color: #f3f0ff; }
+
+        /* 키보드 전체 외곽 하우징 */
+        .keyboard-housing { 
+            display: flex; gap: 28px; padding: 30px; background: #fffaf2; border-radius: 40px; 
+            border: 7px solid #e2d4c9; box-shadow: 11px 11px 0 #d5c6b9, 0 20px 30px rgba(0,0,0,0.08); 
+            align-items: flex-start; margin: 5px 0 25px 0; 
+        }
+
+        /* 공통 키 스타일 */
+        .key { 
+            width: 63px; height: 63px; border-radius: 16px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #333; 
+            border: 2px solid #a69c94; box-shadow: 3px 3px 0 #a69c94; box-sizing: border-box; background: #ffffff; 
+            position: relative; z-index: 1; transition: transform 0.1s, background-color 0.1s, color 0.1s, border-color 0.1s, box-shadow 0.1s; cursor: pointer; 
+        }
+        
+        .text-md { font-size: 14px; } .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
+
+        .ko, .en { transition: color 0.1s; display: none; pointer-events: none; }
+        .c-letter .ko, .c-letter .en { font-size: 24px; font-weight: 900; }
+
+        .keyboard-housing.lang-ko .ko { display: block; }
+        .keyboard-housing.lang-en .en { display: block; }
+        
+        .keyboard-housing.lang-ko .w-back .ko, .keyboard-housing.lang-en .w-back .en {
+            display: flex; flex-direction: row; gap: 5px; justify-content: center; align-items: center;
+        }
+        .keyboard-housing.lang-ko .led-text .ko, .keyboard-housing.lang-en .led-text .en { display: inline; }
+
+        /* 키가 눌렸을 때 효과 */
+        .key.pressed {
+            transform: scale(1.3); background-color: #fff176 !important; color: #d84315 !important; 
+            border-color: #ffd54f !important; box-shadow: 0 0 15px rgba(255, 235, 59, 0.8), 3px 3px 0 #ffca28 !important; z-index: 10; 
+        }
+        .key.pressed .ko, .key.pressed .en { color: #d84315 !important; }
+
+        /* 영역 배치 및 색상 */
+        .main-block { display: flex; flex-direction: column; width: 1029px; }
+        .f-row-group { display: flex; justify-content: space-between; margin-bottom: 24px; }
+        .keys-section { display: flex; flex-direction: column; gap: 7px; }
+        .row { display: flex; gap: 7px; height: 63px; }
+        .middle-block { display: grid; grid-template-columns: repeat(3, 63px); grid-template-rows: repeat(6, 63px); gap: 7px; margin-top: 17px; }
+        .right-block { display: grid; grid-template-columns: repeat(4, 63px); grid-template-rows: repeat(6, 63px); gap: 7px; margin-top: 17px; }
+        
+        .c-esc { background: #fca397; border-color: #cc7366; box-shadow: 3px 3px 0 #cc7366; color: #fff; }
+        .c-fkey { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; }
+        .c-numrow { background: #ffe082; border-color: #e6bb35; box-shadow: 3px 3px 0 #e6bb35; }
+        .c-letter { background: #b3e5fc; border-color: #62bde6; box-shadow: 3px 3px 0 #62bde6; }
+        .c-special { background: #d1c4e9; border-color: #9c84c7; box-shadow: 3px 3px 0 #9c84c7; }
+        .c-space { background: #ffe082; border-color: #e6bb35; box-shadow: 3px 3px 0 #e6bb35; color: #997a00; font-size: 22px; font-weight: 900; }
+        .c-arrow { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; font-size: 24px; }
+        .c-numpad { background: #f8bbd0; border-color: #d97396; box-shadow: 3px 3px 0 #d97396; }
+        .c-num-enter { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; }
+
+        .w-back { width: 120px; font-size: 15px; white-space: nowrap; }
+        .w-tab { width: 120px; font-size: 18px; } .w-caps { width: 120px; font-size: 18px; } .w-main-enter { width: 133px; font-size: 20px;}
+        .w-shift { width: 161px; font-size: 18px; } .w-ctrl-side { width: 77px; } .w-space { width: 525px; }
+        .h-double { grid-row: span 2; height: 133px; } .w-double { grid-column: span 2; width: 133px; }
+
+        .led-container { grid-column: span 4; display: flex; justify-content: space-around; align-items: center; font-size: 13px; color: #888; font-weight: bold; }
+        .led-dot { width: 10px; height: 10px; background: #d3d3d3; border: 1px solid #bbb; border-radius: 50%; margin-bottom: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); transition: all 0.2s; }
+        .led-dot.active { background: #00ff00; border-color: #00dd00; box-shadow: 0 0 8px #00ff00, inset 0 1px 2px rgba(255,255,255,0.8); transform: scale(1.1); }
+        .led-text.active { color: #4caf50; } 
+
+        .footer-section { margin-top: 10px; margin-bottom: 10px; color: #7b61ff; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP'; }
+    </style>
+</head>
+<body>
+
+    <a href="key_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <div class="header-section">
+        <div class="main-title">💜 타자 연습 💜</div>
+    </div>
+
+    <!-- 🎯 게임 영역 (타자 보드와 오른쪽 분리된 카드 사이드바) -->
+    <div class="game-container">
+        <!-- 타자 연습 게임판 영역 -->
+        <div class="typing-board">
+            <div id="target-word">사과</div>
+            <div id="guide-msg">안내 메시지 영역</div>
+            <input type="text" id="typing-input" placeholder="여기에 입력하세요!" autocomplete="off" autofocus>
+        </div>
+
+        <!-- 🏆 외부에 오른쪽에 따로 배치된 정보 카드 영역 -->
+        <div class="info-sidebar">
+            <div class="timer-card">
+                <div class="card-label">⏱️ 남은 시간</div>
+                <div class="card-value" id="timer">02:00</div>
+            </div>
+            <div class="score-card">
+                <div class="card-label">⭐ 현재 점수</div>
+                <div class="card-value"><span id="score">0</span>점</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🏆 3분 종료 후 뜨는 결과 팝업창 (모달) -->
+    <div id="result-modal">
+        <div class="modal-content">
+            <div class="modal-title">⏰ 타자 연습 종료!</div>
+            <div class="modal-score">3분 동안 획득한 점수는<br><span id="final-score">0</span>점 입니다! 🎉</div>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-retry" onclick="restartGame()">다시 도전</button>
+                <a href="key_menu.html" class="modal-btn btn-home">처음으로</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⌨️ 키보드 전체 박스 -->
+    <div class="keyboard-housing lang-ko" id="keyboard-housing">
+        
+        <!-- 1. 메인 키보드 -->
+        <div class="main-block">
+            <!-- Esc 및 F열 라인 -->
+            <div class="f-row-group">
+                <div class="key c-esc text-sm" id="key-Escape"><div class="ko">이에스씨</div><div class="en">Esc</div></div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey" id="key-F1">F1</div><div class="key c-fkey" id="key-F2">F2</div><div class="key c-fkey" id="key-F3">F3</div><div class="key c-fkey" id="key-F4">F4</div></div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey" id="key-F5">F5</div><div class="key c-fkey" id="key-F6">F6</div><div class="key c-fkey" id="key-F7">F7</div><div class="key c-fkey" id="key-F8">F8</div></div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey" id="key-F9">F9</div><div class="key c-fkey" id="key-F10">F10</div><div class="key c-fkey" id="key-F11">F11</div><div class="key c-fkey" id="key-F12">F12</div></div>
+            </div>
+
+            <!-- 숫자 및 문자 키 섹션 -->
+            <div class="keys-section">
+                <div class="row">
+                    <div class="key c-numrow" id="key-Backquote">~</div><div class="key c-numrow" id="key-Digit1">1</div><div class="key c-numrow" id="key-Digit2">2</div><div class="key c-numrow" id="key-Digit3">3</div><div class="key c-numrow" id="key-Digit4">4</div><div class="key c-numrow" id="key-Digit5">5</div><div class="key c-numrow" id="key-Digit6">6</div><div class="key c-numrow" id="key-Digit7">7</div><div class="key c-numrow" id="key-Digit8">8</div><div class="key c-numrow" id="key-Digit9">9</div><div class="key c-numrow" id="key-Digit0">0</div><div class="key c-numrow" id="key-Minus">-</div><div class="key c-numrow" id="key-Equal">=</div>
+                    <div class="key c-special w-back" id="key-Backspace"><div class="ko"><span>백스페이스</span><span>←</span></div><div class="en"><span>Backspace</span><span>←</span></div></div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-tab text-md" id="key-Tab"><div class="ko">탭 ⇥</div><div class="en">Tab ⇥</div></div>
+                    <div class="key c-letter" id="key-KeyQ"><div class="ko">ㅂ</div><div class="en">Q</div></div><div class="key c-letter" id="key-KeyW"><div class="ko">ㅈ</div><div class="en">W</div></div><div class="key c-letter" id="key-KeyE"><div class="ko">ㄷ</div><div class="en">E</div></div><div class="key c-letter" id="key-KeyR"><div class="ko">ㄱ</div><div class="en">R</div></div><div class="key c-letter" id="key-KeyT"><div class="ko">ㅅ</div><div class="en">T</div></div><div class="key c-letter" id="key-KeyY"><div class="ko">ㅛ</div><div class="en">Y</div></div><div class="key c-letter" id="key-KeyU"><div class="ko">ㅕ</div><div class="en">U</div></div><div class="key c-letter" id="key-KeyI"><div class="ko">ㅑ</div><div class="en">I</div></div><div class="key c-letter" id="key-KeyO"><div class="ko">ㅐ</div><div class="en">O</div></div><div class="key c-letter" id="key-KeyP"><div class="ko">ㅔ</div><div class="en">P</div></div><div class="key c-letter" id="key-BracketLeft">{</div><div class="key c-letter" id="key-BracketRight">}</div><div class="key c-letter" id="key-Backslash">|</div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-caps text-md" id="key-CapsLock"><div class="ko">캡스락</div><div class="en">Caps</div></div>
+                    <div class="key c-letter" id="key-KeyA"><div class="ko">ㅁ</div><div class="en">A</div></div><div class="key c-letter" id="key-KeyS"><div class="ko">ㄴ</div><div class="en">S</div></div><div class="key c-letter" id="key-KeyD"><div class="ko">ㅇ</div><div class="en">D</div></div><div class="key c-letter" id="key-KeyF"><div class="ko">ㄹ</div><div class="en">F</div></div><div class="key c-letter" id="key-KeyG"><div class="ko">ㅎ</div><div class="en">G</div></div><div class="key c-letter" id="key-KeyH"><div class="ko">ㅗ</div><div class="en">H</div></div><div class="key c-letter" id="key-KeyJ"><div class="ko">ㅓ</div><div class="en">J</div></div><div class="key c-letter" id="key-KeyK"><div class="ko">ㅏ</div><div class="en">K</div></div><div class="key c-letter" id="key-KeyL"><div class="ko">ㅣ</div><div class="en">L</div></div><div class="key c-letter" id="key-Semicolon">;</div><div class="key c-letter" id="key-Quote">'</div>
+                    <div class="key c-special w-main-enter" id="key-Enter"><div class="ko">엔터 ↵</div><div class="en">Enter ↵</div></div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-shift" id="key-ShiftLeft"><div class="ko">쉬프트</div><div class="en">Shift</div></div>
+                    <div class="key c-letter" id="key-KeyZ"><div class="ko">ㅋ</div><div class="en">Z</div></div><div class="key c-letter" id="key-KeyX"><div class="ko">ㅌ</div><div class="en">X</div></div><div class="key c-letter" id="key-KeyC"><div class="ko">ㅊ</div><div class="en">C</div></div><div class="key c-letter" id="key-KeyV"><div class="ko">ㅍ</div><div class="en">V</div></div><div class="key c-letter" id="key-KeyB"><div class="ko">ㅠ</div><div class="en">B</div></div><div class="key c-letter" id="key-KeyN"><div class="ko">ㅜ</div><div class="en">N</div></div><div class="key c-letter" id="key-KeyM"><div class="ko">ㅡ</div><div class="en">M</div></div><div class="key c-letter" id="key-Comma">&lt;</div><div class="key c-letter" id="key-Period">&gt;</div><div class="key c-letter" id="key-Slash">?</div>
+                    <div class="key c-special w-shift" id="key-ShiftRight"><div class="ko">쉬프트</div><div class="en">Shift</div></div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-ctrl-side text-md" id="key-ControlLeft"><div class="ko">컨트롤</div><div class="en">Ctrl</div></div>
+                    <div class="key c-special w-ctrl-side text-md" id="key-MetaLeft"><div class="ko">윈도우</div><div class="en">Win</div></div>
+                    <div class="key c-special w-ctrl-side text-md" id="key-AltLeft"><div class="ko">알트</div><div class="en">Alt</div></div>
+                    <div class="key c-space w-space" id="key-Space"><div class="ko">스페이스</div><div class="en">Space</div></div>
+                    <div class="key c-special w-ctrl-side text-md" id="key-HangulMode">한/영</div>
+                    <div class="key c-special w-ctrl-side text-md" id="key-AltRight"><div class="ko">알트</div><div class="en">Alt</div></div>
+                    <div class="key c-special w-ctrl-side text-md" id="key-ControlRight"><div class="ko">컨트롤</div><div class="en">Ctrl</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 중간 기능키 / 방향키 -->
+        <div class="middle-block">
+            <div></div><div></div><div></div>
+            <div class="key c-special text-md" style="grid-row: 2; grid-column: 1;" id="key-Insert"><div class="ko">인서트</div><div class="en">Ins</div></div>
+            <div class="key c-special text-md" style="grid-row: 2; grid-column: 2;" id="key-Home"><div class="ko">홈</div><div class="en">Home</div></div>
+            <div class="key c-special text-sm" style="grid-row: 2; grid-column: 3;" id="key-PageUp"><div class="ko">페이지업</div><div class="en">PgUp</div></div>
+            <div class="key c-special text-md" style="grid-row: 3; grid-column: 1;" id="key-Delete"><div class="ko">딜리트</div><div class="en">Del</div></div>
+            <div class="key c-special text-md" style="grid-row: 3; grid-column: 2;" id="key-End"><div class="ko">엔드</div><div class="en">End</div></div>
+            <div class="key c-special text-xs" style="grid-row: 3; grid-column: 3;" id="key-PageDown"><div class="ko">페이지다운</div><div class="en">PgDn</div></div>
+            <div></div><div></div><div></div>
+            <div class="key c-arrow" style="grid-row: 5; grid-column: 2;" id="key-ArrowUp">↑</div>
+            <div class="key c-arrow" style="grid-row: 6; grid-column: 1;" id="key-ArrowLeft">←</div>
+            <div class="key c-arrow" style="grid-row: 6; grid-column: 2;" id="key-ArrowDown">↓</div>
+            <div class="key c-arrow" style="grid-row: 6; grid-column: 3;" id="key-ArrowRight">→</div>
+        </div>
+
+        <!-- 3. 오른쪽 숫자 패드 -->
+        <div class="right-block">
+            <div class="led-container" style="grid-row: 1;">
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div id="led-num-dot" class="led-dot"></div><span id="led-num-text" class="led-text"><span class="ko">숫자</span><span class="en">Num</span></span></div>
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div id="led-caps-dot" class="led-dot"></div><span id="led-caps-text" class="led-text"><span class="ko">대문자</span><span class="en">Caps</span></span></div>
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div id="led-scroll-dot" class="led-dot"></div><span id="led-scroll-text" class="led-text"><span class="ko">스크롤</span><span class="en">Scroll</span></span></div>
+            </div>
+            
+            <div class="key c-numpad text-md" id="key-NumLock" style="grid-row: 2; grid-column: 1;"><div class="ko">넘락</div><div class="en">Num</div></div>
+            <div class="key c-numpad" id="key-NumpadDivide" style="grid-row: 2; grid-column: 2;">/</div>
+            <div class="key c-numpad" id="key-NumpadMultiply" style="grid-row: 2; grid-column: 3;">*</div>
+            <div class="key c-numpad" id="key-NumpadSubtract" style="grid-row: 2; grid-column: 4;">-</div>
+            <div class="key c-numpad" id="key-Numpad7" style="grid-row: 3; grid-column: 1;">7</div>
+            <div class="key c-numpad" id="key-Numpad8" style="grid-row: 3; grid-column: 2;">8</div>
+            <div class="key c-numpad" id="key-Numpad9" style="grid-row: 3; grid-column: 3;">9</div>
+            <div class="key c-numpad h-double" id="key-NumpadAdd" style="grid-row: 3 / span 2; grid-column: 4;">+</div>
+            <div class="key c-numpad" id="key-Numpad4" style="grid-row: 4; grid-column: 1;">4</div>
+            <div class="key c-numpad" id="key-Numpad5" style="grid-row: 4; grid-column: 2;">5</div>
+            <div class="key c-numpad" id="key-Numpad6" style="grid-row: 4; grid-column: 3;">6</div>
+            <div class="key c-numpad" id="key-Numpad1" style="grid-row: 5; grid-column: 1;">1</div>
+            <div class="key c-numpad" id="key-Numpad2" style="grid-row: 5; grid-column: 2;">2</div>
+            <div class="key c-numpad" id="key-Numpad3" style="grid-row: 5; grid-column: 3;">3</div>
+            <div class="key c-num-enter h-double text-md" id="key-NumpadEnter" style="grid-row: 5 / span 2; grid-column: 4;"><div class="ko">엔터</div><div class="en">Enter</div></div>
+            <div class="key c-numpad w-double" id="key-Numpad0" style="grid-row: 6; grid-column: 1 / span 2;">0</div>
+            <div class="key c-numpad" id="key-NumpadDecimal" style="grid-row: 6; grid-column: 3;">.</div>
+        </div>
+    </div>
+
+    <!-- 📌 하단 푸터 -->
+    <footer class="footer-section">
+        제작 : 김정이 선생님 💕 | © 2026 Coding Playground
+    </footer>
+
+    <script>
+        const wordList = [
+            '사과', '나비', '나무', '우유', '모자', '바지', '치즈', '포도', 
+            '피자', '오리', '구두', '바다', '하늘', '구름', '가지', '아이', 
+            '거미', '기차', '하마', '가구', '나사', '다리', '마술', '비누', 
+            '사자', '우산', '피리', '호수', '딸기', '참외', '수박', '토마토', 
+            '참새', '고양이', '강아지', '사탕', '초코', '과자', '인형',
+            '빵', '짜장', '토끼', '까치', '삐약이'
+        ];
+        
+        let currentScore = 0;
+        let isComposing = false;
+        let timeLeft = 120; // 2분 = 120초
+        let timerInterval = null;
+        let isPlaying = true; // 게임 진행 여부
+        
+        const targetWordElement = document.getElementById('target-word');
+        const typingInput = document.getElementById('typing-input');
+        const scoreElement = document.getElementById('score');
+        const guideMsgElement = document.getElementById('guide-msg');
+        const timerElement = document.getElementById('timer');
+        const resultModal = document.getElementById('result-modal');
+        const finalScoreElement = document.getElementById('final-score');
+
+        const specificGuideMap = {
+            '빵': "💡 'ㅃ' 은 쉬프트를 누른 상태로 'ㅂ'을 누르세요!",
+            '삐약이': "💡 'ㅃ' 은 쉬프트를 누른 상태로 'ㅂ'을 누르세요!",
+            '딸기': "💡 'ㄸ' 은 쉬프트를 누른 상태로 'ㄷ'을 누르세요!",
+            '까치': "💡 'ㄲ' 은 쉬프트를 누른 상태로 'ㄱ'을 누르세요!",
+            '짜장': "💡 'ㅉ' 은 쉬프트를 누른 상태로 'ㅈ'을 누르세요!"
+        };
+
+        function updateGuideMessage(word) {
+            if (specificGuideMap[word]) {
+                guideMsgElement.innerText = specificGuideMap[word];
+                guideMsgElement.style.visibility = "visible";
+            } else {
+                guideMsgElement.innerText = "";
+                guideMsgElement.style.visibility = "hidden";
+            }
+        }
+
+        function getRandomWord() {
+            const randomIndex = Math.floor(Math.random() * wordList.length);
+            return wordList[randomIndex];
+        }
+
+        function setNewWord() {
+            if (!isPlaying) return;
+            const newWord = getRandomWord();
+            targetWordElement.innerText = newWord;
+            targetWordElement.classList.remove('correct-effect');
+            updateGuideMessage(newWord);
+        }
+
+        // 💡 3분 타이머 시작 함수
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 120;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // 💡 게임 종료 함수 (팝업 띄우기)
+        function endGame() {
+            isPlaying = false;
+            typingInput.disabled = true; // 입력창 잠금
+            finalScoreElement.innerText = currentScore;
+            resultModal.style.display = "flex"; // 팝업창 띄우기
+        }
+
+        // 💡 다시 도전 버튼 함수
+        window.restartGame = function() {
+            currentScore = 0;
+            scoreElement.innerText = currentScore;
+            isPlaying = true;
+            typingInput.disabled = false;
+            resultModal.style.display = "none"; // 팝업창 숨기기
+            typingInput.value = '';
+            typingInput.focus();
+            setNewWord();
+            startTimer();
+        }
+
+        typingInput.addEventListener('compositionstart', function() {
+            if (!isPlaying) return;
+            isComposing = true;
+        });
+
+        typingInput.addEventListener('compositionend', function(e) {
+            if (!isPlaying) return;
+            isComposing = false;
+            checkAndClear(e.target.value);
+        });
+
+        typingInput.addEventListener('input', function(e) {
+            if (!isPlaying) return;
+            if (!isComposing) {
+                checkAndClear(e.target.value);
+            }
+        });
+
+        function checkAndClear(currentVal) {
+            if (!isPlaying) return;
+            const targetText = targetWordElement.innerText;
+            if (currentVal.trim() === targetText) {
+                currentScore += 10;
+                scoreElement.innerText = currentScore;
+                
+                typingInput.value = '';
+                isComposing = false;
+                
+                targetWordElement.classList.add('correct-effect');
+                setTimeout(setNewWord, 300);
+            }
+        }
+
+        // 최초 실행 시 게임 시작
+        setNewWord();
+        startTimer();
+
+        // === 키보드 애니메이션 및 토글 로직 ===
+        const keyMap = {
+            'AltRight': 'HangulMode',       
+            'Lang1': 'HangulMode',          
+            'HangulMode': 'HangulMode',     
+            'Hanja': 'AltRight',            
+            'Lang2': 'AltRight',            
+            'ControlRight': 'ControlRight', 
+            'MetaRight': 'MetaLeft'         
+        };
+
+        let isKoreanMode = true;
+        const keyboardHousing = document.getElementById('keyboard-housing');
+
+        function toggleLangMode() {
+            isKoreanMode = !isKoreanMode;
+            if(isKoreanMode) {
+                keyboardHousing.classList.add('lang-ko');
+                keyboardHousing.classList.remove('lang-en');
+            } else {
+                keyboardHousing.classList.add('lang-en');
+                keyboardHousing.classList.remove('lang-ko');
+            }
+        }
+
+        document.getElementById('key-HangulMode').addEventListener('click', function() {
+            toggleLangMode();
+            typingInput.focus();
+        });
+
+        function getExactKeyCode(event) {
+            let code = event.code;
+            if (!code || code === 'Shift' || code === 'Control' || code === 'Alt') {
+                if (event.key === 'Shift') code = (event.location === 2) ? 'ShiftRight' : 'ShiftLeft';
+                else if (event.key === 'Control') code = (event.location === 2) ? 'ControlRight' : 'ControlLeft';
+                else if (event.key === 'Alt') code = (event.location === 2) ? 'AltRight' : 'AltLeft';
+            }
+            return keyMap[code] || code;
+        }
+
+        function updateLEDs(event) {
+            if (event.getModifierState) {
+                const isNumOn = event.getModifierState('NumLock');
+                const isCapsOn = event.getModifierState('CapsLock');
+                const isScrollOn = event.getModifierState('ScrollLock');
+
+                document.getElementById('led-num-dot').classList.toggle('active', isNumOn);
+                document.getElementById('led-caps-dot').classList.toggle('active', isCapsOn);
+                document.getElementById('led-scroll-dot').classList.toggle('active', isScrollOn);
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            let code = getExactKeyCode(event);
+            if (code === 'HangulMode' && !event.repeat) {
+                toggleLangMode();
+            }
+
+            var keyId = 'key-' + code;
+            var keyElement = document.getElementById(keyId);
+
+            if (!keyElement && event.key.match(/^F\d+$/)) {
+                keyId = 'key-' + event.key;
+                keyElement = document.getElementById(keyId);
+            }
+
+            if (keyElement) {
+                keyElement.classList.add('pressed');
+            }
+
+            updateLEDs(event);
+        });
+
+        document.addEventListener('keyup', function(event) {
+            let code = getExactKeyCode(event);
+            var keyId = 'key-' + code;
+            var keyElement = document.getElementById(keyId);
+
+            if (!keyElement && event.key.match(/^F\d+$/)) {
+                keyId = 'key-' + event.key;
+                keyElement = document.getElementById(keyId);
+            }
+
+            if (keyElement) {
+                keyElement.classList.remove('pressed');
+            }
+
+            updateLEDs(event);
+        });
+
+        window.addEventListener('blur', function() {
+            var pressedKeys = document.querySelectorAll('.key.pressed');
+            pressedKeys.forEach(function(key) {
+                key.classList.remove('pressed');
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            updateLEDs(event);
+        }, { once: true });
+    </script>
+</body>
+</html>

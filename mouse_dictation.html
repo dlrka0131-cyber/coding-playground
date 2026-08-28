@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖱️ 1학년 마우스 받아쓰기 - 무적 버전 🖱️</title>
+    <style>
+        /* 1. 기본 설정 및 폰트 */
+        @font-face {
+            font-family: 'ONEMobilePOP';
+            src: url('ONE Mobile POP.ttf') format('truetype');
+        }
+        @import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
+
+        body {
+            font-family: 'ONEMobilePOP', sans-serif;
+            margin: 0; overflow: hidden; user-select: none;
+            background-color: #aee2ff;
+            background-image: radial-gradient(#fff 10%, transparent 10%);
+            background-size: 30px 30px;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+
+        /* 2. 게임 보드 (850px 확대 버전) */
+        #game-board {
+            background: linear-gradient(to bottom, #fffdf7 55%, #fce38a 55%);
+            border-radius: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            width: 850px; height: 720px;
+            position: relative; display: flex; flex-direction: column; align-items: center;
+            padding-top: 50px; box-sizing: border-box;
+            border: 8px solid #fff;
+        }
+
+        #question-badge {
+            position: absolute; top: -30px; left: 40px;
+            background-color: #4a4ed4; color: #ffdd59;
+            font-size: 28px; padding: 10px 40px; border-radius: 40px;
+            border: 6px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #title-banner {
+            background-color: #21bfa2; color: white; font-size: 28px;
+            padding: 15px 50px; border-radius: 40px; margin-bottom: 30px;
+            box-shadow: 0 8px 0 #128c76; display: flex; align-items: center; gap: 15px;
+        }
+
+        #image-frame {
+            background-color: white; border: 6px dashed #fa983a; border-radius: 40px;
+            width: 260px; height: 260px; display: flex; justify-content: center; align-items: center;
+            font-size: 160px; font-family: 'Tossface', sans-serif;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* 3. 드롭 영역 (아이들이 글자를 놓는 곳) */
+        #yellow-zone {
+            width: 100%; flex-grow: 1; display: flex; justify-content: center;
+            align-items: center; gap: 35px;
+        }
+
+        .drop-box {
+            background-color: white; border: 6px dashed #f6b93b; border-radius: 35px;
+            width: 160px; height: 160px; display: flex; justify-content: center;
+            align-items: center; font-size: 100px; color: #2d3436;
+            transition: all 0.2s; position: relative;
+        }
+
+        .drop-box.drag-over { background-color: #fff9c4; border-color: #fa8231; transform: scale(1.1); }
+
+        /* 4. 글자 스타일 */
+        #letters-pool { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+        .letter {
+            position: absolute; font-size: 110px; cursor: grab;
+            text-shadow: 4px 4px 0px white, -4px -4px 0px white;
+            pointer-events: auto; transition: transform 0.1s; z-index: 10;
+        }
+        .letter:active { cursor: grabbing; transform: scale(1.1) rotate(-5deg); z-index: 100; }
+        
+        /* 칸 안에 들어간 글자는 다른 글자가 놓일 때 방해되지 않게 설정 */
+        .drop-box .letter { position: static; cursor: pointer; pointer-events: auto; }
+
+        /* 5. 오버레이 (시작/결과) */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 500; border-radius: 40px;
+        }
+
+        .overlay h2 { font-size: 60px; color: #ff9f43; margin-bottom: 20px; }
+        .overlay p { font-size: 32px; color: #576574; margin-bottom: 40px; text-align: center; }
+
+        /* 예시 애니메이션 */
+        .example-zone {
+            display: flex; align-items: center; gap: 30px; background-color: #f1f2f6;
+            border: 5px dashed #ff9f43; border-radius: 40px; padding: 30px 60px; margin-bottom: 40px;
+        }
+        .ex-letter { font-size: 80px; background: white; border-radius: 20px; padding: 10px 30px; box-shadow: 0 10px 0 #ced6e0; color: #eb3b5a; }
+        .ex-arrow { font-size: 70px; font-family: 'Tossface', sans-serif; animation: dragMoving 2s infinite; }
+        .ex-box { width: 120px; height: 120px; border: 6px dashed #f6b93b; background: white; border-radius: 25px; }
+
+        @keyframes dragMoving {
+            0%, 100% { transform: translateX(-30px); opacity: 0.3; }
+            50% { transform: translateX(40px); opacity: 1; }
+        }
+
+        /* 6. 버튼 */
+        .btn-group { display: flex; gap: 25px; }
+        .action-button {
+            background-color: #48dbfb; color: #222f3e; border: none; border-radius: 50px;
+            padding: 20px 60px; font-size: 40px; font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer; box-shadow: 0 10px 0 #0abde3; transition: all 0.1s;
+        }
+        .action-button:active { transform: translateY(10px); box-shadow: none; }
+        
+        .home-btn { background-color: #ff9ff3; box-shadow: 0 10px 0 #f368e0; display: none; }
+
+        /* 색상 클래스 */
+        .color-1 { color: #eb3b5a; } .color-2 { color: #3867d6; } .color-3 { color: #20bf6b; }
+        .color-4 { color: #fa8231; } .color-5 { color: #8854d0; } .color-6 { color: #0fb9b1; }
+    </style>
+</head>
+<body>
+
+    <div id="letters-pool"></div>
+
+    <div id="game-board">
+        <div id="question-badge">문제 01</div>
+
+        <div id="start-overlay" class="overlay">
+            <h2>마우스 쭈~욱 끌기 연습 🖱️</h2>
+            <p>글자를 누른 채로 빈칸으로 끌고 가세요!</p>
+            <div class="example-zone">
+                <div class="ex-letter">오</div>
+                <div class="ex-arrow">👉</div>
+                <div class="ex-box"></div>
+            </div>
+            <button class="action-button" onclick="startGame()">▶ 시작!</button>
+        </div>
+
+        <div id="result-overlay" class="overlay" style="display: none;">
+            <h2 id="result-title">참 잘했어요! 👏</h2>
+            <p id="result-desc">드래그 앤 드롭을 완벽하게 해냈어요!</p>
+            <div class="btn-group">
+                <button class="action-button" id="next-btn" onclick="nextStage()">다음 문제 ▶</button>
+                <button class="action-button home-btn" id="home-btn" onclick="location.href='coding_mouseplay.html'">🏠 홈으로</button>
+            </div>
+        </div>
+
+        <div id="title-banner"><span>👇</span> 마우스로 글자를 쏙! 끌어오세요 <span>👇</span></div>
+        <div id="image-frame">🦆</div>
+        <div id="yellow-zone"></div>
+    </div>
+
+    <script>
+        const imageFrame = document.getElementById('image-frame');
+        const yellowZone = document.getElementById('yellow-zone');
+        const lettersPool = document.getElementById('letters-pool');
+        const startOverlay = document.getElementById('start-overlay');
+        const resultOverlay = document.getElementById('result-overlay');
+        const nextBtn = document.getElementById('next-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const questionBadge = document.getElementById('question-badge');
+
+        const stages = [
+            { emoji: '🦆', word: '오리', pool: ['오', '리', '가', '사', '우', '비'] },
+            { emoji: '🍎', word: '사과', pool: ['사', '과', '파', '고', '바', '포'] },
+            { emoji: '🍇', word: '포도', pool: ['포', '도', '보', '모', '고', '파'] },
+            { emoji: '🐰', word: '토끼', pool: ['토', '끼', '포', '띠', '도', '기'] },
+            { emoji: '🍓', word: '딸기', pool: ['딸', '기', '달', '치', '탈', '디'] },
+            { emoji: '🦁', word: '사자', pool: ['사', '자', '샤', '차', '수', '지'] },
+            { emoji: '🚂', word: '기차', pool: ['기', '차', '치', '카', '미', '타'] },
+            { emoji: '🍕', word: '피자', pool: ['피', '자', '파', '지', '바', '차'] },
+            { emoji: '🌳', word: '나무', pool: ['나', '무', '마', '누', '다', '모'] },
+            { emoji: '🍬', word: '사탕', pool: ['사', '탕', '샤', '방', '타', '통'] }
+        ];
+
+        let currentStageIndex = 0;
+        let currentWord = "";
+        let colorClasses = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6'];
+        let placedRects = [];
+        let dragFlag = false;
+        let draggedElementId = null;
+
+        function playSuccessSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                function playNote(freq, startTime, duration) {
+                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime); gain.gain.linearRampToValueAtTime(0.2, startTime + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(startTime); osc.stop(startTime + duration);
+                }
+                const now = audioCtx.currentTime;
+                playNote(523.25, now, 0.3); playNote(659.25, now + 0.15, 0.3);
+                playNote(783.99, now + 0.3, 0.3); playNote(1046.50, now + 0.45, 0.8);
+            } catch (e) {}
+        }
+
+        function startGame() {
+            currentStageIndex = 0;
+            startOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none';
+            resetResultUI();
+            loadStage();
+        }
+
+        function resetResultUI() {
+            document.getElementById('result-title').textContent = "참 잘했어요! 👏";
+            document.getElementById('result-desc').textContent = "드래그 앤 드롭을 완벽하게 해냈어요!";
+            nextBtn.textContent = "다음 문제 ▶";
+            homeBtn.style.display = "none";
+        }
+
+        function nextStage() {
+            if (currentStageIndex === -1) { startGame(); return; }
+            currentStageIndex++;
+            if (currentStageIndex >= stages.length) {
+                document.getElementById('result-title').textContent = "받아쓰기 왕! 👑";
+                document.getElementById('result-desc').textContent = "10문제를 모두 풀었어요!\n이제 마우스 끌기 고수네요!";
+                nextBtn.textContent = "처음부터 다시하기";
+                homeBtn.style.display = "inline-block";
+                currentStageIndex = -1;
+            } else {
+                resultOverlay.style.display = 'none';
+                loadStage();
+            }
+        }
+
+        function loadStage() {
+            placedRects = [];
+            const stageData = stages[currentStageIndex];
+            currentWord = stageData.word;
+            questionBadge.textContent = "문제 " + ((currentStageIndex + 1) < 10 ? "0" + (currentStageIndex + 1) : (currentStageIndex + 1));
+            imageFrame.textContent = stageData.emoji;
+            
+            yellowZone.innerHTML = '';
+            for(let i=0; i<currentWord.length; i++) {
+                const box = document.createElement('div');
+                box.className = 'drop-box';
+                box.addEventListener('dragover', e => e.preventDefault());
+                box.addEventListener('dragenter', e => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); });
+                box.addEventListener('dragleave', e => e.currentTarget.classList.remove('drag-over'));
+                box.addEventListener('drop', handleDrop);
+                yellowZone.appendChild(box);
+            }
+
+            lettersPool.innerHTML = '';
+            [...stageData.pool].sort(() => Math.random() - 0.5).forEach((char, index) => {
+                const letterEl = createLetter(char, index);
+                placeLetterRandomly(letterEl);
+                lettersPool.appendChild(letterEl);
+            });
+        }
+
+        function createLetter(char, idSuffix) {
+            const el = document.createElement('div');
+            el.className = `letter ${colorClasses[idSuffix % colorClasses.length]}`;
+            el.textContent = char; el.draggable = true; el.id = 'letter-' + idSuffix + '-' + Date.now();
+            
+            el.addEventListener('dragstart', e => { 
+                dragFlag = true; draggedElementId = e.target.id;
+                e.dataTransfer.setData('text/plain', e.target.id);
+            });
+            el.addEventListener('dragend', () => setTimeout(() => dragFlag = false, 100));
+            el.addEventListener('click', e => {
+                if (dragFlag) return;
+                if (e.target.parentElement.classList.contains('drop-box')) {
+                    returnLetterToPool(e.target);
+                    checkWinCondition();
+                }
+            });
+            return el;
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropBox = e.currentTarget;
+            dropBox.classList.remove('drag-over');
+            const id = e.dataTransfer.getData('text/plain') || draggedElementId;
+            const draggedElement = document.getElementById(id);
+            
+            if (draggedElement) {
+                if (draggedElement.parentElement === dropBox) return; 
+                
+                if (dropBox.children.length > 0) {
+                    returnLetterToPool(dropBox.children[0]);
+                }
+                
+                draggedElement.style.position = 'static';
+                dropBox.appendChild(draggedElement);
+                checkWinCondition();
+            }
+        }
+
+        function returnLetterToPool(letterEl) {
+            const char = letterEl.textContent;
+            const idSuffix = Math.floor(Math.random() * 100);
+            const newLetter = createLetter(char, idSuffix);
+            placeLetterRandomly(newLetter);
+            lettersPool.appendChild(newLetter);
+            letterEl.remove();
+        }
+
+        function placeLetterRandomly(el) {
+            const screenW = window.innerWidth; const screenH = window.innerHeight;
+            const letterSize = 130; const boardWidth = 850;
+            const boardXMin = (screenW / 2) - (boardWidth / 2) - 40;
+            const boardXMax = (screenW / 2) + (boardWidth / 2) + 40;
+
+            let placed = false; let attempts = 0;
+            while (!placed && attempts < 50) {
+                attempts++;
+                let isLeft = Math.random() > 0.5;
+                let rx = isLeft ? Math.random() * (boardXMin - letterSize - 20) + 20 
+                                : boardXMax + Math.random() * (screenW - boardXMax - letterSize - 20);
+                let ry = Math.random() * (screenH - letterSize - 100) + 50;
+
+                let collision = placedRects.some(r => rx < r.x + r.w && rx + letterSize > r.x && ry < r.y + r.h && ry + letterSize > r.y);
+                if (!collision) {
+                    placed = true;
+                    placedRects.push({x: rx, y: ry, w: letterSize, h: letterSize});
+                    el.style.left = rx + 'px'; el.style.top = ry + 'px';
+                }
+            }
+            if (!placed) { el.style.left = '20px'; el.style.top = '100px'; }
+        }
+
+        function checkWinCondition() {
+            const boxes = yellowZone.querySelectorAll('.drop-box');
+            let currentSpelling = "";
+            boxes.forEach(box => {
+                currentSpelling += box.children.length > 0 ? box.children[0].textContent : " ";
+            });
+            if (currentSpelling === currentWord) {
+                setTimeout(() => { playSuccessSound(); resultOverlay.style.display = 'flex'; }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

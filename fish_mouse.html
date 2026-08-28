@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바삭바삭 붕어빵 우클릭 복사 게임</title>
+    <style>
+        /* 🐟 통통 튀고 귀여운 ONE 모바일 POP 웹폰트 적용 */
+        @font-face {
+            font-family: 'ONE-Mobile-POP';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ⚠️ 모든 요소의 글꼴을 통일 */
+        body, button, h1, h2, h3, p, div, span, a, b {
+            font-family: 'ONE-Mobile-POP', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FDFBF7 0%, #EFE5D9 100%);
+            color: #5C3D2E; 
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            user-select: none; /* 글자 드래그 방지 */
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 🏠 왼쪽 상단 처음으로 버튼 스타일 */
+        .home-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background-color: #FFF;
+            color: #D35400;
+            padding: 10px 22px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 22px;
+            box-shadow: 0 6px 0 #CD853F;
+            border: 3px solid #D35400;
+            transition: all 0.1s;
+            z-index: 999;
+        }
+        .home-btn:hover { background-color: #FDF5E6; }
+        .home-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #CD853F; }
+
+        h1 { 
+            color: #D35400; 
+            margin-bottom: 5px; 
+            font-size: 50px; 
+            text-shadow: 2px 2px 0px #FFF, 4px 4px 10px rgba(211, 84, 0, 0.2); 
+            letter-spacing: 2px;
+        }
+        .info { 
+            font-size: 26px; 
+            margin-bottom: 25px; 
+            color: #8B5A2B; 
+            text-shadow: 1px 1px 0px #FFF;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* ① 왼쪽: 무쇠 붕어빵 불판 틀 */
+        .copy-zone {
+            background: #F5E6D3;
+            border: 6px dashed #B07D62;
+            border-radius: 35px;
+            padding: 20px;
+            width: 360px;
+            height: 460px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(139, 90, 43, 0.15);
+            transition: all 0.3s;
+        }
+        .copy-zone h3 { font-size: 32px; margin: 0 0 10px 0; color: #8B4513; }
+        
+        /* 🐟 황금 붕어빵 둥실둥실 애니메이션 */
+        .fish-source {
+            font-size: 140px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            animation: float 2.5s ease-in-out infinite;
+        }
+        .fish-source.selected {
+            background-color: rgba(230, 126, 34, 0.2);
+            box-shadow: 0 0 35px #E67E22;
+            animation: none;
+            transform: scale(1.1);
+        }
+
+        /* 평소 복사 대기 상태의 안내 문구 (물고기를 향해 손가락이 위로!) */
+        #copy-status-text {
+            font-size: 32px;
+            color: #BA9B8A;
+            height: 65px;
+            line-height: 65px;
+            margin-top: 15px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            border-radius: 20px;
+            background: transparent;
+        }
+
+        /* 🧡 복사 완료 시 눈에 확 띄는 초대형 주황 마법 배너 */
+        #copy-status-text.complete {
+            background-color: #E65100; 
+            color: #FFF;
+            font-size: 38px; 
+            font-weight: bold;
+            box-shadow: 0 12px 25px rgba(230, 81, 0, 0.5);
+            animation: popBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border: 3px solid #FFF;
+        }
+
+        /* ② 오른쪽: 따끈따끈 종이 붕어빵 봉투 구역 */
+        .paste-zone {
+            position: relative;
+            background: #F7E7CE; 
+            outline: 6px solid #CD853F; 
+            border-radius: 35px;
+            width: 600px;
+            height: 460px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(205, 133, 63, 0.15);
+            transition: all 0.3s;
+        }
+        .paste-zone h3 {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            font-size: 32px;
+            color: #8B5A2B;
+            margin: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .bag-bg {
+            font-size: 240px;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            pointer-events: none;
+            animation: floatBag 3s ease-in-out infinite;
+        }
+
+        /* 복사되어 나타날 붕어빵 */
+        .pasted-fish {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            transform: translate(-50%, -50%);
+            animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        /* 🎯 마법 우클릭 메뉴 창 */
+        .custom-context-menu {
+            position: fixed;
+            display: none;
+            z-index: 1000;
+            background: #FFFBF5;
+            border: 5px solid #8B4513; 
+            border-radius: 25px;
+            padding: 12px;
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.25);
+            animation: menuPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .menu-btn {
+            display: block;
+            width: 240px;
+            font-size: 32px;
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 18px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.1s;
+        }
+        /* 단팥 팥소 색상 */
+        .menu-btn.copy { background: #7A2214; box-shadow: 0 6px #54160C; }
+        .menu-btn.copy:hover { background: #912E1F; }
+        /* 슈크림 색상 */
+        .menu-btn.paste { background: #E5A93C; box-shadow: 0 6px #B58124; }
+        .menu-btn.paste:hover { background: #F3B952; }
+        .menu-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        /* 하단 메시지 및 점수판 */
+        #status-message {
+            margin-top: 30px;
+            font-size: 40px;
+            color: #5D4037; 
+            height: 60px; /* 애니메이션을 위해 여백 확보 */
+            transition: all 0.1s;
+            text-shadow: 1px 1px 0px #FFF;
+        }
+        
+        /* 🔥 강조용 텍스트 애니메이션 (우클릭 유도) */
+        .highlight-text {
+            color: #FF0000;
+            font-size: 48px;
+            display: inline-block;
+            animation: textPop 0.8s infinite alternate;
+        }
+        @keyframes textPop {
+            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+            100% { transform: scale(1.15); color: #FF0000; text-shadow: 0 0 15px #FFD700, 0 0 20px #FF4500; }
+        }
+
+        #score-board {
+            font-size: 38px;
+            margin-top: 15px;
+            color: #8B4513;
+        }
+
+        /* 🎉 대성공 팝업 */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(253, 251, 247, 0.96); 
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .success-content {
+            background: #FFF;
+            border: 8px solid #FF9800;
+            border-radius: 40px;
+            padding: 50px 70px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(230, 126, 34, 0.3);
+            animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-content h2 { font-size: 75px; color: #D35400; margin: 0 0 10px 0; }
+        .success-content p { font-size: 36px; color: #5D4037; margin-bottom: 40px; line-height: 1.6; }
+        
+        .restart-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 34px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px #1B5E20;
+            transition: all 0.1s;
+        }
+        .restart-btn:hover { background: #388E3C; }
+        .restart-btn:active { transform: translateY(6px); box-shadow: 0 2px #1B5E20; }
+
+        /* ====== 시각적 제한 및 강조 효과 ====== */
+        .disabled-zone {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(40%);
+        }
+
+        @keyframes pulseBorderLeft {
+            0% { border-color: #B07D62; box-shadow: 0 15px 35px rgba(139, 90, 43, 0.15); }
+            50% { border-color: #FF4500; box-shadow: 0 0 35px rgba(255, 69, 0, 0.9); }
+            100% { border-color: #B07D62; box-shadow: 0 15px 35px rgba(139, 90, 43, 0.15); }
+        }
+        .active-pulse-left {
+            animation: pulseBorderLeft 1.2s infinite !important;
+            border-color: #FF4500 !important;
+        }
+
+        @keyframes pulseBorderRight {
+            0% { outline-color: #CD853F; box-shadow: 0 15px 35px rgba(205, 133, 63, 0.15); }
+            50% { outline-color: #FF4500; box-shadow: 0 0 40px rgba(255, 69, 0, 0.9); }
+            100% { outline-color: #CD853F; box-shadow: 0 15px 35px rgba(205, 133, 63, 0.15); }
+        }
+        .active-pulse-right {
+            animation: pulseBorderRight 1.2s infinite !important;
+            outline: 6px solid #FF4500 !important;
+        }
+
+        /* ====== 기존 애니메이션 효과 ====== */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes floatBag {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            50% { transform: translate(-50%, -52%) scale(1.03) rotate(-2deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes popBounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes menuPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes bounce {
+            0% { transform: scale(0.3); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="copy_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <h1>🐟 바삭바삭 붕어빵 복사 대작전! 🐟</h1>
+    <p class="info">오른쪽 버튼(우클릭)을 연습하는 재밌는 놀이공장</p>
+
+    <div class="game-container">
+        <!-- 초기 상태: 왼쪽 구역 반짝임 -->
+        <div class="copy-zone active-pulse-left" id="zone-left">
+            <h3>① 여기서 우클릭!</h3>
+            <div id="fish" class="fish-source">🐟</div>
+            <!-- 손가락이 위쪽 물고기를 가리키도록 변경 -->
+            <div id="copy-status-text">👆 마우스 오른쪽 클릭!</div>
+        </div>
+
+        <!-- 초기 상태: 오른쪽 구역 비활성화 -->
+        <div class="paste-zone disabled-zone" id="zone-right">
+            <h3>② 여기서 우클릭!</h3>
+            <div class="bag-bg">🛍️</div>
+        </div>
+    </div>
+
+    <div id="custom-menu" class="custom-context-menu">
+        <button id="menu-copy-btn" class="menu-btn copy">📥 복사하기</button>
+        <button id="menu-paste-btn" class="menu-btn paste">📤 붙여넣기</button>
+    </div>
+
+    <!-- 우클릭 안내 문구의 파격적인 강조 애니메이션 추가 -->
+    <div id="status-message">👉 <b>①번 붕어빵</b> 위에서 <span class="highlight-text">오른쪽 클릭(우클릭)!</span> 👈</div>
+    
+    <div id="score-board">🛍️ 담은 붕어빵: <span id="count" style="color:#D35400; font-size:52px;">0</span> / 10 개</div>
+
+<div id="success-screen" class="success-overlay">
+    <div class="success-content">
+        <h2>🎉 붕어빵 장사 대성공! 🎉</h2>
+        <p style="font-size: 90px; margin: 15px 0;">🐟🥖🐟🥞🐟</p>
+        <p>마우스 오른쪽 버튼 사용법을 진짜 잘 배우기 완료!<br>최고의 붕어빵 요리사가 되었어요! 🌟</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <button class="restart-btn" onclick="resetGame()" style="width: 250px; height: 80px; padding: 0; display: flex; align-items: center; justify-content: center;">한 번 더 놀기 🔄</button>
+            <a href="copy_menu.html" style="background:#8B4513; color:white; text-decoration:none; width: 250px; height: 80px; font-size:34px; border-radius:20px; box-shadow:0 8px #5D4037; display: flex; align-items: center; justify-content: center;">🏠 처음으로</a>
+        </div>
+    </div>
+</div>
+
+    <script>
+        let isCopied = false;
+        let fishCount = 0;
+        let gameFinished = false;
+        
+        let clickX = 0;
+        let clickY = 0;
+
+        const zoneLeft = document.getElementById('zone-left');
+        const zoneRight = document.getElementById('zone-right');
+        const fish = document.getElementById('fish');
+        const customMenu = document.getElementById('custom-menu');
+        const menuCopyBtn = document.getElementById('menu-copy-btn');
+        const menuPasteBtn = document.getElementById('menu-paste-btn');
+        
+        const copyStatus = document.getElementById('copy-status-text');
+        const msg = document.getElementById('status-message');
+        const countTxt = document.getElementById('count');
+        const successScreen = document.getElementById('success-screen');
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 1. 왼쪽 틀 우클릭
+        zoneLeft.addEventListener('contextmenu', (e) => {
+            if(gameFinished) return;
+            e.preventDefault();
+            fish.classList.add('selected');
+            customMenu.style.left = e.clientX + 'px';
+            customMenu.style.top = e.clientY + 'px';
+            customMenu.style.display = 'block';
+            menuCopyBtn.style.display = 'block';
+            menuPasteBtn.style.display = 'none';
+            // 메뉴 팝업 후 클릭 유도
+            msg.innerHTML = "👉 팥죽색 <span class='highlight-text'>[📥 복사하기]</span> 왼쪽 클릭!";
+        });
+
+        // 2. [📥 복사하기] 정상 클릭
+        menuCopyBtn.addEventListener('click', () => {
+            isCopied = true;
+            
+            // 복사 완료 배너 시각 효과
+            copyStatus.innerText = "복사 완료! 👍";
+            copyStatus.classList.add('complete');
+            
+            // 붙여넣기 유도
+            msg.innerHTML = "👉 오른쪽 봉투에서 <span class='highlight-text'>오른쪽 클릭(우클릭)!</span> 👈";
+            customMenu.style.display = 'none';
+
+            // 왼쪽 반짝임 끄고, 오른쪽 활성화 및 반짝임 켜기
+            zoneLeft.classList.remove('active-pulse-left');
+            zoneRight.classList.remove('disabled-zone');
+            zoneRight.classList.add('active-pulse-right');
+        });
+
+        // 🛑 복사 메뉴 위에서 또 우클릭했을 때 경고
+        menuCopyBtn.addEventListener('contextmenu', (e) => {
+            e.preventDefault(); 
+            msg.innerHTML = "⚠️ 우클릭 노노! <b>[복사하기]</b>는 마우스 '왼쪽' 버튼 클릭!";
+        });
+
+        // 3. 오른쪽 봉투 우클릭
+        zoneRight.addEventListener('contextmenu', (e) => {
+            if(gameFinished) return;
+            e.preventDefault();
+            clickX = e.offsetX;
+            clickY = e.offsetY;
+            customMenu.style.left = e.clientX + 'px';
+            customMenu.style.top = e.clientY + 'px';
+            customMenu.style.display = 'block';
+            menuCopyBtn.style.display = 'none';
+            menuPasteBtn.style.display = 'block';
+            
+            if (isCopied) {
+                msg.innerHTML = "👉 황금색 <span class='highlight-text'>[📤 붙여넣기]</span> 왼쪽 클릭!";
+            } else {
+                msg.innerHTML = "⚠️ 왼쪽 붕어빵 위에서 <b>우클릭</b> 먼저 하세요!";
+            }
+        });
+
+        // 4. [📤 붙여넣기] 정상 클릭
+        menuPasteBtn.addEventListener('click', () => {
+            if (!isCopied) {
+                customMenu.style.display = 'none';
+                return;
+            }
+            const newFish = document.createElement('div');
+            newFish.className = 'pasted-fish';
+            newFish.innerText = '🐟';
+            newFish.style.left = clickX + 'px';
+            newFish.style.top = clickY + 'px';
+            zoneRight.appendChild(newFish);
+            
+            fishCount++;
+            countTxt.innerText = fishCount;
+            customMenu.style.display = 'none';
+            
+            if (fishCount >= 10) {
+                gameFinished = true;
+                zoneRight.classList.remove('active-pulse-right'); // 다 차면 반짝임 끄기
+                setTimeout(() => {
+                    successScreen.style.display = 'flex';
+                }, 200);
+            } else {
+                msg.innerHTML = "👉 잘했어요! 계속해서 봉투 안에서 <span class='highlight-text'>오른쪽 클릭!</span>";
+            }
+        });
+
+        // 🛑 붙여넣기 메뉴 위에서 또 우클릭했을 때 경고
+        menuPasteBtn.addEventListener('contextmenu', (e) => {
+            e.preventDefault(); 
+            msg.innerHTML = "⚠️ 우클릭 노노! <b>[붙여넣기]</b>는 마우스 '왼쪽' 버튼 클릭!";
+        });
+
+        document.addEventListener('click', (e) => {
+            if(e.target.classList.contains('menu-btn')) return;
+            customMenu.style.display = 'none';
+        });
+
+        // 리셋 함수
+        function resetGame() {
+            isCopied = false;
+            fishCount = 0;
+            gameFinished = false;
+            countTxt.innerText = '0';
+            successScreen.style.display = 'none';
+            fish.classList.remove('selected');
+            customMenu.style.display = 'none';
+            
+            // 리셋 시 복사 완료 주황색 상자 제거 및 텍스트 원복
+            copyStatus.innerText = "👆 마우스 오른쪽 클릭!";
+            copyStatus.classList.remove('complete');
+            
+            // 게임 초기화 시 구역 상태 원상복구
+            zoneRight.classList.add('disabled-zone');
+            zoneRight.classList.remove('active-pulse-right');
+            zoneLeft.classList.add('active-pulse-left');
+
+            // 초기 안내 문구 복구
+            msg.innerHTML = "👉 <b>①번 붕어빵</b> 위에서 <span class='highlight-text'>오른쪽 클릭(우클릭)!</span> 👈";
+            
+            const pastedFishes = document.querySelectorAll('.pasted-fish');
+            pastedFishes.forEach(el => el.remove());
+        }
+    </script>
+</body>
+</html>

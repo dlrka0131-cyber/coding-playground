@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>복사 붙여넣기 연습</title>
+    <style>
+        /* 폰트 파일 불러오기 */
+        @font-face { font-family: 'ONEMobilePOP'; src: url('ONE Mobile POP.ttf') format('truetype'); }
+        
+        body { 
+            background-color: #f0f8ff; 
+            color: #4a6fa5; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: 'ONEMobilePOP', sans-serif; 
+            position: relative; 
+        }
+        
+        /* 🏠 왼쪽 상단 처음으로 버튼 */
+        .home-btn {
+            position: absolute; 
+            top: 25px; 
+            left: 25px; 
+            background-color: #FFF;
+            color: #4a6fa5; 
+            padding: 20px 40px; 
+            border-radius: 30px;
+            text-decoration: none; 
+            font-size: 28px; 
+            font-weight: bold;
+            box-shadow: 0 6px 0 #ccdceb; 
+            border: 4px solid #4a6fa5; 
+            z-index: 999;
+            font-family: 'ONEMobilePOP', sans-serif;
+        }
+
+        /* 큰 제목 섹션 */
+        .header-section { text-align: center; margin-top: 80px; }
+        .main-title { font-size: 60px; color: #4a6fa5; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
+        .sub-desc { font-size: 26px; background: white; padding: 15px 30px; border-radius: 40px; color: #6a8dbf; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .container { display: flex; gap: 40px; margin-top: 50px; flex-wrap: wrap; justify-content: center; }
+        
+        .card { 
+            width: 270px; 
+            height: 330px; 
+            background: white; 
+            border-radius: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2); 
+            text-decoration: none; 
+            transition: 0.3s; 
+            position: relative;
+        }
+        .card:hover { transform: scale(1.05); }
+
+        .badge {
+            position: absolute;
+            top: 25px;
+            background-color: #e1f0ff;
+            color: #4a6fa5;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .icon { font-size: 90px; margin-top: 30px; margin-bottom: 15px; }
+        .title { 
+            font-size: 28px; 
+            color: #4a6fa5; 
+            font-family: 'ONEMobilePOP', sans-serif; 
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="home-btn">🏠 처음으로</a>
+
+    <!-- 큰 제목 섹션 -->
+    <div class="header-section">
+        <div class="main-title">📋 복사 붙여넣기 놀이터</div>
+        <div class="sub-desc">어떤 복사 마법을 연습해 볼까요? 원하는 놀이를 골라보세요!</div>
+    </div>
+
+    <div class="container">
+        <!-- 마우스 연습 카드 (기존: 붕어빵) -->
+        <a href="fish_mouse.html" class="card">
+            <div class="badge">마우스 연습</div>
+            <div class="icon">🐟</div>
+            <div class="title">붕어빵 복사</div>
+        </a>
+        
+        <!-- 키보드 연습 카드 (기존: 외계인) -->
+        <a href="alien_key.html" class="card">
+            <div class="badge">키보드 연습</div>
+            <div class="icon">👽</div>
+            <div class="title">외계인 복사</div>
+        </a>
+
+        <!-- 동물 복사 붙여넣기 카드 (추가: 마우스) -->
+        <a href="copy_mouse_a.html" class="card">
+            <div class="badge">마우스 연습</div>
+            <div class="icon">🦁</div>
+            <div class="title">동물 복사</div>
+        </a>
+
+        <!-- 과일 복사 붙여넣기 카드 (추가: 키보드) -->
+        <a href="copy_key_f.html" class="card">
+            <div class="badge">키보드 연습</div>
+            <div class="icon">🍎</div>
+            <div class="title">과일 복사</div>
+        </a>
+    </div>
+
+    <footer style="margin-top: 80px; color: #4a6fa5; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP', sans-serif;">
+        제작: 김정이 선생님 ❤️ | © Coding Playground
+    </footer>
+
+</body>
+</html>

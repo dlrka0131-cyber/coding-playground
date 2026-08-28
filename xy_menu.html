@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>⭐ 좌표 연습 놀이터 ⭐</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+        @font-face { font-family: 'ONEMobilePOP'; src: url('ONE Mobile POP.ttf') format('truetype'); }
+        @import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
+
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #4e4376; 
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative;
+        }
+
+        /* 왼쪽 상단 '처음으로' 버튼 스타일 */
+        .home-fixed-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background-color: #f9ca24;
+            color: #2c3e50;
+            border: 4px solid #ffffff;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 22px;
+            font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        .home-fixed-btn:hover {
+            transform: translateY(-3px);
+            background-color: #f6b93b;
+        }
+        .home-fixed-btn:active {
+            transform: translateY(2px);
+        }
+
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { font-size: 60px; color: #f9ca24; font-family: 'ONEMobilePOP', sans-serif; margin: 0; text-shadow: 3px 3px 0px #4834d4; }
+
+        .container { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; max-width: 1400px; }
+        
+        .card { 
+            width: 280px; height: 340px; background: white; border-radius: 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); transition: 0.3s;
+            text-decoration: none; 
+            border: 6px solid #686de0;
+        }
+        
+        .card:hover { 
+            transform: translateY(-10px); 
+            background-color: #fdfbf7; 
+            border-color: #ff4757;
+        }
+        
+        .icon { font-family: 'Tossface', sans-serif; font-size: 80px; margin-bottom: 20px; }
+        .title { font-size: 26px; font-family: 'ONEMobilePOP', sans-serif; color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        .desc { font-size: 16px; color: #747d8c; font-family: 'Pretendard', sans-serif; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- 왼쪽 상단 메인 이동 버튼 -->
+    <a href="index.html" class="home-fixed-btn">
+        <span style="font-family: 'Tossface', sans-serif;">🏠</span> 처음으로
+    </a>
+
+    <header>
+        <h1>⭐ 우주 좌표 탐험대 ⭐</h1>
+    </header>
+
+    <div class="container">
+        <!-- 1단계: X좌표만 (x.html) -->
+        <a href="x.html" class="card">
+            <div class="icon">👽</div>
+            <div class="title">1단계: X좌표</div>
+            <div class="desc">가로축(X)에서<br>외계인을 찾아봐요!</div>
+        </a>
+
+        <!-- 2단계: Y좌표만 (y.html) -->
+        <a href="y.html" class="card">
+            <div class="icon">🚀</div>
+            <div class="title">2단계: Y좌표</div>
+            <div class="desc">세로축(Y)에서<br>로켓을 쏘아올려봐요!</div>
+        </a>
+
+        <!-- 3단계: XY좌표 완성 (xy.html) -->
+        <a href="xy.html" class="card">
+            <div class="icon">🌟</div>
+            <div class="title">3단계: XY좌표</div>
+            <div class="desc">가로세로를 모두 만나며<br>별을 찾아봐요!</div>
+        </a>
+
+        <!-- 4단계: 삐약이 좌표여행 (xy_write.html) -->
+        <a href="xy_write.html" class="card">
+            <div class="icon">🐥</div>
+            <div class="title">4단계: 삐약이 좌표여행</div>
+            <div class="desc">삐약이와 함께 좌표를<br>직접 입력해봐요!</div>
+        </a>
+    </div>
+
+    <!-- 하단 제작자 정보 -->
+    <footer style="margin-top: 50px; color: #a4b0be; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP', sans-serif;">
+        제작: 김정이 선생님 ❤️ | © Coding Playground
+    </footer>
+
+</body>
+</html>

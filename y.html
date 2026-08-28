@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Y좌표 로켓 찾기 🚀</title>
+    <style>
+        @font-face {
+            font-family: 'ONE-Mobile-POP';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'ONE-Mobile-POP', sans-serif;
+            background-color: #192a56; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+            overflow: hidden; 
+        }
+
+        #main-wrapper {
+            display: flex;
+            gap: 25px;
+            align-items: stretch; 
+        }
+
+        #sidebar {
+            background-color: #ffffff;
+            border: 6px solid #686de0; 
+            border-radius: 40px; 
+            padding: 30px;
+            box-shadow: none; 
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 { 
+            color: #1e90ff; 
+            font-size: 44px; 
+            margin-bottom: 30px; 
+            margin-top: 0;
+            line-height: 1.2;
+            text-shadow: none; 
+        }
+
+        .info-box {
+            background-color: #f4f6f9;
+            width: 100%;
+            padding: 15px 0;
+            border-radius: 20px;
+            border: 3px dashed #a4b0be;
+            margin-bottom: 20px;
+            font-size: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box .label {
+            font-size: 22px;
+            color: #747d8c;
+        }
+
+        #mission-display { font-size: 38px; font-weight: bold; }
+        #score-display { color: #1e90ff; font-weight: bold; font-size: 42px;}
+        #time-display { color: #eb4d4b; font-weight: bold; font-size: 42px;}
+
+        .sidebar-btn-group {
+            margin-top: auto; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        #game-container {
+            background-color: #ffffff;
+            border: 6px solid #686de0; 
+            border-radius: 40px; 
+            padding: 20px;
+            box-shadow: none; 
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-area {
+            background-color: #fdfbf7;
+            border: 4px solid #30336b; 
+            border-radius: 25px;
+            width: 1100px;
+            height: 700px;
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
+            
+            background-image: 
+                linear-gradient(to right, rgba(52, 73, 94, 0.25) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(52, 73, 94, 0.25) 1px, transparent 1px),
+                linear-gradient(to right, rgba(189, 195, 199, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(189, 195, 199, 0.4) 1px, transparent 1px);
+            background-size: 
+                125px 125px, 125px 125px, 
+                25px 25px, 25px 25px;
+            background-position: 
+                550px 350px, 550px 350px, 
+                550px 350px, 550px 350px;
+        }
+
+        .axis { position: absolute; z-index: 5; pointer-events: none; }
+        .axis-x { 
+            background-color: #ff3838; 
+            width: 100%; height: 4px; 
+            top: 350px; left: 0; 
+            transform: translateY(-50%); 
+            box-shadow: 0 0 4px rgba(255, 56, 56, 0.5); 
+        }
+        .axis-y { 
+            background-color: #0984e3; 
+            width: 4px; height: 100%; 
+            left: 550px; top: 0; 
+            transform: translateX(-50%); 
+            box-shadow: 0 0 4px rgba(9, 132, 227, 0.5); 
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 18px; 
+            color: #2c3e50;
+            pointer-events: none;
+            z-index: 6;
+            background: rgba(253, 251, 247, 0.9);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20; border-radius: 20px;
+        }
+        #result-overlay { display: none; }
+        
+        .overlay h2 { font-size: 60px; color: #1e90ff; margin-bottom: 20px; text-shadow: none; }
+        .overlay p { font-size: 34px; color: #34495e; margin-bottom: 40px; }
+        
+        #feedback-msg { font-size: 30px; color: #1e90ff; margin-top: 20px; margin-bottom: 40px; font-weight: bold; text-align: center; line-height: 1.4; }
+        
+        .big-action-button {
+            background-color: #686de0; color: white; border: none; border-radius: 30px;
+            padding: 15px 30px; font-size: 32px; font-family: 'ONE-Mobile-POP', sans-serif;
+            cursor: pointer; transition: all 0.1s; 
+            box-shadow: none; 
+            width: 100%;
+        }
+        .big-action-button:active { transform: scale(0.97); }
+
+        .home-btn {
+            background-color: #f9ca24;
+            color: #2c3e50;
+            font-size: 26px; 
+            padding: 12px 20px;
+        }
+
+        .click-marker {
+            position: absolute; width: 16px; height: 16px;
+            background-color: #1e90ff; border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none;
+            z-index: 10;
+            animation: popOut 1s forwards;
+        }
+
+        .click-tooltip {
+            position: absolute; background-color: #30336b; color: white;
+            padding: 6px 12px; border-radius: 10px; font-size: 22px; font-family: 'ONE-Mobile-POP', sans-serif;
+            pointer-events: none; transform: translate(-50%, -150%); z-index: 11;
+            animation: popOut 1.5s forwards; white-space: nowrap;
+        }
+
+        .rocket-anim {
+            position: absolute; font-size: 70px; z-index: 9;
+            transform: translate(-50%, -50%); pointer-events: none;
+            animation: bounce 0.5s ease-out;
+        }
+
+        @keyframes popOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes bounce { 0% { transform: translate(-50%, -50%) scale(0); } 50% { transform: translate(-50%, -50%) scale(1.5); } 100% { transform: translate(-50%, -50%) scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="main-wrapper">
+        <div id="sidebar">
+            <h1 style="color: #1e90ff;">🚀 Y좌표<br>로켓 찾기</h1>
+            
+            <div class="info-box">
+                <span class="label">🎯 목표 Y좌표</span>
+                <span id="mission-display">준비...</span>
+            </div>
+            
+            <div class="info-box">
+                <span class="label">🚀 찾은 로켓</span>
+                <div><span id="score-display">0</span>개</div>
+            </div>
+            
+            <div class="info-box">
+                <span class="label">⏰ 남은 시간</span>
+                <span id="time-display">60초</span>
+            </div>
+
+            <div class="sidebar-btn-group">
+                <button class="big-action-button home-btn" onclick="location.href='xy_menu.html'">🏠 처음으로</button>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <div id="game-area">
+                <div class="axis axis-x"></div>
+                <div class="axis axis-y"></div>
+                
+                <div id="start-overlay" class="overlay">
+                    <h2>🚀 2단계: Y좌표 로켓 찾기!</h2>
+                    <p>정확한 Y좌표를 클릭해 멋진 로켓을 발사하세요!</p>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #1e90ff;">▶ 탐험 시작!</button>
+                </div>
+
+                <div id="result-overlay" class="overlay">
+                    <h2>탐험 종료!</h2>
+                    <p style="margin-bottom: 20px;">찾은 로켓: <span id="final-score" style="color:#1e90ff; font-weight:bold;">0</span> 개!</p>
+                    <p id="feedback-msg"></p>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #1e90ff;">다시 탐험하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const missionDisplay = document.getElementById('mission-display');
+        const scoreDisplay = document.getElementById('score-display');
+        const timeDisplay = document.getElementById('time-display');
+        const startOverlay = document.getElementById('start-overlay');
+        const resultOverlay = document.getElementById('result-overlay');
+        const feedbackMsg = document.getElementById('feedback-msg'); 
+
+        const CENTER_X = 550;
+        const CENTER_Y = 350;
+        const SCALE = 2.5; 
+
+        function drawAxisLabels() {
+            for (let x = -200; x <= 200; x += 50) {
+                let label = document.createElement('div');
+                label.className = 'axis-label';
+                label.textContent = x === 0 ? '0' : x;
+                label.style.color = '#ff4757'; 
+                
+                label.style.left = (x * SCALE + CENTER_X) + 'px';
+                label.style.top = (CENTER_Y + 8) + 'px'; 
+                label.style.transform = 'translateX(-50%)'; 
+                gameArea.appendChild(label);
+            }
+
+            for (let y = -100; y <= 100; y += 50) {
+                if (y !== 0) {
+                    let label = document.createElement('div');
+                    label.className = 'axis-label';
+                    label.textContent = y;
+                    label.style.color = '#1e90ff'; 
+                    
+                    label.style.left = (CENTER_X + 8) + 'px';
+                    label.style.top = (-y * SCALE + CENTER_Y) + 'px';
+                    label.style.transform = 'translateY(-50%)';
+                    gameArea.appendChild(label);
+                }
+            }
+        }
+        drawAxisLabels();
+
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval;
+        let targetY = 0;
+
+        const yOptions = [-100, -50, 50, 100];
+
+        function playSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                if(type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1046.50, now); 
+                    osc.frequency.setValueAtTime(1318.51, now + 0.1); 
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if(type === 'miss') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now); osc.stop(now + 0.2);
+                }
+            } catch(e) {}
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = timeLeft + '초';
+            
+            startOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none';
+            
+            document.querySelectorAll('.click-marker, .click-tooltip, .rocket-anim').forEach(el => el.remove());
+
+            setNewTarget();
+            gameInterval = setInterval(updateTime, 1000);
+        }
+
+        function updateTime() {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft + '초';
+            if (timeLeft <= 0) endGame();
+        }
+
+        function setNewTarget() {
+            targetY = yOptions[Math.floor(Math.random() * yOptions.length)];
+            missionDisplay.innerHTML = `<span style="color:#1e90ff;">Y : ${targetY}</span>`;
+        }
+
+        gameArea.addEventListener('click', function(e) {
+            // ⭐️ 시작 또는 결과 오버레이 창을 클릭했을 때는 반응하지 않도록 차단
+            if (e.target.closest('#start-overlay') || e.target.closest('#result-overlay')) return;
+
+            if (timeLeft <= 0 || startOverlay.style.display !== 'none') return;
+
+            const rect = gameArea.getBoundingClientRect();
+            const clickX_px = e.clientX - rect.left; 
+            const clickY_px = e.clientY - rect.top;
+
+            let mathX = (clickX_px - CENTER_X) / SCALE;
+            let mathY = -(clickY_px - CENTER_Y) / SCALE;
+
+            mathX = Math.round(mathX / 10) * 10;
+            mathY = Math.round(mathY / 10) * 10;
+
+            if(mathX < -220 || mathX > 220 || mathY < -120 || mathY > 120) return;
+
+            if (Math.abs(mathX) <= 10 && mathY === targetY) {
+                playSound('success');
+                score++;
+                scoreDisplay.textContent = score;
+
+                const rocket = document.createElement('div');
+                rocket.className = 'rocket-anim';
+                rocket.textContent = '🚀'; 
+                
+                rocket.style.left = CENTER_X + 'px';
+                rocket.style.top = (-targetY * SCALE + CENTER_Y) + 'px';
+                gameArea.appendChild(rocket);
+
+                setTimeout(() => {
+                    rocket.remove();
+                    setNewTarget();
+                }, 800);
+                
+            } else {
+                playSound('miss');
+                
+                const marker = document.createElement('div');
+                marker.className = 'click-marker';
+                marker.style.left = (mathX * SCALE + CENTER_X) + 'px';
+                marker.style.top = (-mathY * SCALE + CENTER_Y) + 'px';
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'click-tooltip';
+                tooltip.textContent = `여긴 Y: ${mathY}`;
+                tooltip.style.left = (mathX * SCALE + CENTER_X) + 'px';
+                tooltip.style.top = (-mathY * SCALE + CENTER_Y) + 'px';
+
+                gameArea.appendChild(marker);
+                gameArea.appendChild(tooltip);
+
+                setTimeout(() => { marker.remove(); tooltip.remove(); }, 1500);
+            }
+        });
+
+        function endGame() {
+            clearInterval(gameInterval);
+            document.getElementById('final-score').textContent = score;
+            
+            if (score >= 15) {
+                feedbackMsg.innerHTML = "와우! 우주선 발사 대성공이네요!<br>Y좌표 세로 높이 찾기는 마스터 완료! 🚀";
+                feedbackMsg.style.color = "#1e90ff";
+            } else if (score >= 10) {
+                feedbackMsg.innerHTML = "참 잘했어요!<br>로켓을 위아래 높이에 맞춰 잘 쏘아 올렸군요! 👏";
+                feedbackMsg.style.color = "#f0932b";
+            } else {
+                feedbackMsg.innerHTML = "좋아요!<br>세로 방향(Y축) 눈금을 보고<br>높이를 찾는 연습을 조금 더 해봐요! 😉";
+                feedbackMsg.style.color = "#ff4757";
+            }
+
+            resultOverlay.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

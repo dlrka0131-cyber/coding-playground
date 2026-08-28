@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>코딩 놀이터</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+        @font-face { font-family: 'ONEMobilePOP'; src: url('ONE Mobile POP.ttf') format('truetype'); }
+        @import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
+
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            /* 배경 그라디언트 유지 */
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 50%, #ffd1dc 100%);
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        header { text-align: center; margin-bottom: 50px; }
+        
+        /* 메인 제목: 그라디언트 대신 선명한 단색 컬러와 또렷한 입체 테두리/그림자를 주어 가독성과 고급스러움을 강조 */
+        h1 { 
+            font-size: 95px; 
+            font-family: 'ONEMobilePOP', sans-serif; 
+            color: #ff4d73; 
+            margin: 0; 
+            text-shadow: 
+                2px 2px 0px #ffffff, 
+                4px 4px 0px #ffccd5,
+                0 10px 25px rgba(255, 77, 115, 0.2);
+            letter-spacing: -1px;
+        }
+
+        .container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 1200px; }
+        
+        .card { 
+            width: 200px; height: 250px; background: white; border-radius: 60px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 133, 162, 0.15); transition: 0.3s;
+            text-decoration: none; 
+            border: 3px solid #ffccd5;
+        }
+        
+        .card:hover { 
+            transform: translateY(-10px); 
+            background-color: #fff9fa; 
+            box-shadow: 0 20px 40px rgba(255, 133, 162, 0.3);
+            border-color: #ff85a2;
+        }
+        
+        .icon { font-family: 'Tossface', sans-serif; font-size: 90px; margin-bottom: 25px; }
+        .title { font-size: 24px; font-family: 'ONEMobilePOP', sans-serif; color: #ff85a2; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><span style="font-family: 'Tossface', sans-serif; text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px #ffccd5;">🧸</span> 코딩 놀이터</h1>
+    </header>
+
+    <div class="container">
+        <!-- 1. 마우스 연습 -->
+        <a href="coding_mouseplay.html" class="card">
+            <div class="icon">🖱️</div>
+            <div class="title">마우스 연습</div>
+        </a>
+
+        <!-- 2. 키보드 연습 -->
+        <a href="key_menu.html" class="card">
+            <div class="icon">⌨️</div>
+            <div class="title">키보드 연습</div>
+        </a>
+
+        <!-- 3. 복사 붙여넣기 -->
+        <a href="copy_menu.html" class="card">
+            <div class="icon">📋</div>
+            <div class="title">복사 붙여넣기</div>
+        </a>
+
+        <!-- 4. 좌표 연습 -->
+        <a href="xy_menu.html" class="card">
+            <div class="icon">🌟</div>
+            <div class="title">좌표 연습</div>
+        </a>
+
+        <!-- 5. 마크 키보드 연습 -->
+        <a href="mc_menu.html" class="card">
+            <div class="icon">⛏️</div>
+            <div class="title">마크 명령어 연습</div>
+        </a>
+    </div>
+
+    <!-- 하단 제작자 정보 -->
+    <footer style="margin-top: 60px; color: #ff85a2; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP', sans-serif;">
+        제작: 김정이 선생님 ❤️ | © Coding Playground
+    </footer>
+
+</body>
+</html>

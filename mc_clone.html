@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마인크래프트 명령어 타자 연습 - clone</title>
+    <style>
+        body { background-color: #fce4ec; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; position: relative; }
+        
+        /* 처음으로 버튼 스타일 */
+        .home-btn { 
+            position: absolute; top: 25px; left: 25px; background-color: #FFF; 
+            color: #e91e63; padding: 20px 40px; border-radius: 30px; 
+            text-decoration: none; font-size: 28px; font-weight: bold; 
+            box-shadow: 0 6px 0 #f8bbd0; border: 4px solid #e91e63; z-index: 999; 
+        }
+
+        .container { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 850px; margin-bottom: 30px; margin-top: 50px; }
+        
+        /* 한글 설명 텍스트 스타일 */
+        #desc-text { font-size: 24px; color: #e91e63; font-weight: bold; margin-bottom: 10px; background-color: #fce4ec; display: inline-block; padding: 8px 20px; border-radius: 20px; }
+        
+        #input-field { font-size: 30px; width: 90%; padding: 15px; border: 3px solid #e1bee7; border-radius: 15px; margin-top: 15px; color: #2980b9; font-weight: bold; }
+        
+        /* 숫자 설명(팁) 텍스트 스타일 */
+        #tip-text { font-size: 20px; color: #8e44ad; margin-top: 20px; background: #f3e5f5; padding: 12px 25px; border-radius: 15px; display: inline-block; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+        /* 오타 시 글자색을 빨간색으로 변경 */
+        .text-error { color: #e74c3c !important; }
+        
+        /* ⭐️ 좌표 색상 강조 스타일 ⭐️ */
+        .c-start { color: #e74c3c; } /* 빨강: 시작점 */
+        .c-end { color: #2ecc71; }   /* 초록: 끝점 */
+        .c-dest { color: #f39c12; }  /* 주황: 복사될 위치 */
+        .c-cmd { color: #5c6bc0; }   /* 남색: 명령어 */
+
+        #popup { display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); background: #ffcc80; color: #4a148c; padding: 40px; border-radius: 20px; font-size: 35px; font-weight: bold; z-index: 200; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        #keyboard { display: flex; flex-direction: column; gap: 6px; background: #e1bee7; padding: 20px; border-radius: 20px; }
+        .row { display: flex; gap: 6px; justify-content: center; }
+        .key { width: 50px; height: 50px; border-radius: 8px; background: white; border: 2px solid #e1bee7; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; color: #4a148c; }
+        .w-space { width: 350px; }
+        .guide { background: #ffcc80 !important; transform: scale(1.1); border-color: #f57c00; box-shadow: 0 0 10px #f57c00; }
+    </style>
+</head>
+<body>
+
+    <a href="mc_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <div class="container">
+        <h1 id="status-text">명령어 연습: 1 / 5</h1>
+        <!-- 효과 설명 영역 -->
+        <div id="desc-text">🧱 내 발밑 블록 한 개를 옆으로 복사하기</div>
+        
+        <!-- 좌표 색상이 적용된 표시 영역 -->
+        <div id="target" style="font-size: 40px; font-weight: bold;">
+            <span class="c-cmd">/clone</span> <span class="c-start">~ ~ ~</span> <span class="c-end">~ ~ ~</span> <span class="c-dest">~5 ~ ~</span>
+        </div>
+        
+        <input type="text" id="input-field" placeholder="명령어를 입력하세요" autocomplete="off" autofocus spellcheck="false">
+        <br>
+        
+        <!-- 숫자 설명(팁) 영역 -->
+        <div id="tip-text">💡 <span class="c-start">[시작점]</span>, <span class="c-end">[끝점]</span>, <span class="c-dest">[복사될 위치]</span> 순서로 입력해요!</div>
+    </div>
+
+    <div id="popup">참 잘했어요! ✨</div>
+
+    <div id="keyboard">
+        <div class="row" id="r0"></div><div class="row" id="r1"></div><div class="row" id="r2"></div>
+        <div class="row" id="r3"></div><div class="row" id="r4"></div>
+        <div class="row"><div class="key w-space" id="key-Space">Space</div></div>
+    </div>
+
+    <script>
+        // 화면에 보여줄 색상 태그(html)와 실제 타자 검사용 정답(cmd)을 분리했어요!
+        const tasks = [
+            { 
+                cmd: "/clone ~ ~ ~ ~ ~ ~ ~5 ~ ~", 
+                html: "<span class='c-cmd'>/clone</span> <span class='c-start'>~ ~ ~</span> <span class='c-end'>~ ~ ~</span> <span class='c-dest'>~5 ~ ~</span>",
+                desc: "🧱 내 발밑 블록 한 개를 옆으로 복사하기", 
+                tip: "💡 <span class='c-start'>[시작점]</span>, <span class='c-end'>[끝점]</span>, <span class='c-dest'>[복사될 위치]</span> 순서로 입력해요!" 
+            },
+            { 
+                cmd: "/clone ~ ~ ~ ~3 ~3 ~3 ~5 ~ ~", 
+                html: "<span class='c-cmd'>/clone</span> <span class='c-start'>~ ~ ~</span> <span class='c-end'>~3 ~3 ~3</span> <span class='c-dest'>~5 ~ ~</span>",
+                desc: "🏠 내 주변의 아담한 집을 통째로 복사하기", 
+                tip: "💡 <span class='c-cmd'>~ (물결표)</span>는 '지금 내 위치'를 기준으로 움직이는 상대 좌표예요!" 
+            },
+            { 
+                cmd: "/clone ~1 ~ ~1 ~5 ~5 ~5 ~10 ~ ~", 
+                html: "<span class='c-cmd'>/clone</span> <span class='c-start'>~1 ~ ~1</span> <span class='c-end'>~5 ~5 ~5</span> <span class='c-dest'>~10 ~ ~</span>",
+                desc: "🗽 내 앞에 있는 멋진 조각상 복사하기", 
+                tip: "💡 <span class='c-end'>띄어쓰기</span>를 정확하게 해야 복사 마법이 제대로 작동해요." 
+            },
+            { 
+                cmd: "/clone 10 5 10 20 10 20 ~ ~ ~", 
+                html: "<span class='c-cmd'>/clone</span> <span class='c-start'>10 5 10</span> <span class='c-end'>20 10 20</span> <span class='c-dest'>~ ~ ~</span>",
+                desc: "🏰 멀리 있는 건물을 내 위치로 불러오기", 
+                tip: "💡 ~ 없이 숫자로만 적으면 지도의 고정된 <span class='c-start'>절대 좌표</span>를 뜻해요." 
+            },
+            { 
+                cmd: "/clone ~ ~ ~ ~5 ~5 ~5 ~10 ~ ~ masked", 
+                html: "<span class='c-cmd'>/clone</span> <span class='c-start'>~ ~ ~</span> <span class='c-end'>~5 ~5 ~5</span> <span class='c-dest'>~10 ~ ~</span> <span class='c-cmd'>masked</span>",
+                desc: "✨ 투명한 공기는 빼고 진짜 블록만 복사하기", 
+                tip: "💡 맨 뒤에 <span class='c-cmd'>masked</span>를 붙이면 빈 공간은 덮어쓰지 않고 보호해 줘요!" 
+            }
+        ];
+        
+        let taskIndex = 0;
+        const input = document.getElementById('input-field');
+        const statusText = document.getElementById('status-text');
+        const targetDiv = document.getElementById('target');
+        const descDiv = document.getElementById('desc-text');
+        const tipDiv = document.getElementById('tip-text');
+        const popup = document.getElementById('popup');
+        
+        const layout = [
+            ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'],
+            ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+            ['Caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
+            ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift']
+        ];
+
+        const kb = document.getElementById('keyboard');
+        layout.forEach((row, i) => {
+            const rowDiv = document.getElementById('r' + i);
+            row.forEach(k => {
+                const div = document.createElement('div');
+                div.className = 'key';
+                div.innerText = k;
+                div.id = 'key-' + k;
+                rowDiv.appendChild(div);
+            });
+        });
+
+        function updateGuide() {
+            let currentTarget = tasks[taskIndex].cmd;
+            let val = input.value;
+            
+            // 오타 검사 (정답 문자열 기준)
+            if (val.length > 0 && currentTarget.substring(0, val.length) !== val) {
+                input.classList.add('text-error');
+            } else {
+                input.classList.remove('text-error');
+            }
+
+            // 가이드 하이라이트 초기화
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('guide'));
+            let currentIdx = val.length;
+            
+            if (currentIdx < currentTarget.length) {
+                let char = currentTarget[currentIdx];
+                if (char === '@') {
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key-2').classList.add('guide');
+                } else if (char === '_') {
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key--').classList.add('guide');
+                } else if (char === '~') {
+                    document.getElementById('key-Shift').classList.add('guide');
+                    document.getElementById('key-~').classList.add('guide');
+                } else if (char === ' ') {
+                    document.getElementById('key-Space').classList.add('guide');
+                } else {
+                    const keyEl = document.getElementById('key-' + char.toUpperCase());
+                    if (keyEl) keyEl.classList.add('guide');
+                }
+            } else if (val === currentTarget) {
+                popup.style.display = 'block';
+                input.disabled = true;
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    input.disabled = false; input.value = ""; taskIndex++;
+                    if (taskIndex < tasks.length) {
+                        statusText.innerHTML = `명령어 연습: ${taskIndex + 1} / ${tasks.length}`;
+                        
+                        // 다음 미션의 색상 태그(html)로 화면 업데이트!
+                        targetDiv.innerHTML = tasks[taskIndex].html;
+                        descDiv.innerHTML = tasks[taskIndex].desc;
+                        tipDiv.innerHTML = tasks[taskIndex].tip;
+                        
+                        input.focus(); updateGuide();
+                    } else {
+                        alert("🏆 복사 마법 완벽하게 마스터 성공!"); location.reload();
+                    }
+                }, 1000);
+            }
+        }
+
+        input.addEventListener('input', updateGuide);
+        updateGuide(); // 초기 화면 설정
+    </script>
+</body>
+</html>

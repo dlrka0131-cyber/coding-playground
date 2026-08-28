@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 우주선 왕복 여행 🚀</title>
+    <style>
+        @font-face {
+            font-family: 'ONEMobilePOP';
+            src: url('ONE Mobile POP.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'ONEMobilePOP', sans-serif;
+            background-color: #aee2ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1000 600' preserveAspectRatio='xMidYMid slice'%3E%3Crect width='1000' height='600' fill='%23aee2ff'/%3E%3Ccircle cx='150' cy='150' r='80' fill='%23ffdf73'/%3E%3Cg fill='white'%3E%3Ccircle cx='300' cy='150' r='30'/%3E%3Ccircle cx='340' cy='130' r='40'/%3E%3Ccircle cx='380' cy='150' r='30'/%3E%3Crect x='300' y='150' width='80' height='30'/%3E%3Ccircle cx='700' cy='250' r='40'/%3E%3Ccircle cx='750' cy='220' r='50'/%3E%3Ccircle cx='800' cy='250' r='40'/%3E%3Crect x='700' y='250' width='100' height='40'/%3E%3C/g%3E%3Cellipse cx='800' cy='600' rx='600' ry='300' fill='%23b1e5a5'/%3E%3Cellipse cx='200' cy='600' rx='700' ry='250' fill='%2388d49e'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center bottom;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        #game-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 6px solid #b2bec3; 
+            border-radius: 40px; 
+            padding: 30px 40px;
+            box-shadow: 0 15px 0 #b2bec3, 0 20px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 800px; 
+            position: relative;
+        }
+
+        h1 { color: #2d3436; font-size: 46px; margin-bottom: 20px; }
+        
+        #mission-banner {
+            background-color: #0984e3;
+            color: white;
+            font-size: 32px;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        #status-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 32px; 
+            background-color: #e8eaed;
+            padding: 10px;
+            border-radius: 20px;
+            border: 3px dashed #b2bec3; 
+        }
+
+        #altitude-display { color: #d63031; font-weight: bold; font-size: 40px; margin: 0 10px; }
+
+        #game-area {
+            background: linear-gradient(to bottom, #000000 0%, #192a56 30%, #4a69bd 60%, #82ccdd 100%);
+            background-size: 100% 400%; 
+            background-position: 50% 100%; 
+            border: 5px solid #74b9ff;
+            border-radius: 30px;
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #start-overlay, #result-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20; border-radius: 25px;
+        }
+
+        #start-overlay h2 { font-size: 46px; color: #0984e3; margin-bottom: 20px; }
+        #start-overlay p { font-size: 30px; color: #2d3436; margin-bottom: 40px; line-height: 1.5; }
+        #result-overlay { display: none; z-index: 30; }
+        #result-overlay h2 { font-size: 56px; color: #d63031; margin-bottom: 20px; }
+
+        .big-action-button {
+            background-color: #0984e3; color: white; border: 4px solid #0056b3;
+            border-radius: 40px; padding: 15px 40px; font-size: 32px; 
+            font-family: 'ONEMobilePOP', sans-serif; cursor: pointer;
+            box-shadow: 0 8px 0 #0056b3; transition: transform 0.1s;
+        }
+        .big-action-button:active { transform: translateY(8px); box-shadow: none; }
+
+        /* ⭐️ 버튼을 나란히 놓기 위한 그룹 */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* ⭐️ 홈 버튼만의 특별한 색상 설정 */
+        .home-btn {
+            background-color: #ff9ff3;
+            border-color: #f368e0;
+            box-shadow: 0 8px 0 #f368e0;
+            color: #333;
+        }
+
+        #moon { font-size: 130px; position: absolute; left: 50%; margin-left: -65px; top: -150px; transition: top 0.2s; }
+        #earth { position: absolute; left: 50%; transform: translateX(-50%); bottom: -520px; width: 1200px; height: 500px; background: #2ed573; border-top: 15px solid #1e90ff; border-radius: 50% 50% 0 0; transition: bottom 0.2s; z-index: 4; }
+        #star { font-size: 60px; position: absolute; left: 50%; margin-left: -30px; top: -150px; opacity: 0; z-index: 5; }
+
+        #spaceship { font-size: 100px; position: absolute; left: 50%; margin-left: -50px; bottom: 20px; transition: bottom 0.2s; z-index: 6; }
+        #spaceship-inner { display: inline-block; transform: rotate(-45deg); transition: transform 0.5s; }
+        #spaceship-inner.going-down { transform: rotate(135deg); }
+
+        .engine-on { animation: shake 0.15s infinite linear; filter: drop-shadow(0px 20px 10px rgba(255, 69, 0, 0.8)); }
+        @keyframes shake { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>🚀 우주선 왕복 여행 🚀</h1>
+        <div id="mission-banner">👆 마우스 휠을 [위로] 굴려 달나라로 가세요!</div>
+        <div id="status-panel"><span>우주선 고도: <span id="altitude-display">0</span> km</span></div>
+
+        <div id="game-area">
+            <div id="start-overlay">
+                <h2>가운데 바퀴 쓱쓱! 연습</h2>
+                <p>휠을 위로 굴려 달나라에 간 다음,<br>별을 잡고 다시 아래로 굴려 돌아와요!</p>
+                <button class="big-action-button" onclick="startGame()">▶ 발사 준비 완료!</button>
+            </div>
+
+            <div id="result-overlay">
+                <h2>지구 무사 귀환! 🌍</h2>
+                <div class="btn-group">
+                    <button class="big-action-button" onclick="startGame()">한 번 더 갈래!</button>
+                    <button class="big-action-button home-btn" onclick="location.href='coding_mouseplay.html'">🏠 홈으로</button>
+                </div>
+            </div>
+            
+            <div id="moon">🌕</div>
+            <div id="earth"></div>
+            <div id="star">⭐️</div>
+            <div id="spaceship"><div id="spaceship-inner">🚀</div></div>
+        </div>
+    </div>
+
+    <script>
+        const altitudeDisplay = document.getElementById('altitude-display');
+        const gameArea = document.getElementById('game-area');
+        const startOverlay = document.getElementById('start-overlay');
+        const resultOverlay = document.getElementById('result-overlay');
+        const spaceship = document.getElementById('spaceship');
+        const spaceshipInner = document.getElementById('spaceship-inner');
+        const moon = document.getElementById('moon');
+        const earth = document.getElementById('earth');
+        const star = document.getElementById('star');
+        const missionBanner = document.getElementById('mission-banner');
+
+        let altitude = 0;
+        const maxAltitude = 100; 
+        let gameActive = false;
+        let missionPhase = 'UP'; 
+        let isCatchingStar = false; 
+        let engineTimeout;
+
+        function startGame() {
+            altitude = 0;
+            missionPhase = 'UP'; 
+            isCatchingStar = false;
+            altitudeDisplay.textContent = altitude;
+            startOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none'; 
+            
+            missionBanner.textContent = "👆 마우스 휠을 [위로] 굴려 달나라로 가세요!";
+            missionBanner.style.backgroundColor = "#0984e3";
+            
+            gameArea.style.backgroundPosition = '50% 100%';
+            spaceship.style.bottom = '20px';
+            moon.style.top = '-150px';
+            earth.style.bottom = '-520px'; 
+            spaceshipInner.classList.remove('going-down');
+            
+            star.style.transition = 'none';
+            star.style.top = '-150px';
+            star.style.bottom = 'auto';
+            star.style.opacity = '0';
+            
+            setTimeout(() => { gameActive = true; }, 300);
+        }
+
+        gameArea.addEventListener('wheel', function(e) {
+            e.preventDefault(); 
+            if (!gameActive || isCatchingStar) return;
+
+            if (missionPhase === 'UP') {
+                if (e.deltaY < 0) { altitude += 2; if (altitude > maxAltitude) altitude = maxAltitude; } 
+                else if (e.deltaY > 0) { altitude -= 1; if (altitude < 0) altitude = 0; }
+
+                if (altitude >= maxAltitude) {
+                    isCatchingStar = true; 
+                    star.style.transition = 'all 2s ease-out';
+                    star.style.top = '140px';
+                    star.style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        missionPhase = 'DOWN';
+                        isCatchingStar = false; 
+                        missionBanner.textContent = "👇 별을 잡았어요! 휠을 [아래로] 굴려 돌아오세요!";
+                        missionBanner.style.backgroundColor = "#d63031";
+                        spaceshipInner.classList.add('going-down');
+                    }, 2000);
+                }
+            } 
+            else if (missionPhase === 'DOWN') {
+                if (e.deltaY > 0) { altitude -= 2; if (altitude < 0) altitude = 0; } 
+                else if (e.deltaY < 0) { altitude += 1; if (altitude > maxAltitude) altitude = maxAltitude; }
+
+                if (altitude < 80) moon.style.top = '-150px';
+
+                if (altitude <= 40) {
+                    let earthBottom = -520 + ((40 - altitude) * 3); 
+                    earth.style.bottom = earthBottom + 'px';
+                } else {
+                    earth.style.bottom = '-520px';
+                }
+
+                if (altitude <= 0) {
+                    gameActive = false;
+                    spaceship.classList.remove('engine-on');
+                    setTimeout(() => { resultOverlay.style.display = 'flex'; }, 500);
+                }
+            }
+
+            altitudeDisplay.textContent = altitude;
+            
+            let shipBottom = 20 + (altitude * 2);
+            if(shipBottom > 200) shipBottom = 200; 
+            spaceship.style.bottom = shipBottom + 'px';
+
+            if (missionPhase === 'DOWN') {
+                star.style.transition = 'none'; 
+                star.style.top = 'auto';
+                star.style.bottom = (shipBottom + 85) + 'px'; 
+            }
+
+            let bgPos = 100 - altitude; 
+            gameArea.style.backgroundPosition = `50% ${bgPos}%`;
+
+            if (altitude > 70 && missionPhase === 'UP') {
+                let moonTop = -150 + ((altitude - 70) * 5);
+                moon.style.top = moonTop + 'px';
+            }
+
+            spaceship.classList.add('engine-on');
+            clearTimeout(engineTimeout);
+            engineTimeout = setTimeout(() => { spaceship.classList.remove('engine-on'); }, 150);
+
+        }, { passive: false }); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>특수문자 이름 연습</title>
+    <style>
+        @font-face { 
+            font-family: 'ONEMobilePOP'; 
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.0/ONE-Mobile-POP.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body { 
+            background-color: #fce4ec; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            padding: 10px; 
+            font-family: sans-serif; 
+            position: relative; 
+            min-height: 100vh; 
+            margin: 0; 
+            box-sizing: border-box; 
+            overflow: hidden;
+        }
+        
+        .home-btn { 
+            position: absolute; top: 20px; left: 20px; background-color: #FFF; 
+            color: #e91e63; padding: 12px 24px; border-radius: 30px; 
+            text-decoration: none; font-size: 20px; font-weight: bold; 
+            box-shadow: 0 6px 0 #f8bbd0; border: 4px solid #e91e63; z-index: 999; 
+            font-family: 'ONEMobilePOP', sans-serif;
+        }
+
+        .container { 
+            background: white; 
+            padding: 30px 80px; 
+            border-radius: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            text-align: center; 
+            width: 750px; 
+            margin-bottom: 25px; 
+            border: 4px solid #e1bee7;
+        }
+        #char-name { font-size: 50px; color: #e91e63; font-weight: bold; margin-bottom: 5px; font-family: 'ONEMobilePOP', sans-serif; }
+        #target { font-size: 75px; font-weight: bold; color: #5c6bc0; margin-bottom: 10px; }
+        #input-field { font-size: 40px; width: 180px; padding: 12px; border: 3px solid #e1bee7; border-radius: 15px; color: #2980b9; font-weight: bold; text-align: center; }
+        
+        #final-popup { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: white; padding: 50px; border-radius: 30px; text-align: center; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); z-index: 300; border: 5px solid #ffcc80;
+        }
+        .final-msg { font-size: 40px; color: #e91e63; font-weight: bold; margin-bottom: 30px; font-family: 'ONEMobilePOP', sans-serif; }
+        .btn-group { display: flex; gap: 20px; justify-content: center; }
+        .action-btn { 
+            padding: 20px 30px; font-size: 24px; border-radius: 20px; border: none; 
+            cursor: pointer; font-weight: bold; color: white;
+            font-family: 'ONEMobilePOP', sans-serif;
+        }
+        .retry-btn { background-color: #8bc34a; }
+        .back-btn { background-color: #2196f3; }
+
+        /* 💡 키보드 크기를 조금 더 키움 (0.8 -> 0.88) */
+        .keyboard-housing { 
+            display: flex; gap: 28px; padding: 30px; background: #fffaf2; border-radius: 40px; 
+            border: 7px solid #e2d4c9; box-shadow: 11px 11px 0 #d5c6b9, 0 20px 30px rgba(0,0,0,0.08); 
+            align-items: flex-start;
+            transform: scale(0.88); 
+            transform-origin: center center; 
+            margin: -10px 0; 
+        }
+
+        .key { 
+            width: 63px; height: 63px; border-radius: 16px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 19px; font-weight: bold; color: #333; 
+            border: 2px solid #a69c94; 
+            box-shadow: 3px 3px 0 #a69c94; 
+            box-sizing: border-box; background: #ffffff; 
+            position: relative; 
+            z-index: 1; 
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+
+        .guide { 
+            background: #ff9800 !important; 
+            border-color: #ef6c00 !important; 
+            box-shadow: 0 0 20px #ffb74d, 3px 3px 0 #ef6c00 !important; 
+            color: white !important; 
+            transform: scale(1.15); 
+            z-index: 10; 
+            transition: all 0.3s ease-in-out; 
+        }
+
+        .main-block { display: flex; flex-direction: column; width: 1029px; }
+        
+        .f-row-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px; 
+        }
+
+        .keys-section { display: flex; flex-direction: column; gap: 7px; }
+        .row { display: flex; gap: 7px; height: 63px; }
+        
+        .middle-block { 
+            display: grid; 
+            grid-template-columns: repeat(3, 63px); 
+            grid-template-rows: repeat(6, 63px); 
+            gap: 7px; 
+            margin-top: 17px; 
+        }
+        
+        .right-block { 
+            display: grid; 
+            grid-template-columns: repeat(4, 63px); 
+            grid-template-rows: repeat(6, 63px); 
+            gap: 7px; 
+            margin-top: 17px; 
+        }
+
+        .c-esc { background: #fca397; border-color: #cc7366; box-shadow: 3px 3px 0 #cc7366; color: #fff; }
+        .c-fkey { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; }
+        .c-numrow { background: #ffe082; border-color: #e6bb35; box-shadow: 3px 3px 0 #e6bb35; }
+        .c-letter { background: #b3e5fc; border-color: #62bde6; box-shadow: 3px 3px 0 #62bde6; }
+        .c-special { background: #d1c4e9; border-color: #9c84c7; box-shadow: 3px 3px 0 #9c84c7; }
+        .c-space { background: #ffe082; border-color: #e6bb35; box-shadow: 3px 3px 0 #e6bb35; color: #997a00; font-size: 22px; font-weight: 900; }
+        .c-arrow { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; font-size: 24px; }
+        .c-numpad { background: #f8bbd0; border-color: #d97396; box-shadow: 3px 3px 0 #d97396; }
+        .c-num-enter { background: #c8e6c9; border-color: #8ebf90; box-shadow: 3px 3px 0 #8ebf90; }
+
+        .w-back { width: 120px; font-size: 22px; }
+        .w-tab { width: 120px; } .w-caps { width: 120px; } .w-main-enter { width: 133px; }
+        .w-shift { width: 161px; } .w-ctrl-side { width: 77px; } .w-space { width: 525px; }
+        .h-double { grid-row: span 2; height: 133px; } .w-double { grid-column: span 2; width: 133px; }
+
+        .led-container { grid-column: span 4; display: flex; justify-content: space-around; align-items: center; font-size: 13px; color: #888; font-weight: bold; }
+        .led-dot { 
+            width: 10px; height: 10px;
+            background: #d3d3d3; 
+            border: 1px solid #bbb; 
+            border-radius: 50%; 
+            margin-bottom: 4px; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); 
+        }
+    </style>
+</head>
+<body>
+
+    <a href="key_menu.html" class="home-btn">🏠 처음으로</a>
+
+    <div class="container">
+        <div id="char-name">느낌표</div>
+        <div id="target">!</div>
+        <input type="text" id="input-field" maxlength="1" autocomplete="off" autofocus>
+    </div>
+
+    <!-- 최종 성공 팝업 -->
+    <div id="final-popup">
+        <div class="final-msg">🏆 정말 잘했어요! 특수키 마스터!</div>
+        <div class="btn-group">
+            <button class="action-btn retry-btn" onclick="location.reload()">한 번 더 연습</button>
+            <button class="action-btn back-btn" onclick="location.href='key_menu.html'">처음으로</button>
+        </div>
+    </div>
+
+    <div class="keyboard-housing">
+        
+        <!-- 1. 메인 키보드 -->
+        <div class="main-block">
+            <div class="f-row-group">
+                <div class="key c-esc" id="key-Escape">Esc</div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey">F1</div><div class="key c-fkey">F2</div><div class="key c-fkey">F3</div><div class="key c-fkey">F4</div></div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey">F5</div><div class="key c-fkey">F6</div><div class="key c-fkey">F7</div><div class="key c-fkey">F8</div></div>
+                <div style="display:flex; gap:7px;"><div class="key c-fkey">F9</div><div class="key c-fkey">F10</div><div class="key c-fkey">F11</div><div class="key c-fkey">F12</div></div>
+            </div>
+
+            <div class="keys-section">
+                <div class="row">
+                    <div class="key c-numrow" id="key-~">~</div><div class="key c-numrow" id="key-1">1</div><div class="key c-numrow" id="key-2">2</div><div class="key c-numrow" id="key-3">3</div><div class="key c-numrow" id="key-4">4</div><div class="key c-numrow" id="key-5">5</div><div class="key c-numrow" id="key-6">6</div><div class="key c-numrow" id="key-7">7</div><div class="key c-numrow" id="key-8">8</div><div class="key c-numrow" id="key-9">9</div><div class="key c-numrow" id="key-0">0</div><div class="key c-numrow" id="key--">-</div><div class="key c-numrow" id="key-=">+</div>
+                    <div class="key c-special w-back" id="key-Backspace">←</div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-tab" id="key-Tab">Tab ⇥</div>
+                    <div class="key c-letter">Q</div><div class="key c-letter">W</div><div class="key c-letter">E</div><div class="key c-letter">R</div><div class="key c-letter">T</div><div class="key c-letter">Y</div><div class="key c-letter">U</div><div class="key c-letter">I</div><div class="key c-letter">O</div><div class="key c-letter">P</div><div class="key c-letter" id="key-[">{</div><div class="key c-letter" id="key-]">}</div><div class="key c-letter" id="key-\">|</div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-caps" id="key-Caps">Caps</div>
+                    <div class="key c-letter">A</div><div class="key c-letter">S</div><div class="key c-letter">D</div><div class="key c-letter">F</div><div class="key c-letter">G</div><div class="key c-letter">H</div><div class="key c-letter">J</div><div class="key c-letter">K</div><div class="key c-letter">L</div><div class="key c-letter" id="key-;">;</div><div class="key c-letter" id="key-'">'</div>
+                    <div class="key c-special w-main-enter" id="key-Enter">Enter ↵</div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-shift" id="key-ShiftLeft">Shift</div>
+                    <div class="key c-letter">Z</div><div class="key c-letter">X</div><div class="key c-letter">C</div><div class="key c-letter">V</div><div class="key c-letter">B</div><div class="key c-letter">N</div><div class="key c-letter">M</div><div class="key c-letter" id="key-,">&lt;</div><div class="key c-letter" id="key-.">&gt;</div><div class="key c-letter" id="key-/">?</div>
+                    <div class="key c-special w-shift" id="key-ShiftRight">Shift</div>
+                </div>
+                <div class="row">
+                    <div class="key c-special w-ctrl-side">Ctrl</div><div class="key c-special w-ctrl-side">Win</div><div class="key c-special w-ctrl-side">Alt</div>
+                    <div class="key c-space w-space">Space</div>
+                    <div class="key c-special w-ctrl-side">한/영</div><div class="key c-special w-ctrl-side">Alt</div><div class="key c-special w-ctrl-side">Ctrl</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 중간 기능키 / 방향키 -->
+        <div class="middle-block">
+            <div></div><div></div><div></div>
+            <div class="key c-special" style="grid-row: 2; grid-column: 1;">Ins</div><div class="key c-special" style="grid-row: 2; grid-column: 2;">Home</div><div class="key c-special" style="grid-row: 2; grid-column: 3;">PgUp</div>
+            <div class="key c-special" style="grid-row: 3; grid-column: 1;">Del</div><div class="key c-special" style="grid-row: 3; grid-column: 2;">End</div><div class="key c-special" style="grid-row: 3; grid-column: 3;">PgDn</div>
+            <div></div><div></div><div></div>
+            <div class="key c-arrow" style="grid-row: 5; grid-column: 2;">↑</div>
+            <div class="key c-arrow" style="grid-row: 6; grid-column: 1;">←</div><div class="key c-arrow" style="grid-row: 6; grid-column: 2;">↓</div><div class="key c-arrow" style="grid-row: 6; grid-column: 3;">→</div>
+        </div>
+
+        <!-- 3. 오른쪽 숫자 패드 -->
+        <div class="right-block">
+            <div class="led-container" style="grid-row: 1;">
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div class="led-dot"></div>Num</div>
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div class="led-dot"></div>Caps</div>
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;"><div class="led-dot"></div>Scroll</div>
+            </div>
+            
+            <div class="key c-numpad" style="grid-row: 2; grid-column: 1;">Num</div><div class="key c-numpad" style="grid-row: 2; grid-column: 2;">/</div><div class="key c-numpad" style="grid-row: 2; grid-column: 3;">*</div><div class="key c-numpad" style="grid-row: 2; grid-column: 4;">-</div>
+            
+            <div class="key c-numpad" style="grid-row: 3; grid-column: 1;">7</div><div class="key c-numpad" style="grid-row: 3; grid-column: 2;">8</div><div class="key c-numpad" style="grid-row: 3; grid-column: 3;">9</div><div class="key c-numpad h-double" style="grid-row: 3 / span 2; grid-column: 4;">+</div>
+            <div class="key c-numpad" style="grid-row: 4; grid-column: 1;">4</div><div class="key c-numpad" style="grid-row: 4; grid-column: 2;">5</div><div class="key c-numpad" style="grid-row: 4; grid-column: 3;">6</div>
+            <div class="key c-numpad" style="grid-row: 5; grid-column: 1;">1</div><div class="key c-numpad" style="grid-row: 5; grid-column: 2;">2</div><div class="key c-numpad" style="grid-row: 5; grid-column: 3;">3</div><div class="key c-num-enter h-double" style="grid-row: 5 / span 2; grid-column: 4;">Enter</div>
+            <div class="key c-numpad w-double" style="grid-row: 6; grid-column: 1 / span 2;">0</div><div class="key c-numpad" style="grid-row: 6; grid-column: 3;">.</div>
+        </div>
+
+    </div>
+
+    <script>
+        const tasks = [
+            { name: "느낌표", char: "!" }, { name: "골뱅이", char: "@" },
+            { name: "샵", char: "#" }, { name: "달러", char: "$" },
+            { name: "퍼센트", char: "%" }, { name: "꺽쇠", char: "^" },
+            { name: "앰퍼샌드", char: "&" }, { name: "별표", char: "*" },
+            { name: "여는 괄호", char: "(" }, { name: "닫는 괄호", char: ")" },
+            { name: "언더바", char: "_" }, { name: "더하기", char: "+" }
+        ];
+        
+        const specialKeys = { '!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9', ')': '0', '_': '-', '+': '=' };
+
+        let taskIndex = 0;
+        let guideTimeout = null;
+        const input = document.getElementById('input-field');
+        const charName = document.getElementById('char-name');
+        const targetDiv = document.getElementById('target');
+        const finalPopup = document.getElementById('final-popup');
+
+        function updateGuide() {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('guide'));
+            if (guideTimeout) clearTimeout(guideTimeout);
+
+            // 💡 3초 이상 못 찾을 경우에만 가이드 표시
+            guideTimeout = setTimeout(() => {
+                let char = tasks[taskIndex].char;
+                let targetKeyNum = specialKeys[char];
+
+                // 💡 숫자 '~', '1', '2', '3', '4', '5' 또는 '-' 키는 '왼쪽 쉬프트', 나머지는 '오른쪽 쉬프트' 지정
+                let leftShiftChars = ['~', '1', '2', '3', '4', '5', '-'];
+                let shiftTarget = leftShiftChars.includes(targetKeyNum) ? 'key-ShiftLeft' : 'key-ShiftRight';
+
+                document.getElementById(shiftTarget).classList.add('guide');
+                document.getElementById('key-' + targetKeyNum).classList.add('guide');
+            }, 3000);
+        }
+
+        input.addEventListener('input', (e) => {
+            if (e.target.value === tasks[taskIndex].char) {
+                if (guideTimeout) clearTimeout(guideTimeout); 
+                input.disabled = true;
+                taskIndex++;
+                if (taskIndex < tasks.length) {
+                    charName.innerText = tasks[taskIndex].name;
+                    targetDiv.innerText = tasks[taskIndex].char;
+                    input.value = ""; input.disabled = false;
+                    input.focus(); 
+                    updateGuide();
+                } else {
+                    finalPopup.style.display = 'block';
+                }
+            }
+        });
+
+        updateGuide();
+    </script>
+</body>
+</html>
