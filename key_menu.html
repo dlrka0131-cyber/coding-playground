@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="common.css">
     <meta charset="UTF-8">
     <title>키보드 연습 메뉴</title>
     <style>
-        /* 웹 폰트 주소를 통해 폰트를 직접 불러옵니다 */
-        @font-face { 
-            font-family: 'ONEMobilePOP'; 
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105@1.0/ONE-Mobile-POP.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-        
-        body { 
+body {
             background-color: #f3f0ff; 
             color: #7b61ff;            
             display: flex; 
@@ -108,10 +101,17 @@
 
     <div class="container">
         <!-- 방금 만든 자유 연습용 키보드 (맨 처음 위치) -->
-        <a href="keyboard.html" class="card">
+        <a href="key_macaron.html" class="card">
             <div class="badge">자유 놀이</div>
             <div class="icon">👆</div> <!-- 피아노 건반에서 손가락 누르기 아이콘으로 변경 -->
             <div class="title">마카롱 키보드 </div>
+        </a>
+
+        <!-- 타자 연습 -->
+        <a href="key_macaron_typing.html" class="card">
+            <div class="badge">3분 챌린지</div>
+            <div class="icon">⏱️</div>
+            <div class="title">타자 연습</div>
         </a>
 
         <!-- 중요키 연습 -->
@@ -136,7 +136,7 @@
         </a>
 
         <!-- 특수키 연습 -->
-        <a href="special_typing.html" class="card">
+        <a href="key_special.html" class="card">
             <div class="badge">마스터 과정</div>
             <div class="icon">🔮</div>
             <div class="title">특수키 연습</div>

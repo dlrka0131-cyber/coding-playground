@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⭐ 반짝반짝 별 찾기 ⭐</title>
     <style>
         /* 온라인 웹 폰트 연결 */
-        @font-face {
-            font-family: 'ONE-Mobile-POP';
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        body {
-            font-family: 'ONE-Mobile-POP', sans-serif;
+body {
+            font-family: 'ONEMobilePOP', sans-serif;
             background-color: #192a56; 
             display: flex;
             justify-content: center;
@@ -166,7 +160,7 @@
         
         .big-action-button {
             background-color: #686de0; color: white; border: none; border-radius: 30px;
-            padding: 15px 30px; font-size: 32px; font-family: 'ONE-Mobile-POP', sans-serif;
+            padding: 15px 30px; font-size: 32px; font-family: 'ONEMobilePOP', sans-serif;
             cursor: pointer; transition: all 0.1s; 
             box-shadow: none; 
             width: 100%;
@@ -190,7 +184,7 @@
 
         .click-tooltip {
             position: absolute; background-color: #30336b; color: white;
-            padding: 6px 12px; border-radius: 10px; font-size: 22px; font-family: 'ONE-Mobile-POP', sans-serif;
+            padding: 6px 12px; border-radius: 10px; font-size: 22px; font-family: 'ONEMobilePOP', sans-serif;
             pointer-events: none; transform: translate(-50%, -150%); z-index: 11;
             animation: popOut 1.5s forwards; white-space: nowrap;
         }

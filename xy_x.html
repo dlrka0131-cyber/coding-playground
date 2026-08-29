@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Y좌표 로켓 찾기 🚀</title>
+    <title>👽 X좌표 외계인 찾기 👽</title>
     <style>
-        @font-face {
-            font-family: 'ONE-Mobile-POP';
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        body {
-            font-family: 'ONE-Mobile-POP', sans-serif;
+body {
+            font-family: 'ONEMobilePOP', sans-serif;
             background-color: #192a56; 
             display: flex;
             justify-content: center;
@@ -44,7 +38,7 @@
         }
 
         h1 { 
-            color: #1e90ff; 
+            color: #ff4757; 
             font-size: 44px; 
             margin-bottom: 30px; 
             margin-top: 0;
@@ -72,7 +66,9 @@
         }
 
         #mission-display { font-size: 38px; font-weight: bold; }
-        #score-display { color: #1e90ff; font-weight: bold; font-size: 42px;}
+        
+        #score-display { color: #2ed573; font-weight: bold; font-size: 42px;}
+        
         #time-display { color: #eb4d4b; font-weight: bold; font-size: 42px;}
 
         .sidebar-btn-group {
@@ -155,14 +151,14 @@
         }
         #result-overlay { display: none; }
         
-        .overlay h2 { font-size: 60px; color: #1e90ff; margin-bottom: 20px; text-shadow: none; }
+        .overlay h2 { font-size: 60px; color: #ff4757; margin-bottom: 20px; text-shadow: none; }
         .overlay p { font-size: 34px; color: #34495e; margin-bottom: 40px; }
         
         #feedback-msg { font-size: 30px; color: #1e90ff; margin-top: 20px; margin-bottom: 40px; font-weight: bold; text-align: center; line-height: 1.4; }
         
         .big-action-button {
             background-color: #686de0; color: white; border: none; border-radius: 30px;
-            padding: 15px 30px; font-size: 32px; font-family: 'ONE-Mobile-POP', sans-serif;
+            padding: 15px 30px; font-size: 32px; font-family: 'ONEMobilePOP', sans-serif;
             cursor: pointer; transition: all 0.1s; 
             box-shadow: none; 
             width: 100%;
@@ -178,7 +174,7 @@
 
         .click-marker {
             position: absolute; width: 16px; height: 16px;
-            background-color: #1e90ff; border-radius: 50%;
+            background-color: #ff4757; border-radius: 50%;
             transform: translate(-50%, -50%); pointer-events: none;
             z-index: 10;
             animation: popOut 1s forwards;
@@ -186,12 +182,12 @@
 
         .click-tooltip {
             position: absolute; background-color: #30336b; color: white;
-            padding: 6px 12px; border-radius: 10px; font-size: 22px; font-family: 'ONE-Mobile-POP', sans-serif;
+            padding: 6px 12px; border-radius: 10px; font-size: 22px; font-family: 'ONEMobilePOP', sans-serif;
             pointer-events: none; transform: translate(-50%, -150%); z-index: 11;
             animation: popOut 1.5s forwards; white-space: nowrap;
         }
 
-        .rocket-anim {
+        .alien-anim {
             position: absolute; font-size: 70px; z-index: 9;
             transform: translate(-50%, -50%); pointer-events: none;
             animation: bounce 0.5s ease-out;
@@ -205,16 +201,16 @@
 
     <div id="main-wrapper">
         <div id="sidebar">
-            <h1 style="color: #1e90ff;">🚀 Y좌표<br>로켓 찾기</h1>
+            <h1 style="color: #ff4757;">👽 X좌표<br>외계인 찾기</h1>
             
             <div class="info-box">
-                <span class="label">🎯 목표 Y좌표</span>
+                <span class="label">🎯 목표 X좌표</span>
                 <span id="mission-display">준비...</span>
             </div>
             
             <div class="info-box">
-                <span class="label">🚀 찾은 로켓</span>
-                <div><span id="score-display">0</span>개</div>
+                <span class="label">👽 만난 외계인</span>
+                <div><span id="score-display">0</span>명</div>
             </div>
             
             <div class="info-box">
@@ -233,16 +229,16 @@
                 <div class="axis axis-y"></div>
                 
                 <div id="start-overlay" class="overlay">
-                    <h2>🚀 2단계: Y좌표 로켓 찾기!</h2>
-                    <p>정확한 Y좌표를 클릭해 멋진 로켓을 발사하세요!</p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #1e90ff;">▶ 탐험 시작!</button>
+                    <h2>🚀 1단계: X좌표 외계인 찾기!</h2>
+                    <p>정확한 X좌표를 클릭해 귀여운 외계인을 만나보세요!</p>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">▶ 탐험 시작!</button>
                 </div>
 
                 <div id="result-overlay" class="overlay">
                     <h2>탐험 종료!</h2>
-                    <p style="margin-bottom: 20px;">찾은 로켓: <span id="final-score" style="color:#1e90ff; font-weight:bold;">0</span> 개!</p>
+                    <p style="margin-bottom: 20px;">만난 외계인: <span id="final-score" style="color:#ff4757; font-weight:bold;">0</span> 명!</p>
                     <p id="feedback-msg"></p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #1e90ff;">다시 탐험하기</button>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">다시 탐험하기</button>
                 </div>
             </div>
         </div>
@@ -293,9 +289,9 @@
         let score = 0;
         let timeLeft = 60;
         let gameInterval;
-        let targetY = 0;
+        let targetX = 0;
 
-        const yOptions = [-100, -50, 50, 100];
+        const xOptions = [-200, -150, -100, -50, 50, 100, 150, 200];
 
         function playSound(type) {
             try {
@@ -333,9 +329,10 @@
             startOverlay.style.display = 'none';
             resultOverlay.style.display = 'none';
             
-            document.querySelectorAll('.click-marker, .click-tooltip, .rocket-anim').forEach(el => el.remove());
+            document.querySelectorAll('.click-marker, .click-tooltip, .alien-anim').forEach(el => el.remove());
 
             setNewTarget();
+            if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(updateTime, 1000);
         }
 
@@ -346,8 +343,8 @@
         }
 
         function setNewTarget() {
-            targetY = yOptions[Math.floor(Math.random() * yOptions.length)];
-            missionDisplay.innerHTML = `<span style="color:#1e90ff;">Y : ${targetY}</span>`;
+            targetX = xOptions[Math.floor(Math.random() * xOptions.length)];
+            missionDisplay.innerHTML = `<span style="color:#ff4757;">X : ${targetX}</span>`;
         }
 
         gameArea.addEventListener('click', function(e) {
@@ -368,21 +365,21 @@
 
             if(mathX < -220 || mathX > 220 || mathY < -120 || mathY > 120) return;
 
-            if (Math.abs(mathX) <= 10 && mathY === targetY) {
+            if (mathX === targetX && Math.abs(mathY) <= 10) {
                 playSound('success');
                 score++;
                 scoreDisplay.textContent = score;
 
-                const rocket = document.createElement('div');
-                rocket.className = 'rocket-anim';
-                rocket.textContent = '🚀'; 
+                const alien = document.createElement('div');
+                alien.className = 'alien-anim';
+                alien.textContent = '👽'; 
                 
-                rocket.style.left = CENTER_X + 'px';
-                rocket.style.top = (-targetY * SCALE + CENTER_Y) + 'px';
-                gameArea.appendChild(rocket);
+                alien.style.left = (targetX * SCALE + CENTER_X) + 'px';
+                alien.style.top = CENTER_Y + 'px';
+                gameArea.appendChild(alien);
 
                 setTimeout(() => {
-                    rocket.remove();
+                    alien.remove();
                     setNewTarget();
                 }, 800);
                 
@@ -396,7 +393,7 @@
                 
                 const tooltip = document.createElement('div');
                 tooltip.className = 'click-tooltip';
-                tooltip.textContent = `여긴 Y: ${mathY}`;
+                tooltip.textContent = `여긴 X: ${mathX}`;
                 tooltip.style.left = (mathX * SCALE + CENTER_X) + 'px';
                 tooltip.style.top = (-mathY * SCALE + CENTER_Y) + 'px';
 
@@ -412,14 +409,14 @@
             document.getElementById('final-score').textContent = score;
             
             if (score >= 15) {
-                feedbackMsg.innerHTML = "와우! 우주선 발사 대성공이네요!<br>Y좌표 세로 높이 찾기는 마스터 완료! 🚀";
-                feedbackMsg.style.color = "#1e90ff";
+                feedbackMsg.innerHTML = "와우! 외계인 친구들의 인기스타네요!<br>X좌표 가로 위치 찾기는 마스터 완료! 🚀";
+                feedbackMsg.style.color = "#ff4757";
             } else if (score >= 10) {
-                feedbackMsg.innerHTML = "참 잘했어요!<br>로켓을 위아래 높이에 맞춰 잘 쏘아 올렸군요! 👏";
+                feedbackMsg.innerHTML = "참 잘했어요!<br>외계인 친구들을 아주 잘 찾아주었군요! 👏";
                 feedbackMsg.style.color = "#f0932b";
             } else {
-                feedbackMsg.innerHTML = "좋아요!<br>세로 방향(Y축) 눈금을 보고<br>높이를 찾는 연습을 조금 더 해봐요! 😉";
-                feedbackMsg.style.color = "#ff4757";
+                feedbackMsg.innerHTML = "좋아요!<br>가로 방향(X축) 눈금을 보고<br>위치를 찾는 연습을 조금 더 해봐요! 😉";
+                feedbackMsg.style.color = "#1e90ff";
             }
 
             resultOverlay.style.display = 'flex';

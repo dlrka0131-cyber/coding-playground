@@ -173,7 +173,7 @@
                     popup.style.display = 'none';
                     input.disabled = false; input.value = ""; taskIndex++;
                     if (taskIndex < tasks.length) {
-                        statusText.innerHTML = `명령어 연습: ${taskIndex + 1} / ${tasks.length}`;
+                        statusText.textContent = `명령어 연습: ${taskIndex + 1} / ${tasks.length}`;
                         
                         // 다음 미션의 색상 태그(html)로 화면 업데이트!
                         targetDiv.innerHTML = tasks[taskIndex].html;

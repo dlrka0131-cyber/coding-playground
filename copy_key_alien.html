@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="common.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>말랑말랑 외계인 복사하기 게임!</title>
     <style>
         /* 👽 통통 튀고 귀여운 ONE 모바일 POP 웹폰트 적용 */
-        @font-face {
-            font-family: 'ONE-Mobile-POP';
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        /* ⚠️ 모든 요소의 글꼴을 ONE 모바일 POP으로 완벽 통일 */
+/* ⚠️ 모든 요소의 글꼴을 ONE 모바일 POP으로 완벽 통일 */
         body, button, h1, h2, h3, p, div, span, a, b {
-            font-family: 'ONE-Mobile-POP', sans-serif;
+            font-family: 'ONEMobilePOP', sans-serif;
         }
 
         body {
@@ -416,7 +410,7 @@
             if (isCopied) {
                 msg.innerHTML = "👉 이제 <span class='highlight-text'>[Ctrl + V]</span>를 누르면 외계인이 뿅! 👈";
             } else {
-                msg.innerHTML = "⚠️ 먼저 ①번 외계인을 복사(Ctrl+C)해야 붙여넣을 수 있어요!";
+                msg.textContent = "⚠️ 먼저 ①번 외계인을 복사(Ctrl+C)해야 붙여넣을 수 있어요!";
             }
         });
 
@@ -470,7 +464,7 @@
                         msg.innerHTML = "👉 우와! 뿅 생겨났어요! 계속해서 우주선 안을 클릭하고 <span class='highlight-text'>[Ctrl + V]</span>!";
                     }
                 } else {
-                    msg.innerHTML = "⚠️ 복사를 먼저 해야 해요! 외계인을 클릭하고 [Ctrl + C]!";
+                    msg.textContent = "⚠️ 복사를 먼저 해야 해요! 외계인을 클릭하고 [Ctrl + C]!";
                 }
             }
         });

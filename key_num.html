@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="common.css">
     <meta charset="UTF-8">
     <title>숫자 키패드 마스터</title>
     <style>
         @import url('https://webfontworld.github.io/baemin/BMJUA.css');
         
-        @font-face {
-            font-family: 'OneMobilePOP';
-            src: url('ONE Mobile POP.ttf') format('truetype');
-        }
-        
-        body { 
+body { 
             background-color: #fcfaff; display: flex; align-items: center; justify-content: center; 
             height: 100vh; margin: 0; font-family: 'BMJUA', sans-serif !important; 
         }
@@ -64,7 +60,7 @@
         .popup-content {
             background: white; color: #673ab7; padding: 60px; border-radius: 80px;
             font-size: 60px; text-align: center; border: 15px solid #e1d5ff; width: 800px;
-            font-family: 'OneMobilePOP', sans-serif !important; font-weight: normal;
+            font-family: 'ONEMobilePOP', sans-serif !important; font-weight: normal;
         }
         
         /* ✨ 커스텀 경고 팝업 스타일 ✨ */
@@ -79,7 +75,7 @@
         }
         .alert-text {
             font-size: 40px; color: #d81b60; font-weight: bold; line-height: 1.5; 
-            font-family: 'OneMobilePOP', sans-serif !important; margin: 20px 0 40px 0;
+            font-family: 'ONEMobilePOP', sans-serif !important; margin: 20px 0 40px 0;
         }
 
         .btn-group { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
@@ -87,7 +83,7 @@
         .btn { 
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
             padding: 15px 40px; border-radius: 30px; cursor: pointer; font-size: 30px; 
-            border: none; background: #673ab7; color: white; font-family: 'OneMobilePOP', sans-serif !important; 
+            border: none; background: #673ab7; color: white; font-family: 'ONEMobilePOP', sans-serif !important; 
             transition: all 0.2s; position: relative; z-index: 999999; pointer-events: auto;
             box-shadow: 0 8px 0 #512da8;
         }
@@ -257,8 +253,8 @@
             if (isFinal) {
                 t.innerHTML = text + '<div class="btn-group"><button class="btn" onclick="location.reload()">🔄 다시하기</button><button class="btn" onclick="location.href=\'key_menu.html\'">🏠 처음으로</button></div>';
             } else {
-                t.innerHTML = text;
-                setTimeout(() => { p.style.display = 'none'; }, 1000); 
+                t.textContent = text;
+                setTimeout(() => { p.style.display = 'none'; }, 1000);
             }
             p.style.display = 'flex';
         }

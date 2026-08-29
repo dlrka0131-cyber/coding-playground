@@ -1,0 +1,14 @@
+/*
+  공통 폰트 정의 파일.
+  이전에는 거의 모든 HTML 파일이 'ONE Mobile POP' 폰트를
+  각자 CDN 또는 로컬 TTF(4MB)로 따로 불러오면서
+  font-family 이름도 'ONEMobilePOP' / 'ONE-Mobile-POP' / 'OneMobilePOP'로
+  제각각이었음. 이 파일 하나로 통일.
+*/
+@font-face {
+    font-family: 'ONEMobilePOP';
+    src: url('ONE Mobile POP.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

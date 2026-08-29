@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상큼달콤 과일 복사하기 게임!</title>
+    <title>귀여운 동물 우클릭 복사하기 게임!</title>
     <style>
         /* ⚠️ 시스템 기본 글꼴 사용 */
         body, button, h1, h2, h3, p, div, span, a, b {
@@ -43,8 +43,8 @@
         .home-btn:hover { background-color: #2a2e5c; }
         .home-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #16213e; }
 
-        h1 { color: #ff6b6b; margin-top: 10px; margin-bottom: 5px; font-size: 44px; text-shadow: 2px 2px 0px #000, 4px 4px 10px rgba(255, 107, 107, 0.3); }
-        .info { font-size: 24px; margin-bottom: 30px; color: #e0e0e0; font-weight: bold;}
+        h1 { color: #4ecc71; margin-top: 10px; margin-bottom: 5px; font-size: 44px; text-shadow: 2px 2px 0px #000, 4px 4px 10px rgba(78, 204, 113, 0.3); }
+        .info { font-size: 24px; margin-bottom: 25px; color: #e0e0e0; font-weight: bold;}
         
         /* 📐 전체 레이아웃 */
         .game-container {
@@ -58,7 +58,7 @@
 
         .copy-zone {
             background: #16213e;
-            border: 5px dashed #ff6b6b;
+            border: 5px dashed #4ecc71;
             border-radius: 40px;
             padding: 25px;
             width: 420px;
@@ -72,23 +72,15 @@
             transition: all 0.3s;
         }
         
-        /* 🛠️ 글씨 겹침 방지를 위해 줄간격(line-height) 및 여백 조정 */
         .copy-zone h3 {
             font-size: 26px;
             line-height: 1.6;
             margin: 0 0 10px 0;
-            color: #ff6b6b;
+            color: #4ecc71;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
-        }
-        .key-badge {
-            background-color: #222;
-            padding: 4px 12px;
-            border-radius: 10px;
-            border: 2px solid #fff;
-            color: #ffde7d;
         }
 
         .item-source {
@@ -105,18 +97,18 @@
             justify-content: center;
         }
         .item-source.selected {
-            background-color: rgba(255, 107, 107, 0.2);
-            box-shadow: 0 0 40px #ff6b6b;
+            background-color: rgba(78, 204, 113, 0.2);
+            box-shadow: 0 0 40px #4ecc71;
             animation: none;
             transform: scale(1.1);
         }
 
         #copy-hint {
-            font-size: 26px;
+            font-size: 24px;
             color: #BA9B8A;
-            height: 70px;
-            line-height: 70px;
-            margin-top: 20px;
+            height: 60px;
+            line-height: 60px;
+            margin-top: 15px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 90%;
             border-radius: 20px;
@@ -124,11 +116,11 @@
         }
 
         #copy-hint.complete {
-            background-color: #ff6b6b; 
+            background-color: #4ecc71; 
             color: #FFF;
-            font-size: 32px; 
+            font-size: 30px; 
             font-weight: bold;
-            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.5);
+            box-shadow: 0 12px 25px rgba(78, 204, 113, 0.5);
             animation: popBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             border: 3px solid #FFF;
         }
@@ -136,7 +128,7 @@
         .paste-zone {
             position: relative;
             background: #0f3460;
-            outline: 6px solid #4ecc71; 
+            outline: 6px solid #ff6b6b; 
             border-radius: 40px;
             width: 750px;
             height: 520px;
@@ -151,12 +143,12 @@
             left: 0;
             right: 0;
             font-size: 32px;
-            color: #4ecc71;
+            color: #ff6b6b;
             margin: 0;
             z-index: 5;
             pointer-events: none;
         }
-        .basket-bg {
+        .cage-bg {
             font-size: 260px;
             position: absolute;
             top: 55%;
@@ -204,6 +196,34 @@
             pointer-events: none;
         }
 
+        /* 🖱️ 가상 우클릭 메뉴 스타일 */
+        .custom-context-menu {
+            position: absolute;
+            background: #222546;
+            border: 3px solid #ffde7d;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 9999;
+            padding: 5px;
+            min-width: 150px;
+        }
+        .menu-item {
+            padding: 12px 18px;
+            font-size: 20px;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.1s;
+        }
+        .menu-item:hover {
+            background-color: #ff6b6b;
+            color: #fff;
+        }
+
         #status-message {
             margin-top: 35px;
             font-size: 36px;
@@ -213,7 +233,6 @@
             text-shadow: 1px 1px 2px #000;
         }
 
-        /* 🛠️ "마우스로 클릭" 등 강조 텍스트가 커지지 않도록 고정 스타일로 변경 */
         .highlight-text {
             color: #ffde7d;
             font-size: 36px;
@@ -225,7 +244,7 @@
         #score-board {
             font-size: 36px;
             margin-top: 15px;
-            color: #4ecc71;
+            color: #ff6b6b;
             font-weight: bold;
         }
 
@@ -290,9 +309,9 @@
         }
 
         @keyframes pulseBorderLeft {
-            0% { border-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            0% { border-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
             50% { border-color: #ffde7d; box-shadow: 0 0 45px rgba(255, 222, 125, 0.9); }
-            100% { border-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            100% { border-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
         }
         .active-pulse-left {
             animation: pulseBorderLeft 1.2s infinite !important;
@@ -300,9 +319,9 @@
         }
 
         @keyframes pulseBorderRight {
-            0% { outline-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            0% { outline-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
             50% { outline-color: #ffde7d; box-shadow: 0 0 50px rgba(255, 222, 125, 0.9); }
-            100% { outline-color: #4ecc71; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+            100% { outline-color: #ff6b6b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
         }
         .active-pulse-right {
             animation: pulseBorderRight 1.2s infinite !important;
@@ -341,41 +360,52 @@
     <!-- 🏠 왼쪽 상단 처음으로 버튼 -->
     <a href="copy_menu.html" class="home-btn">🏠 처음으로</a>
 
-    <h1>🍎 상큼달콤 과일 복사하기 게임! 🍓</h1>
-    <p class="info">과일을 똑같이 복사해서 바구니에 가득 담아주세요!</p>
+    <h1>🦁 귀여운 동물 복사하기 게임! 🐰</h1>
+    <p class="info">동물을 우클릭해서 복사하고 동물원에 붙여넣어 주세요!</p>
 
     <div class="game-container">
+        <!-- 왼쪽: 복사 영역 -->
         <div class="copy-zone active-pulse-left" id="zone-left">
-            <h3><span>① 과일 클릭 후</span> <span class="key-badge">Ctrl + C</span></h3>
-            <div id="item-box" class="item-source" tabindex="0">🍎</div>
-            <div id="copy-hint">👆 먼저 눌러보세요!</div>
+            <h3><span>① 동물에 마우스 우클릭</span></h3>
+            <div id="item-box" class="item-source" tabindex="0">🐶</div>
+            <div id="copy-hint">👆 동물을 우클릭해보세요!</div>
         </div>
 
+        <!-- 오른쪽: 붙여넣기 영역 -->
         <div class="paste-zone disabled-zone" id="zone-right">
-            <h3>② 여기서 바구니 클릭!</h3>
-            <div class="basket-bg">🧺</div>
+            <h3>② 동물원에 우클릭 후 붙여넣기!</h3>
+            <div class="cage-bg">🏡</div>
             <div id="target" class="target-marker"></div>
         </div>
     </div>
 
-    <div id="status-message">👉 <b>①번 과일</b>을 <span class="highlight-text">마우스로 클릭!</span> 👈</div>
-    <div id="score-board">🧺 바구니에 담은 과일: <span id="count" style="color:#ff6b6b; font-size:42px;">0</span> / 10 개</div>
+    <!-- 하단 안내 문구 -->
+    <div id="status-message">👉 <b>①번 동물</b>을 마우스 <span class="highlight-text">우클릭!</span> 👈</div>
+    <div id="score-board">🏡 동물원에 모인 동물: <span id="count" style="color:#4ecc71; font-size:42px;">0</span> / 10 마리</div>
 
+    <!-- 커스텀 우클릭 메뉴 -->
+    <div id="context-menu" class="custom-context-menu">
+        <div id="menu-copy" class="menu-item" onclick="handleCopy()">📋 복사하기</div>
+        <div id="menu-paste" class="menu-item" onclick="handlePaste()" style="display:none;">📥 붙여넣기</div>
+    </div>
+
+    <!-- 성공 팝업 -->
     <div id="success-screen" class="success-overlay">
         <div class="success-content">
             <h2>🎉 미션 성공! 🎉</h2>
-            <p style="font-size: 80px; margin: 15px 0;">🍎🍌🍇🍓🍊</p>
-            <p>[복사]와 [붙여넣기]를 완벽하게 성공했어요!<br>정말 멋져요! 👍</p>
+            <p style="font-size: 80px; margin: 15px 0;">🐶🐱🐰🦁🐵</p>
+            <p>우클릭 [복사]와 [붙여넣기]를 완벽하게 성공했어요!<br>정말 멋져요! 👍</p>
             <div class="btn-box">
                 <button class="restart-btn" onclick="resetGame()">한 번 더 놀기 🔄</button>
-                <a href="index.html" class="home-popup-btn">🏠 처음으로</a>
+                <a href="copy_menu.html" class="home-popup-btn">🏠 처음으로</a>
             </div>
         </div>
     </div>
 
     <script>
-        const fruits = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍑', '🍍', '🍉', '🥝', '🍒'];
-        let currentFruit = '🍎';
+        // 다양한 동물 종류 배열
+        const animals = ['🐶', '🐱', '🐰', '🦁', '🐵', '🐼', '🦊', '🐯', '🐨', '🐸', '🦄'];
+        let currentAnimal = '🐶';
 
         let isCopied = false;
         let isSelected = false;
@@ -387,106 +417,124 @@
         const itemBox = document.getElementById('item-box');
         const zoneLeft = document.getElementById('zone-left');
         const zoneRight = document.getElementById('zone-right');
-        const basket = document.getElementById('zone-right');
+        const zoo = document.getElementById('zone-right');
         const target = document.getElementById('target');
         const msg = document.getElementById('status-message');
         const countTxt = document.getElementById('count');
         const copyHint = document.getElementById('copy-hint');
         const successScreen = document.getElementById('success-screen');
+        const contextMenu = document.getElementById('context-menu');
+        const menuCopy = document.getElementById('menu-copy');
+        const menuPaste = document.getElementById('menu-paste');
 
-        function setRandomFruit() {
-            const randomIndex = Math.floor(Math.random() * fruits.length);
-            currentFruit = fruits[randomIndex];
-            itemBox.innerText = currentFruit;
+        function setRandomAnimal() {
+            const randomIndex = Math.floor(Math.random() * animals.length);
+            currentAnimal = animals[randomIndex];
+            itemBox.innerText = currentAnimal;
         }
 
-        itemBox.addEventListener('click', () => {
-            if(gameFinished) return;
-            isSelected = true;
-            itemBox.classList.add('selected');
-            msg.innerHTML = "👉 이제 키보드에서 <span class='highlight-text'>[Ctrl + C]</span>를 누르세요!";
+        // 기본 브라우저 우클릭 메뉴 방지 및 커스텀 메뉴 띄우기
+        window.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
         });
 
-        basket.addEventListener('click', (e) => {
+        // 1. 왼쪽 동물 상자 우클릭 이벤트
+        itemBox.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
             if(gameFinished) return;
+
+            isSelected = true;
+            itemBox.classList.add('selected');
+
+            // 메뉴 위치 설정
+            contextMenu.style.display = 'flex';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
             
-            targetX = e.offsetX;
-            targetY = e.offsetY;
+            menuCopy.style.display = 'block';
+            menuPaste.style.display = 'none';
+        });
+
+        // 복사하기 실행
+        function handleCopy() {
+            isCopied = true;
+            contextMenu.style.display = 'none';
+            msg.innerHTML = "👉 ②번 동물원 안을 마우스 <span class='highlight-text'>우클릭</span> 하세요! 👈";
+            
+            copyHint.innerText = "복사 완료! 👍";
+            copyHint.classList.add('complete');
+            
+            zoneLeft.classList.remove('active-pulse-left');
+            zoneRight.classList.remove('disabled-zone');
+            zoneRight.classList.add('active-pulse-right');
+        }
+
+        // 2. 오른쪽 동물원 영역 우클릭 이벤트
+        zoo.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if(gameFinished) return;
+
+            // 좌표 저장
+            const rect = zoo.getBoundingClientRect();
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
 
             target.style.left = targetX + 'px';
             target.style.top = targetY + 'px';
             target.style.display = 'block';
 
             if (isCopied) {
-                msg.innerHTML = "👉 이제 <span class='highlight-text'>[Ctrl + V]</span>를 누르면 과일이 뿅! 👈";
+                // 우클릭 메뉴에 붙여넣기 노출
+                contextMenu.style.display = 'flex';
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+                
+                menuCopy.style.display = 'none';
+                menuPaste.style.display = 'block';
+                msg.innerHTML = "👉 메뉴에서 <span class='highlight-text'>[붙여넣기]</span>를 누르세요! 👈";
             } else {
-                msg.innerHTML = "⚠️ 먼저 ①번 과일을 복사(Ctrl+C)해야 붙여넣을 수 있어요!";
+                msg.textContent = "⚠️ 먼저 ①번 동물을 우클릭해서 복사해야 해요!";
             }
         });
 
-        window.addEventListener('keydown', (e) => {
-            if(gameFinished) return;
-            
-            const isCtrlPressed = e.ctrlKey || e.metaKey;
-            const key = e.key.toLowerCase();
+        // 붙여넣기 실행
+        function handlePaste() {
+            if (!isCopied) return;
+            contextMenu.style.display = 'none';
 
-            if (isCtrlPressed && key === 'c') {
-                if (isSelected) {
-                    isCopied = true;
-                    msg.innerHTML = "👉 ②번 바구니를 클릭하고 <span class='highlight-text'>[Ctrl + V]</span> 누르기! 👈";
-                    
-                    copyHint.innerText = "복사 완료! 👍";
-                    copyHint.classList.add('complete');
-                    
-                    zoneLeft.classList.remove('active-pulse-left');
-                    zoneRight.classList.remove('disabled-zone');
-                    zoneRight.classList.add('active-pulse-right');
-                    
-                    e.preventDefault();
-                }
+            const newItem = document.createElement('div');
+            newItem.className = 'pasted-item';
+            newItem.innerText = currentAnimal;
+            newItem.style.left = targetX + 'px';
+            newItem.style.top = targetY + 'px';
+            zoo.appendChild(newItem);
+
+            itemCount++;
+            countTxt.innerText = itemCount;
+
+            if (itemCount >= 10) {
+                gameFinished = true;
+                zoneRight.classList.remove('active-pulse-right');
+                setTimeout(() => {
+                    successScreen.style.display = 'flex';
+                }, 200);
+            } else {
+                setRandomAnimal();
+                isCopied = false;
+                isSelected = false;
+                itemBox.classList.remove('selected');
+                target.style.display = 'none';
+                
+                copyHint.innerText = "👆 다음 동물을 우클릭!";
+                copyHint.classList.remove('complete');
+                
+                zoneRight.classList.add('disabled-zone');
+                zoneRight.classList.remove('active-pulse-right');
+                zoneLeft.classList.add('active-pulse-left');
+
+                msg.innerHTML = "👉 <b>다음 동물</b>을 마우스 <span class='highlight-text'>우클릭!</span> (복사 ➔ 붙여넣기 반복!) 👈";
             }
-
-            if (isCtrlPressed && key === 'v') {
-                if (isCopied) {
-                    e.preventDefault();
-
-                    const newItem = document.createElement('div');
-                    newItem.className = 'pasted-item';
-                    newItem.innerText = currentFruit;
-                    newItem.style.left = targetX + 'px';
-                    newItem.style.top = targetY + 'px';
-                    basket.appendChild(newItem);
-
-                    itemCount++;
-                    countTxt.innerText = itemCount;
-
-                    if (itemCount >= 10) {
-                        gameFinished = true;
-                        zoneRight.classList.remove('active-pulse-right');
-                        setTimeout(() => {
-                            successScreen.style.display = 'flex';
-                        }, 200);
-                    } else {
-                        setRandomFruit();
-                        isCopied = false;
-                        isSelected = false;
-                        itemBox.classList.remove('selected');
-                        target.style.display = 'none';
-                        
-                        copyHint.innerText = "👆 다음 과일을 눌러보세요!";
-                        copyHint.classList.remove('complete');
-                        
-                        zoneRight.classList.add('disabled-zone');
-                        zoneRight.classList.remove('active-pulse-right');
-                        zoneLeft.classList.add('active-pulse-left');
-
-                        msg.innerHTML = "👉 <b>다음 과일</b>을 <span class='highlight-text'>마우스로 클릭!</span> (Ctrl+C ➔ V 반복!) 👈";
-                    }
-                } else {
-                    msg.innerHTML = "⚠️ 복사를 먼저 해야 해요! 과일을 클릭하고 [Ctrl + C]!";
-                }
-            }
-        });
+        }
 
         function resetGame() {
             isCopied = false;
@@ -499,21 +547,21 @@
             itemBox.classList.remove('selected');
             target.style.display = 'none';
             
-            setRandomFruit();
-            copyHint.innerText = "👆 먼저 눌러보세요!";
+            setRandomAnimal();
+            copyHint.innerText = "👆 동물을 우클릭해보세요!";
             copyHint.classList.remove('complete');
             
             zoneRight.classList.add('disabled-zone');
             zoneRight.classList.remove('active-pulse-right');
             zoneLeft.classList.add('active-pulse-left');
             
-            msg.innerHTML = "👉 <b>①번 과일</b>을 <span class='highlight-text'>마우스로 클릭!</span> 👈";
+            msg.innerHTML = "👉 <b>①번 동물</b>을 마우스 <span class='highlight-text'>우클릭!</span> 👈";
 
             const pastedItems = document.querySelectorAll('.pasted-item');
             pastedItems.forEach(el => el.remove());
         }
 
-        setRandomFruit();
+        setRandomAnimal();
     </script>
 </body>
 </html>
