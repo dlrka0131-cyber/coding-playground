@@ -34,7 +34,7 @@
            justify-content는 flex-start로 둬야 함 - center로 하면 카드가
            넘칠 때 양쪽 끝이 대칭으로 잘려서 스크롤해도 안 보이는 버그가 생김 */
         .card-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 25px; justify-content: flex-start; max-width: 1150px; margin: 0 auto 50px auto; padding: 10px; }
-        .card { flex: 0 0 auto; background-color: white; border-radius: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; text-align: center; width: 250px; height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid #f0f0f0; transition: 0.3s; text-decoration: none; }
+        .card { flex: 0 0 auto; background-color: white; border-radius: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; box-sizing: border-box; text-align: center; width: 250px; height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid #f0f0f0; transition: 0.3s; text-decoration: none; }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
 
         /* 카드별 연한 테두리 색상 (평소), hover 시 진하게 */
