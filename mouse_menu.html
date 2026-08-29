@@ -29,10 +29,14 @@
 
         /* 카드가 항상 한 줄로만 보이도록: 줄바꿈 금지 + 넘치면 가로 스크롤 */
         .card-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 25px; justify-content: center; align-items: flex-start; max-width: 1100px; margin: 0 auto 50px auto; padding: 10px; }
-        .card { flex: 0 0 auto; background-color: white; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; text-align: center; width: 210px; height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid white; transition: 0.3s; }
+        .card { flex: 0 0 auto; background-color: white; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; text-align: center; width: 210px; height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid #f0f0f0; transition: 0.3s; text-decoration: none; }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
 
-        /* 카드별 테두리 색상 */
+        /* 카드별 연한 테두리 색상 (평소), hover 시 진하게 */
+        .card.pink { border-color: #ffe0f7; }
+        .card.mint { border-color: #d6f6fd; }
+        .card.yellow { border-color: #fff3d6; }
+        .card.purple { border-color: #ece7fd; }
         .card.pink:hover { border-color: #ff9ff3; }
         .card.mint:hover { border-color: #48dbfb; }
         .card.yellow:hover { border-color: #feca57; }
@@ -46,13 +50,7 @@
         .tag.yellow { background-color: #fef0cd; color: #f39c12; }
         .tag.purple { background-color: #e0ece4; color: #5f27cd; }
 
-        .card h3 { font-size: 24px; color: #2d3436; margin: 0 0 10px 0; font-family: 'ONEMobilePOP', sans-serif; }
-
-        .start-btn { display: block; color: white; text-decoration: none; padding: 15px 0; border-radius: 20px; font-size: 20px; font-family: 'ONEMobilePOP', sans-serif; width: 85%; margin-top: 10px; }
-        .start-btn.pink { background-color: #ff9ff3; box-shadow: 0 6px 0 #f368e0; }
-        .start-btn.mint { background-color: #48dbfb; box-shadow: 0 6px 0 #0abde3; }
-        .start-btn.yellow { background-color: #feca57; box-shadow: 0 6px 0 #ff9f43; }
-        .start-btn.purple { background-color: #a29bfe; box-shadow: 0 6px 0 #6c5ce7; }
+        .card h3 { font-size: 24px; color: #2d3436; margin: 0; font-family: 'ONEMobilePOP', sans-serif; }
 
         .footer { color: #a4b0be; }
     </style>
@@ -67,30 +65,26 @@
     </header>
 
     <div class="card-container">
-        <div class="card pink">
+        <a href="mouse_smile.html" class="card pink">
             <div class="tag pink">더블클릭 연습</div>
             <div class="card-icon">😴</div>
             <h3>스마일 깨우기</h3>
-            <a href="mouse_smile.html" class="start-btn pink">시작하기</a>
-        </div>
-        <div class="card mint">
+        </a>
+        <a href="mouse_shuttle.html" class="card mint">
             <div class="tag mint">마우스휠 연습</div>
             <div class="card-icon">🚀</div>
             <h3>우주선 왕복 여행</h3>
-            <a href="mouse_shuttle.html" class="start-btn mint">시작하기</a>
-        </div>
-        <div class="card yellow">
+        </a>
+        <a href="mouse_treasure.html" class="card yellow">
             <div class="tag yellow">우클릭 연습</div>
             <div class="card-icon">🎁</div>
             <h3>비밀의 보물상자</h3>
-            <a href="mouse_treasure.html" class="start-btn yellow">시작하기</a>
-        </div>
-        <div class="card purple">
+        </a>
+        <a href="mouse_dictation.html" class="card purple">
             <div class="tag purple">드래그 연습</div>
             <div class="card-icon">🦆</div>
             <h3>마우스 받아쓰기</h3>
-            <a href="mouse_dictation.html" class="start-btn purple">시작하기</a>
-        </div>
+        </a>
     </div>
 
     <footer class="footer">제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</footer>
