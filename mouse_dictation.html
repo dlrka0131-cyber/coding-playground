@@ -109,7 +109,7 @@
         }
         .action-button:active { transform: translateY(10px); box-shadow: none; }
         
-        .home-btn { background-color: #ff9ff3; box-shadow: 0 10px 0 #f368e0; display: none; }
+        .home-accent { background-color: #ff9ff3; box-shadow: 0 10px 0 #f368e0; display: none; }
 
         /* 색상 클래스 */
         .color-1 { color: #eb3b5a; } .color-2 { color: #3867d6; } .color-3 { color: #20bf6b; }
@@ -139,7 +139,7 @@
             <p id="result-desc">드래그 앤 드롭을 완벽하게 해냈어요!</p>
             <div class="btn-group">
                 <button class="action-button" id="next-btn" onclick="nextStage()">다음 문제 ▶</button>
-                <button class="action-button home-btn" id="home-btn" onclick="location.href='mouse_menu.html'">🏠 홈으로</button>
+                <button class="action-button home-accent" id="home-btn" onclick="location.href='mouse_menu.html'">🏠 홈으로</button>
             </div>
         </div>
 
@@ -334,10 +334,6 @@
                 setTimeout(() => { playSuccessSound(); resultOverlay.style.display = 'flex'; }, 300);
             }
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
-    <script>
-        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
     </script>
 </body>
 </html>
