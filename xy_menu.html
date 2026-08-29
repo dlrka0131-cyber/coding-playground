@@ -6,7 +6,6 @@
     <title>⭐ 좌표 연습 놀이터 ⭐</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
-@import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
 
         body { 
             font-family: 'Pretendard', sans-serif; 
@@ -17,31 +16,20 @@
         }
 
         /* 왼쪽 상단 '처음으로' 버튼 스타일 */
-        .home-fixed-btn {
-            position: absolute;
-            top: 30px;
-            left: 30px;
+        .home-btn {
             background-color: #f9ca24;
             color: #2c3e50;
-            border: 4px solid #ffffff;
-            border-radius: 25px;
-            padding: 12px 25px;
-            font-size: 22px;
-            font-family: 'ONEMobilePOP', sans-serif;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-color: #ffffff;
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 10;
         }
-        .home-fixed-btn:hover {
+        .home-btn:hover {
             transform: translateY(-3px);
             background-color: #f6b93b;
         }
-        .home-fixed-btn:active {
+        .home-btn:active {
             transform: translateY(2px);
         }
 
@@ -50,30 +38,31 @@
 
         .container { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; max-width: 1400px; }
         
-        .card { 
-            width: 280px; height: 340px; background: white; border-radius: 40px;
+        .card {
+            width: 210px; height: 260px; background: white; border-radius: 50px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4); transition: 0.3s;
-            text-decoration: none; 
-            border: 6px solid #686de0;
+            box-shadow: 0 10px 30px rgba(104, 109, 224, 0.25); transition: 0.3s;
+            text-decoration: none;
+            border: 3px solid #686de0;
         }
-        
-        .card:hover { 
-            transform: translateY(-10px); 
-            background-color: #fdfbf7; 
+
+        .card:hover {
+            transform: translateY(-8px);
+            background-color: #fdfbf7;
+            box-shadow: 0 20px 40px rgba(104, 109, 224, 0.4);
             border-color: #ff4757;
         }
-        
-        .icon { font-family: 'Tossface', sans-serif; font-size: 80px; margin-bottom: 20px; }
-        .title { font-size: 26px; font-family: 'ONEMobilePOP', sans-serif; color: #2c3e50; text-align: center; margin-bottom: 10px; }
+
+        .icon { font-size: 70px; margin-bottom: 20px; }
+        .title { font-size: 22px; font-family: 'ONEMobilePOP', sans-serif; color: #2c3e50; text-align: center; margin-bottom: 10px; }
         .desc { font-size: 16px; color: #747d8c; font-family: 'Pretendard', sans-serif; text-align: center; }
     </style>
 </head>
 <body>
 
     <!-- 왼쪽 상단 메인 이동 버튼 -->
-    <a href="index.html" class="home-fixed-btn">
-        <span style="font-family: 'Tossface', sans-serif;">🏠</span> 처음으로
+    <a href="index.html" class="home-btn">
+        <span>🏠</span> 처음으로
     </a>
 
     <header>
@@ -111,9 +100,13 @@
     </div>
 
     <!-- 하단 제작자 정보 -->
-    <footer style="margin-top: 50px; color: #a4b0be; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP', sans-serif;">
+    <footer class="footer" style="color: #a4b0be;">
         제작: 김정이 선생님 ❤️ | © 2026 Coding Playground
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <script>
+        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+    </script>
 </body>
 </html>

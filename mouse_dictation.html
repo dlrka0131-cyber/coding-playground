@@ -7,7 +7,6 @@
     <title>🖱️ 1학년 마우스 받아쓰기 - 무적 버전 🖱️</title>
     <style>
         /* 1. 기본 설정 및 폰트 */
-@import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
 
         body {
             font-family: 'ONEMobilePOP', sans-serif;
@@ -45,7 +44,7 @@
         #image-frame {
             background-color: white; border: 6px dashed #fa983a; border-radius: 40px;
             width: 260px; height: 260px; display: flex; justify-content: center; align-items: center;
-            font-size: 160px; font-family: 'Tossface', sans-serif;
+            font-size: 160px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
@@ -93,7 +92,7 @@
             border: 5px dashed #ff9f43; border-radius: 40px; padding: 30px 60px; margin-bottom: 40px;
         }
         .ex-letter { font-size: 80px; background: white; border-radius: 20px; padding: 10px 30px; box-shadow: 0 10px 0 #ced6e0; color: #eb3b5a; }
-        .ex-arrow { font-size: 70px; font-family: 'Tossface', sans-serif; animation: dragMoving 2s infinite; }
+        .ex-arrow { font-size: 70px; animation: dragMoving 2s infinite; }
         .ex-box { width: 120px; height: 120px; border: 6px dashed #f6b93b; background: white; border-radius: 25px; }
 
         @keyframes dragMoving {
@@ -335,6 +334,10 @@
                 setTimeout(() => { playSuccessSound(); resultOverlay.style.display = 'flex'; }, 300);
             }
         }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <script>
+        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
     </script>
 </body>
 </html>

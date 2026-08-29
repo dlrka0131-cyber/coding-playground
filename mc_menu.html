@@ -19,11 +19,11 @@
             text-shadow: 2px 2px 0px #fff;
         }
 
-        .home-btn { 
-            position: absolute; top: 25px; left: 25px; background-color: #FFF; 
-            color: #4ecc71; padding: 20px 40px; border-radius: 30px; 
-            text-decoration: none; font-size: 28px; font-weight: bold; 
-            box-shadow: 0 6px 0 #b3e6c0; border: 4px solid #4ecc71; z-index: 999; 
+        .home-btn {
+            background-color: #FFF;
+            color: #4ecc71;
+            border-color: #4ecc71;
+            box-shadow: 0 6px 0 #b3e6c0;
         }
 
         /* 13개의 카드가 6개씩 2줄로 예쁘게 정렬되도록 수정 (max-width 확장) */
@@ -36,13 +36,17 @@
             margin: 0 auto;
         }
         
-        .card { 
-            width: 200px; height: 200px; background: white; border-radius: 40px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            box-shadow: 0 10px 20px rgba(78, 204, 113, 0.15); text-decoration: none; transition: 0.3s; 
-            border: 2px solid #4ecc71; position: relative;
+        .card {
+            width: 200px; height: 200px; background: white; border-radius: 50px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(78, 204, 113, 0.15); text-decoration: none; transition: 0.3s;
+            border: 3px solid #4ecc71; position: relative;
         }
-        .card:hover { transform: scale(1.05); background-color: #f9fffb; }
+        .card:hover {
+            transform: translateY(-8px);
+            background-color: #f9fffb;
+            box-shadow: 0 20px 40px rgba(78, 204, 113, 0.3);
+        }
         
         .number { font-size: 20px; color: #4ecc71; font-weight: bold; margin-bottom: 5px; }
         .title { font-size: 20px; color: #333; font-weight: bold; text-align: center; padding: 0 10px; }

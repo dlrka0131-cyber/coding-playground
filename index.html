@@ -6,7 +6,6 @@
     <title>코딩 놀이터</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
-@import url('https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css');
 
         body { 
             font-family: 'Pretendard', sans-serif; 
@@ -33,29 +32,29 @@
 
         .container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 1200px; }
         
-        .card { 
-            width: 200px; height: 250px; background: white; border-radius: 60px;
+        .card {
+            width: 210px; height: 260px; background: white; border-radius: 50px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 10px 30px rgba(255, 133, 162, 0.15); transition: 0.3s;
-            text-decoration: none; 
+            text-decoration: none;
             border: 3px solid #ffccd5;
         }
-        
-        .card:hover { 
-            transform: translateY(-10px); 
-            background-color: #fff9fa; 
+
+        .card:hover {
+            transform: translateY(-8px);
+            background-color: #fff9fa;
             box-shadow: 0 20px 40px rgba(255, 133, 162, 0.3);
             border-color: #ff85a2;
         }
-        
-        .icon { font-family: 'Tossface', sans-serif; font-size: 90px; margin-bottom: 25px; }
-        .title { font-size: 24px; font-family: 'ONEMobilePOP', sans-serif; color: #ff85a2; text-align: center; }
+
+        .icon { font-size: 70px; margin-bottom: 20px; }
+        .title { font-size: 22px; font-family: 'ONEMobilePOP', sans-serif; color: #ff85a2; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1><span style="font-family: 'Tossface', sans-serif; text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px #ffccd5;">🧸</span> 코딩 놀이터</h1>
+        <h1><span style="text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px #ffccd5;">🧸</span> 코딩 놀이터</h1>
     </header>
 
     <div class="container">
@@ -91,9 +90,15 @@
     </div>
 
     <!-- 하단 제작자 정보 -->
-    <footer style="margin-top: 60px; color: #ff85a2; font-size: 16px; text-align: center; font-family: 'ONEMobilePOP', sans-serif;">
+    <footer class="footer" style="color: #ff85a2;">
         제작: 김정이 선생님 ❤️ | © 2026 Coding Playground
     </footer>
 
+    <!-- Windows 10/11, 브라우저마다 다르게 보이는 기본 이모지 대신
+         Twemoji 이미지로 통일해서 어디서 봐도 항상 같은 모양이 나오게 함 -->
+    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <script>
+        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+    </script>
 </body>
 </html>
