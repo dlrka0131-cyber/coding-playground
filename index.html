@@ -26,16 +26,18 @@
     --color-text-muted: #8A7C9C;
     --color-border: #FFD3DE;
     --color-shadow: rgba(255, 111, 145, 0.25);
-    --color-rocket-body: #FFFFFF;
-    --color-rocket-shadow: #ECE7F5;
-    --color-rocket-trim: #FF4D73;
     --color-flower-1: #FF9BB3;
     --color-flower-2: #FFE27A;
-    --badge-mouse: #DCEBFF;
+    --badge-mouse: #FFD9E8;
+    --badge-mouse-deep: #F2568F;
     --badge-keyboard: #E7E4FF;
+    --badge-keyboard-deep: #8A7BEA;
     --badge-copy: #FFE9D6;
+    --badge-copy-deep: #F2924A;
     --badge-coord: #FFF4CB;
+    --badge-coord-deep: #E0B32E;
     --badge-mc: #E1F0D8;
+    --badge-mc-deep: #63A946;
   }
 
   * { box-sizing: border-box; }
@@ -61,8 +63,8 @@
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
-    flex: 0 0 56vh;
-    height: 56vh;
+    flex: 0 0 52vh;
+    height: 52vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -120,8 +122,8 @@
 
   .mascot {
     position: absolute;
-    top: 13%;
-    right: 15%;
+    top: 30%;
+    right: 8%;
     width: 92px;
     height: 92px;
     animation: mascotBob 4.5s ease-in-out infinite;
@@ -147,70 +149,8 @@
   .mascot .sparkle.s1 { width: 12px; height: 12px; top: -14px; left: -16px; animation-delay: 0.3s; }
   .mascot .sparkle.s2 { width: 8px; height: 8px; bottom: -6px; right: -14px; animation-delay: 1s; }
 
-  .rocket {
-    position: absolute;
-    top: 32%;
-    right: 5%;
-    width: 74px;
-    height: 158px;
-    transform: rotate(16deg);
-    animation: rocketBob 5s ease-in-out infinite;
-    transform-origin: center;
-    filter: drop-shadow(0 10px 14px rgba(51, 38, 74, 0.18));
-  }
-  .rocket-body {
-    position: absolute;
-    top: 0; left: 13px;
-    width: 48px; height: 104px;
-    background: linear-gradient(135deg, var(--color-rocket-body) 55%, var(--color-rocket-shadow) 100%);
-    border-radius: 50% 50% 14px 14px / 62% 62% 10px 10px;
-  }
-  .rocket-window-ring {
-    position: absolute;
-    top: 30px; left: 50%;
-    transform: translateX(-50%);
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--color-rocket-trim);
-  }
-  .rocket-window {
-    position: absolute;
-    top: 4px; left: 4px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-sky-mid), var(--color-sky-top));
-  }
-  .rocket-window-shine { position: absolute; top: 3px; left: 4px; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.85); }
-  .rocket-fin {
-    position: absolute;
-    bottom: 16px;
-    width: 22px; height: 36px;
-    background: var(--color-rocket-trim);
-    border-radius: 0 0 0 10px;
-  }
-  .rocket-fin.left { left: -8px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
-  .rocket-fin.right { right: -8px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-  .rocket-flame-outer {
-    position: absolute;
-    bottom: -28px; left: 50%;
-    transform: translateX(-50%);
-    width: 24px; height: 34px;
-    background: var(--color-accent-deep);
-    clip-path: polygon(50% 100%, 0 0, 100% 0);
-    animation: flicker 0.4s ease-in-out infinite;
-  }
-  .rocket-flame-inner {
-    position: absolute;
-    bottom: -22px; left: 50%;
-    transform: translateX(-50%);
-    width: 12px; height: 22px;
-    background: var(--color-star);
-    clip-path: polygon(50% 100%, 10% 0, 90% 0);
-    animation: flicker 0.3s ease-in-out infinite reverse;
-  }
-
-  .hills { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; line-height: 0; }
-  .hill { display: block; width: 100%; height: 16vh; }
+  .hills { position: absolute; left: 0; right: 0; bottom: -2px; z-index: 2; line-height: 0; }
+  .hill { display: block; width: 100%; height: 11vh; }
   .hill-near { fill: var(--color-hill-near); }
 
   .tree { position: absolute; z-index: 2; }
@@ -229,7 +169,7 @@
     text-align: center;
     padding: 0 24px;
     max-width: 90vw;
-    margin: 0 auto;
+    margin: 6vh auto 0;
   }
   .eyebrow {
     font-family: 'Dongle', sans-serif;
@@ -270,51 +210,59 @@
   /* ---------- QUESTS ---------- */
   .quests {
     background: var(--color-hill-near);
-    padding: 1vh 24px;
+    padding: 0.4vh 24px;
+    margin-top: -2px;
+    position: relative;
+    z-index: 3;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     flex: 1 1 auto;
     min-height: 0;
+    overflow-y: auto;
   }
   .quest-grid {
     width: 100%;
-    max-width: 1180px;
+    max-width: 1320px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: clamp(8px, 2vh, 26px) clamp(12px, 2vw, 26px);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: clamp(10px, 2.2vh, 28px) clamp(14px, 2.2vw, 28px);
   }
   .quest-card {
+    position: relative;
+    z-index: 1;
     background: var(--color-surface);
     border: 3px solid var(--color-border);
     border-radius: 32px;
-    padding: clamp(14px, 3.4vh, 34px) 14px clamp(12px, 2.6vh, 28px);
+    padding: clamp(18px, 4.4vh, 44px) 16px clamp(16px, 3.4vh, 36px);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 12px 28px var(--color-shadow);
+    box-shadow: 0 12px 12px var(--color-shadow);
+    transform: translateY(0);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
     cursor: pointer;
     text-decoration: none;
   }
   .quest-card:hover, .quest-card:focus-visible {
-    transform: translateY(-10px);
+    z-index: 20;
+    transform: translateY(-4px);
     background: var(--badge);
-    box-shadow: 0 22px 40px var(--color-shadow);
-    border-color: var(--color-accent);
+    box-shadow: 0 18px 18px var(--color-shadow);
+    border-color: var(--badge-deep);
     outline: none;
   }
   .quest-badge {
-    width: clamp(46px, 9vh, 84px);
-    height: clamp(46px, 9vh, 84px);
+    width: clamp(54px, 11.5vh, 104px);
+    height: clamp(54px, 11.5vh, 104px);
     border-radius: 50%;
     background: var(--badge);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(22px, 4.4vh, 40px);
-    margin-bottom: clamp(6px, 1.6vh, 18px);
+    font-size: clamp(28px, 5.6vh, 50px);
+    margin-bottom: clamp(8px, 1.8vh, 20px);
     transition: background-color 0.25s ease;
   }
   .quest-card:hover .quest-badge, .quest-card:focus-visible .quest-badge {
@@ -323,18 +271,16 @@
   .quest-card h2 {
     font-family: 'Dongle', sans-serif;
     font-weight: 700;
-    font-size: clamp(19px, 3.6vh, 30px);
+    font-size: clamp(25px, 5.4vh, 44px);
     color: var(--color-text-on-surface);
     margin: 0 0 2px;
-    white-space: nowrap;
     transition: color 0.25s ease;
   }
   .quest-card p {
     font-family: 'Dongle', sans-serif;
-    font-size: clamp(14px, 2.6vh, 19px);
+    font-size: clamp(17px, 3.6vh, 26px);
     color: var(--color-text-muted);
     margin: 0;
-    white-space: nowrap;
     transition: color 0.25s ease;
   }
   .quest-card:hover h2, .quest-card:focus-visible h2 {
@@ -349,11 +295,12 @@
     background: var(--color-hill-near);
     text-align: center;
     flex: 0 0 auto;
-    padding: 0 24px clamp(8px, 1.6vh, 20px);
+    padding: clamp(8px, 1.4vh, 14px) 24px clamp(10px, 2vh, 22px);
     font-family: 'Dongle', sans-serif;
-    font-size: clamp(13px, 2.2vh, 17px);
+    font-weight: 700;
+    font-size: clamp(17px, 2.8vh, 24px);
     color: var(--color-text-on-sky);
-    opacity: 0.85;
+    text-shadow: 0 1px 3px rgba(31, 22, 55, 0.25);
   }
 
   @keyframes twinkle {
@@ -368,24 +315,13 @@
     0%, 100% { transform: translateY(0) rotate(-4deg); }
     50% { transform: translateY(-12px) rotate(4deg); }
   }
-  @keyframes rocketBob {
-    0%, 100% { transform: rotate(16deg) translateY(0); }
-    50% { transform: rotate(13deg) translateY(-16px); }
-  }
-  @keyframes flicker {
-    0%, 100% { transform: translateX(-50%) scaleY(1); opacity: 1; }
-    50% { transform: translateX(-50%) scaleY(0.7); opacity: 0.75; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .star, .cloud, .mascot, .rocket, .rocket-flame-outer, .rocket-flame-inner, .sparkle { animation: none !important; }
+    .star, .cloud, .mascot, .sparkle { animation: none !important; }
   }
 
   @media (max-width: 640px) {
     .tree { display: none; }
-    .mascot { top: 8%; right: 10%; width: 66px; height: 66px; }
-    .rocket { width: 54px; height: 118px; top: 24%; right: 8%; }
-    .quest-card h2, .quest-card p { white-space: normal; }
+    .mascot { top: 22%; right: 8%; width: 66px; height: 66px; }
   }
 </style>
 </head>
@@ -418,18 +354,6 @@
           </div>
         </div>
       </div>
-      <div class="rocket" aria-hidden="true">
-        <div class="rocket-fin left"></div>
-        <div class="rocket-fin right"></div>
-        <div class="rocket-body">
-          <div class="rocket-window-ring">
-            <div class="rocket-window"></div>
-            <div class="rocket-window-shine"></div>
-          </div>
-        </div>
-        <div class="rocket-flame-outer"></div>
-        <div class="rocket-flame-inner"></div>
-      </div>
     </div>
 
     <div class="hills">
@@ -438,15 +362,15 @@
       </svg>
     </div>
 
-    <div class="tree" style="left:10%; bottom:0%; transform:scale(0.85); --tone:var(--color-tree-near);">
+    <div class="tree" style="left:10%; bottom:34px; transform:scale(0.85); --tone:var(--color-tree-near);">
       <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="trunk"></span>
     </div>
-    <div class="tree" style="left:88%; bottom:1%; transform:scale(0.75); --tone:var(--color-tree-near);">
+    <div class="tree" style="left:88%; bottom:34px; transform:scale(0.75); --tone:var(--color-tree-near);">
       <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="trunk"></span>
     </div>
-    <span class="flower" style="left:26%; bottom:6px; --tone:var(--color-flower-1);"></span>
-    <span class="flower" style="left:47%; bottom:12px; --tone:var(--color-flower-2);"></span>
-    <span class="flower" style="left:66%; bottom:4px; --tone:var(--color-flower-1);"></span>
+    <span class="flower" style="left:26%; bottom:44px; --tone:var(--color-flower-1);"></span>
+    <span class="flower" style="left:47%; bottom:54px; --tone:var(--color-flower-2);"></span>
+    <span class="flower" style="left:66%; bottom:40px; --tone:var(--color-flower-1);"></span>
 
     <div class="hero-content">
       <p class="eyebrow">김정이 선생님과 함께 코딩 놀이터</p>
@@ -457,27 +381,27 @@
 
   <section class="quests">
     <div class="quest-grid">
-      <a href="mouse_menu.html" class="quest-card" style="--badge: var(--badge-mouse)">
+      <a href="mouse_menu.html" class="quest-card" style="--badge: var(--badge-mouse); --badge-deep: var(--badge-mouse-deep)">
         <div class="quest-badge">🖱️</div>
         <h2>마우스 연습</h2>
         <p>더블클릭·휠·드래그</p>
       </a>
-      <a href="key_menu.html" class="quest-card" style="--badge: var(--badge-keyboard)">
+      <a href="key_menu.html" class="quest-card" style="--badge: var(--badge-keyboard); --badge-deep: var(--badge-keyboard-deep)">
         <div class="quest-badge">⌨️</div>
         <h2>키보드 연습</h2>
         <p>타이핑과 단축키</p>
       </a>
-      <a href="copy_menu.html" class="quest-card" style="--badge: var(--badge-copy)">
+      <a href="copy_menu.html" class="quest-card" style="--badge: var(--badge-copy); --badge-deep: var(--badge-copy-deep)">
         <div class="quest-badge">📋</div>
         <h2>복사 붙여넣기</h2>
         <p>Ctrl+C, Ctrl+V</p>
       </a>
-      <a href="xy_menu.html" class="quest-card" style="--badge: var(--badge-coord)">
+      <a href="xy_menu.html" class="quest-card" style="--badge: var(--badge-coord); --badge-deep: var(--badge-coord-deep)">
         <div class="quest-badge">🌟</div>
         <h2>좌표 연습</h2>
         <p>x, y 콕 집어보기</p>
       </a>
-      <a href="mc_menu.html" class="quest-card" style="--badge: var(--badge-mc)">
+      <a href="mc_menu.html" class="quest-card" style="--badge: var(--badge-mc); --badge-deep: var(--badge-mc-deep)">
         <div class="quest-badge">⛏️</div>
         <h2>마크 명령어 연습</h2>
         <p>마인크래프트 명령어</p>
