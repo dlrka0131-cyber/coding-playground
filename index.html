@@ -1,99 +1,491 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <link rel="stylesheet" href="common.css">
-    <meta charset="UTF-8">
-    <title>코딩 놀이터</title>
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+<meta charset="UTF-8">
+<title>코딩 놀이터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Dongle:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-sky-top: #1D7FD1;
+    --color-sky-mid: #56B4EA;
+    --color-sky-horizon: #C7EEF7;
+    --color-hill-near: #63C24B;
+    --color-tree-near: #3EA33A;
+    --color-trunk: #8B5A2B;
+    --color-cloud: #FFFFFF;
+    --color-star: #FFD34E;
+    --color-star-shine: #FFE9A8;
+    --color-accent: #FF6F91;
+    --color-accent-deep: #FF4D73;
+    --color-surface: #FFFBF2;
+    --color-surface-alt: #FFFFFF;
+    --color-text-on-sky: #FFFFFF;
+    --color-text-on-surface: #33264A;
+    --color-text-muted: #8A7C9C;
+    --color-border: #FFD3DE;
+    --color-shadow: rgba(255, 111, 145, 0.25);
+    --color-rocket-body: #FFFFFF;
+    --color-rocket-shadow: #ECE7F5;
+    --color-rocket-trim: #FF4D73;
+    --color-flower-1: #FF9BB3;
+    --color-flower-2: #FFE27A;
+    --badge-mouse: #DCEBFF;
+    --badge-keyboard: #E7E4FF;
+    --badge-copy: #FFE9D6;
+    --badge-coord: #FFF4CB;
+    --badge-mc: #E1F0D8;
+  }
 
-        body { 
-            font-family: 'Pretendard', sans-serif; 
-            /* 배경 그라디언트 유지 */
-            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 50%, #ffd1dc 100%);
-            margin: 0; padding: 110px 0 60px 0; min-height: 100vh; box-sizing: border-box;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-        }
+  * { box-sizing: border-box; }
 
-        header { text-align: center; margin-bottom: 50px; }
+  html, body { height: 100%; }
 
-        /* 메인 제목: 그라디언트 대신 선명한 단색 컬러와 또렷한 입체 테두리/그림자를 주어 가독성과 고급스러움을 강조 */
-        h1 {
-            font-size: 110px;
-            font-family: 'ONEMobilePOP', sans-serif;
-            color: #ff4d73;
-            margin: 0 0 25px 0;
-            text-shadow:
-                2px 2px 0px #ffffff,
-                4px 4px 0px #ffccd5,
-                0 10px 25px rgba(255, 77, 115, 0.2);
-            letter-spacing: -1px;
-        }
+  body {
+    margin: 0;
+    background: var(--color-sky-horizon);
+    font-family: 'Dongle', sans-serif;
+    color: var(--color-text-on-surface);
+    overflow: hidden;
+  }
 
-        .container { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; max-width: 1400px; }
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
 
-        .card {
-            width: 250px; height: 310px; background: white; border-radius: 55px;
-            box-sizing: border-box;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(255, 133, 162, 0.15); transition: 0.3s;
-            text-decoration: none;
-            border: 3px solid #ffccd5;
-        }
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    flex: 0 0 56vh;
+    height: 56vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
 
-        .card:hover {
-            transform: translateY(-8px);
-            background-color: #fff9fa;
-            box-shadow: 0 20px 40px rgba(255, 133, 162, 0.3);
-            border-color: #ff85a2;
-        }
+  .sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-mid) 55%, var(--color-sky-horizon) 100%);
+  }
+  .sky::after {
+    content: "";
+    position: absolute;
+    top: -8%;
+    right: -8%;
+    width: 55%;
+    height: 65%;
+    background: radial-gradient(circle, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 68%);
+    pointer-events: none;
+  }
 
-        .icon { font-size: 90px; margin-bottom: 20px; }
-        .title { font-size: 28px; font-family: 'ONEMobilePOP', sans-serif; color: #ff85a2; text-align: center; }
-    </style>
+  .star {
+    position: absolute;
+    width: var(--size, 6px);
+    height: var(--size, 6px);
+    background: var(--color-star);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  .cloud {
+    position: absolute;
+    background: var(--color-cloud);
+    border-radius: 999px;
+    opacity: 0.92;
+    filter: drop-shadow(0 6px 8px rgba(29, 127, 209, 0.12));
+  }
+  .cloud::before, .cloud::after {
+    content: "";
+    position: absolute;
+    background: var(--color-cloud);
+    border-radius: 999px;
+  }
+  .cloud-1 { top: 12%; left: -12%; width: 130px; height: 42px; animation: drift 70s linear infinite; }
+  .cloud-1::before { width: 64px; height: 64px; top: -30px; left: 16px; }
+  .cloud-1::after { width: 48px; height: 48px; top: -18px; left: 70px; }
+  .cloud-2 { top: 22%; left: -12%; width: 96px; height: 34px; animation: drift 95s linear infinite; animation-delay: -30s; }
+  .cloud-2::before { width: 48px; height: 48px; top: -20px; left: 10px; }
+  .cloud-2::after { width: 38px; height: 38px; top: -14px; left: 50px; }
+  .cloud-3 { top: 5%; left: -12%; width: 74px; height: 28px; animation: drift 60s linear infinite; animation-delay: -15s; }
+  .cloud-3::before { width: 36px; height: 36px; top: -16px; left: 8px; }
+  .cloud-3::after { width: 30px; height: 30px; top: -10px; left: 38px; }
+
+  .mascot {
+    position: absolute;
+    top: 13%;
+    right: 15%;
+    width: 92px;
+    height: 92px;
+    animation: mascotBob 4.5s ease-in-out infinite;
+  }
+  .mascot-body {
+    width: 100%;
+    height: 100%;
+    background: var(--color-star);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    position: relative;
+    filter: drop-shadow(0 10px 16px rgba(51, 38, 74, 0.2));
+  }
+  .mascot-shine { position: absolute; top: 20%; left: 30%; width: 22%; height: 22%; background: var(--color-star-shine); border-radius: 50%; opacity: 0.8; }
+  .mascot-face { position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); width: 38px; height: 24px; }
+  .mascot-cheek { position: absolute; top: 4px; width: 9px; height: 6px; background: var(--color-accent); border-radius: 50%; opacity: 0.55; }
+  .mascot-cheek.left { left: -6px; }
+  .mascot-cheek.right { right: -6px; }
+  .mascot-eye { position: absolute; top: 0; width: 6px; height: 6px; border-radius: 50%; background: #2B2038; }
+  .mascot-eye.left { left: 10px; }
+  .mascot-eye.right { right: 10px; }
+  .mascot-smile { position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 16px; height: 8px; border: 2.5px solid #2B2038; border-top: none; border-radius: 0 0 14px 14px; }
+  .sparkle { position: absolute; background: #FFFFFF; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); animation: twinkle 2.2s ease-in-out infinite; }
+  .mascot .sparkle.s1 { width: 12px; height: 12px; top: -14px; left: -16px; animation-delay: 0.3s; }
+  .mascot .sparkle.s2 { width: 8px; height: 8px; bottom: -6px; right: -14px; animation-delay: 1s; }
+
+  .rocket {
+    position: absolute;
+    top: 32%;
+    right: 5%;
+    width: 74px;
+    height: 158px;
+    transform: rotate(16deg);
+    animation: rocketBob 5s ease-in-out infinite;
+    transform-origin: center;
+    filter: drop-shadow(0 10px 14px rgba(51, 38, 74, 0.18));
+  }
+  .rocket-body {
+    position: absolute;
+    top: 0; left: 13px;
+    width: 48px; height: 104px;
+    background: linear-gradient(135deg, var(--color-rocket-body) 55%, var(--color-rocket-shadow) 100%);
+    border-radius: 50% 50% 14px 14px / 62% 62% 10px 10px;
+  }
+  .rocket-window-ring {
+    position: absolute;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--color-rocket-trim);
+  }
+  .rocket-window {
+    position: absolute;
+    top: 4px; left: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-sky-mid), var(--color-sky-top));
+  }
+  .rocket-window-shine { position: absolute; top: 3px; left: 4px; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.85); }
+  .rocket-fin {
+    position: absolute;
+    bottom: 16px;
+    width: 22px; height: 36px;
+    background: var(--color-rocket-trim);
+    border-radius: 0 0 0 10px;
+  }
+  .rocket-fin.left { left: -8px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+  .rocket-fin.right { right: -8px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+  .rocket-flame-outer {
+    position: absolute;
+    bottom: -28px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 34px;
+    background: var(--color-accent-deep);
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    animation: flicker 0.4s ease-in-out infinite;
+  }
+  .rocket-flame-inner {
+    position: absolute;
+    bottom: -22px; left: 50%;
+    transform: translateX(-50%);
+    width: 12px; height: 22px;
+    background: var(--color-star);
+    clip-path: polygon(50% 100%, 10% 0, 90% 0);
+    animation: flicker 0.3s ease-in-out infinite reverse;
+  }
+
+  .hills { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; line-height: 0; }
+  .hill { display: block; width: 100%; height: 16vh; }
+  .hill-near { fill: var(--color-hill-near); }
+
+  .tree { position: absolute; z-index: 2; }
+  .tree .blob { position: absolute; border-radius: 50%; background: var(--tone); }
+  .tree .b1 { width: 34px; height: 34px; left: 0; top: 6px; }
+  .tree .b2 { width: 26px; height: 26px; left: 20px; top: -6px; }
+  .tree .b3 { width: 28px; height: 28px; left: -6px; top: -10px; }
+  .tree .trunk { position: absolute; width: 6px; height: 14px; background: var(--color-trunk); left: 14px; top: 30px; border-radius: 2px; }
+
+  .flower { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--tone); z-index: 2; }
+  .flower::after { content: ""; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--color-flower-2); top: 3px; left: 3px; }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    padding: 0 24px;
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: 'Dongle', sans-serif;
+    font-weight: 700;
+    font-size: clamp(17px, 3.2vh, 25px);
+    color: var(--color-text-on-sky);
+    background: rgba(255,255,255,0.22);
+    display: inline-block;
+    padding: 5px 22px;
+    border-radius: 999px;
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-family: 'Baloo 2', 'Dongle', sans-serif;
+    font-weight: 800;
+    font-size: clamp(44px, 12vh, 128px);
+    color: #FFFFFF;
+    margin: 0 0 16px;
+    text-wrap: balance;
+    letter-spacing: 1px;
+    line-height: 1.05;
+    text-shadow:
+      -3px -3px 0 var(--color-accent-deep),
+       3px -3px 0 var(--color-accent-deep),
+      -3px  3px 0 var(--color-accent-deep),
+       3px  3px 0 var(--color-accent-deep),
+       0 12px 24px rgba(31, 22, 55, 0.35);
+  }
+  .tagline {
+    font-family: 'Dongle', sans-serif;
+    font-weight: 700;
+    font-size: clamp(19px, 3.6vh, 30px);
+    color: var(--color-text-on-sky);
+    margin: 0;
+    text-shadow: 0 2px 6px rgba(31, 22, 55, 0.3);
+  }
+
+  /* ---------- QUESTS ---------- */
+  .quests {
+    background: var(--color-hill-near);
+    padding: 1vh 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .quest-grid {
+    width: 100%;
+    max-width: 1180px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: clamp(8px, 2vh, 26px) clamp(12px, 2vw, 26px);
+  }
+  .quest-card {
+    background: var(--color-surface);
+    border: 3px solid var(--color-border);
+    border-radius: 32px;
+    padding: clamp(14px, 3.4vh, 34px) 14px clamp(12px, 2.6vh, 28px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 12px 28px var(--color-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .quest-card:hover, .quest-card:focus-visible {
+    transform: translateY(-10px);
+    background: var(--badge);
+    box-shadow: 0 22px 40px var(--color-shadow);
+    border-color: var(--color-accent);
+    outline: none;
+  }
+  .quest-badge {
+    width: clamp(46px, 9vh, 84px);
+    height: clamp(46px, 9vh, 84px);
+    border-radius: 50%;
+    background: var(--badge);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(22px, 4.4vh, 40px);
+    margin-bottom: clamp(6px, 1.6vh, 18px);
+    transition: background-color 0.25s ease;
+  }
+  .quest-card:hover .quest-badge, .quest-card:focus-visible .quest-badge {
+    background: #FFFFFF;
+  }
+  .quest-card h2 {
+    font-family: 'Dongle', sans-serif;
+    font-weight: 700;
+    font-size: clamp(19px, 3.6vh, 30px);
+    color: var(--color-text-on-surface);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .quest-card p {
+    font-family: 'Dongle', sans-serif;
+    font-size: clamp(14px, 2.6vh, 19px);
+    color: var(--color-text-muted);
+    margin: 0;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .quest-card:hover h2, .quest-card:focus-visible h2 {
+    color: var(--color-text-on-surface);
+  }
+  .quest-card:hover p, .quest-card:focus-visible p {
+    color: var(--color-text-on-surface);
+    opacity: 0.75;
+  }
+
+  footer {
+    background: var(--color-hill-near);
+    text-align: center;
+    flex: 0 0 auto;
+    padding: 0 24px clamp(8px, 1.6vh, 20px);
+    font-family: 'Dongle', sans-serif;
+    font-size: clamp(13px, 2.2vh, 17px);
+    color: var(--color-text-on-sky);
+    opacity: 0.85;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  @keyframes drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(140vw); }
+  }
+  @keyframes mascotBob {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-12px) rotate(4deg); }
+  }
+  @keyframes rocketBob {
+    0%, 100% { transform: rotate(16deg) translateY(0); }
+    50% { transform: rotate(13deg) translateY(-16px); }
+  }
+  @keyframes flicker {
+    0%, 100% { transform: translateX(-50%) scaleY(1); opacity: 1; }
+    50% { transform: translateX(-50%) scaleY(0.7); opacity: 0.75; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star, .cloud, .mascot, .rocket, .rocket-flame-outer, .rocket-flame-inner, .sparkle { animation: none !important; }
+  }
+
+  @media (max-width: 640px) {
+    .tree { display: none; }
+    .mascot { top: 8%; right: 10%; width: 66px; height: 66px; }
+    .rocket { width: 54px; height: 118px; top: 24%; right: 8%; }
+    .quest-card h2, .quest-card p { white-space: normal; }
+  }
+</style>
 </head>
 <body>
-
-    <header>
-        <h1>코딩 놀이터</h1>
-    </header>
-
-    <div class="container">
-        <!-- 1. 마우스 연습 -->
-        <a href="mouse_menu.html" class="card">
-            <div class="icon">🖱️</div>
-            <div class="title">마우스 연습</div>
-        </a>
-
-        <!-- 2. 키보드 연습 -->
-        <a href="key_menu.html" class="card">
-            <div class="icon">⌨️</div>
-            <div class="title">키보드 연습</div>
-        </a>
-
-        <!-- 3. 복사 붙여넣기 -->
-        <a href="copy_menu.html" class="card">
-            <div class="icon">📋</div>
-            <div class="title">복사 붙여넣기</div>
-        </a>
-
-        <!-- 4. 좌표 연습 -->
-        <a href="xy_menu.html" class="card">
-            <div class="icon">🌟</div>
-            <div class="title">좌표 연습</div>
-        </a>
-
-        <!-- 5. 마크 키보드 연습 -->
-        <a href="mc_menu.html" class="card">
-            <div class="icon">⛏️</div>
-            <div class="title">마크 명령어 연습</div>
-        </a>
+<div class="page">
+  <section class="hero">
+    <div class="sky">
+      <span class="star" style="top:10%; left:8%; --size:8px; --dur:3.2s; --delay:0s;"></span>
+      <span class="star" style="top:18%; left:22%; --size:5px; --dur:2.6s; --delay:0.6s;"></span>
+      <span class="star" style="top:8%; left:38%; --size:6px; --dur:3.6s; --delay:1.1s;"></span>
+      <span class="star" style="top:26%; left:48%; --size:5px; --dur:2.8s; --delay:0.3s;"></span>
+      <span class="star" style="top:14%; left:62%; --size:7px; --dur:3.1s; --delay:0.9s;"></span>
+      <span class="star" style="top:34%; left:78%; --size:5px; --dur:2.4s; --delay:1.4s;"></span>
+      <span class="star" style="top:6%; left:88%; --size:6px; --dur:3.4s; --delay:0.2s;"></span>
+      <span class="star" style="top:30%; left:4%; --size:5px; --dur:2.9s; --delay:1.6s;"></span>
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+      <div class="mascot" aria-hidden="true">
+        <span class="sparkle s1"></span>
+        <span class="sparkle s2"></span>
+        <div class="mascot-body">
+          <div class="mascot-shine"></div>
+          <div class="mascot-face">
+            <span class="mascot-cheek left"></span>
+            <span class="mascot-cheek right"></span>
+            <span class="mascot-eye left"></span>
+            <span class="mascot-eye right"></span>
+            <span class="mascot-smile"></span>
+          </div>
+        </div>
+      </div>
+      <div class="rocket" aria-hidden="true">
+        <div class="rocket-fin left"></div>
+        <div class="rocket-fin right"></div>
+        <div class="rocket-body">
+          <div class="rocket-window-ring">
+            <div class="rocket-window"></div>
+            <div class="rocket-window-shine"></div>
+          </div>
+        </div>
+        <div class="rocket-flame-outer"></div>
+        <div class="rocket-flame-inner"></div>
+      </div>
     </div>
 
-    <!-- 하단 제작자 정보 -->
-    <footer class="footer" style="color: #ff85a2;">
-        제작: 김정이 선생님 ❤️ | © 2026 Coding Playground
-    </footer>
+    <div class="hills">
+      <svg class="hill hill-near" viewBox="0 0 1440 220" preserveAspectRatio="none">
+        <path d="M0,120 C180,80 300,150 480,120 C660,90 800,150 960,120 C1140,90 1260,140 1440,110 L1440,220 L0,220 Z"></path>
+      </svg>
+    </div>
 
+    <div class="tree" style="left:10%; bottom:0%; transform:scale(0.85); --tone:var(--color-tree-near);">
+      <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="trunk"></span>
+    </div>
+    <div class="tree" style="left:88%; bottom:1%; transform:scale(0.75); --tone:var(--color-tree-near);">
+      <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="trunk"></span>
+    </div>
+    <span class="flower" style="left:26%; bottom:6px; --tone:var(--color-flower-1);"></span>
+    <span class="flower" style="left:47%; bottom:12px; --tone:var(--color-flower-2);"></span>
+    <span class="flower" style="left:66%; bottom:4px; --tone:var(--color-flower-1);"></span>
+
+    <div class="hero-content">
+      <p class="eyebrow">김정이 선생님과 함께 코딩 놀이터</p>
+      <h1>CODING PLAYGROUND</h1>
+      <p class="tagline">마우스는 딸깍! 키보드는 타닥타닥! 신나는 코딩 모험, 출발!</p>
+    </div>
+  </section>
+
+  <section class="quests">
+    <div class="quest-grid">
+      <a href="mouse_menu.html" class="quest-card" style="--badge: var(--badge-mouse)">
+        <div class="quest-badge">🖱️</div>
+        <h2>마우스 연습</h2>
+        <p>더블클릭·휠·드래그</p>
+      </a>
+      <a href="key_menu.html" class="quest-card" style="--badge: var(--badge-keyboard)">
+        <div class="quest-badge">⌨️</div>
+        <h2>키보드 연습</h2>
+        <p>타이핑과 단축키</p>
+      </a>
+      <a href="copy_menu.html" class="quest-card" style="--badge: var(--badge-copy)">
+        <div class="quest-badge">📋</div>
+        <h2>복사 붙여넣기</h2>
+        <p>Ctrl+C, Ctrl+V</p>
+      </a>
+      <a href="xy_menu.html" class="quest-card" style="--badge: var(--badge-coord)">
+        <div class="quest-badge">🌟</div>
+        <h2>좌표 연습</h2>
+        <p>x, y 콕 집어보기</p>
+      </a>
+      <a href="mc_menu.html" class="quest-card" style="--badge: var(--badge-mc)">
+        <div class="quest-badge">⛏️</div>
+        <h2>마크 명령어 연습</h2>
+        <p>마인크래프트 명령어</p>
+      </a>
+    </div>
+  </section>
+
+  <footer>제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</footer>
+</div>
 </body>
 </html>
