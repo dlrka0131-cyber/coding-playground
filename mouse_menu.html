@@ -9,7 +9,7 @@
 
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #fff9e3; 
+            background: linear-gradient(135deg, #fecfef 0%, #ff9a9e 100%);
             margin: 0; padding: 110px 0 60px 0; color: #4a4a4a; min-height: 100vh; box-sizing: border-box;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
         }
@@ -17,19 +17,19 @@
         /* 🏠 처음으로 버튼 */
         .home-btn {
             background-color: white;
-            color: #ff9ff3;
-            border-color: #ff9ff3;
-            box-shadow: 0 6px 0 #ffd1f4;
+            color: #c2185b;
+            border-color: #c2185b;
+            box-shadow: 0 6px 0 #f5a8c9;
         }
 
         /* 중앙 정렬 헤더 (xy_menu와 동일한 구조) */
         header { text-align: center; margin-bottom: 50px; }
-        header h1 { font-size: 80px; color: #00b894; margin: 0 0 25px 0; font-family: 'ONEMobilePOP', sans-serif; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        header h1 { font-size: 80px; color: #c2185b; margin: 0 0 25px 0; font-family: 'ONEMobilePOP', sans-serif; display: flex; align-items: center; justify-content: center; gap: 15px; }
         .sub-desc { font-size: 26px; background-color: white; padding: 15px 30px; border-radius: 40px; color: #636e72; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'ONEMobilePOP', sans-serif; }
 
         /* xy_menu와 동일하게 자동 줄바꿈 (스크롤 없이 안 들어가면 다음 줄로) */
         .card-container { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; max-width: 1150px; margin: 0 auto 50px auto; }
-        .card { background-color: white; border-radius: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; box-sizing: border-box; text-align: center; width: 250px; height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid #f0f0f0; transition: 0.3s; text-decoration: none; }
+        .card { background-color: white; border-radius: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 25px 20px; box-sizing: border-box; text-align: center; width: 250px; height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid rgba(194, 24, 91, 0.15); transition: 0.3s; text-decoration: none; }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
 
         /* 카드별 연한 테두리 색상 (평소), hover 시 진하게 */

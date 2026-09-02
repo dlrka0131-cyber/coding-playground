@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>말랑말랑 외계인 복사하기 게임!</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        /* 👽 통통 튀고 귀여운 ONE 모바일 POP 웹폰트 적용 */
-/* ⚠️ 모든 요소의 글꼴을 ONE 모바일 POP으로 완벽 통일 */
+        /* ⚠️ 모든 요소의 글꼴을 프리텐다드(두꺼운체)로 통일 */
         body, button, h1, h2, h3, p, div, span, a, b {
-            font-family: 'ONEMobilePOP', sans-serif;
+            font-family: 'Pretendard', sans-serif;
+            font-weight: 700;
         }
 
         body {
@@ -202,12 +203,12 @@
             text-shadow: 1px 1px 2px #000;
         }
 
-        /* 🔥 강조용 텍스트 애니메이션 (단축키 및 클릭 유도) */
+        /* 🔥 강조용 텍스트 (단축키 및 클릭 유도) */
         .highlight-text {
             color: #ffde7d;
             font-size: 46px;
+            font-weight: 800;
             display: inline-block;
-            animation: textPop 0.8s infinite alternate;
         }
 
         /* 점수판 */
@@ -317,18 +318,160 @@
             60% { transform: scale(1.15); opacity: 1; }
             100% { transform: scale(1); }
         }
-        @keyframes textPop {
-            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 222, 125, 0.5); }
-            100% { transform: scale(1.12); color: #ff416c; text-shadow: 0 0 15px #ffde7d, 0 0 20px #ff416c; }
-        }
         @keyframes bounce {
             0% { transform: scale(0.3); }
             70% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+
+        /* ====== 시작 전 단축키 시범 모달 ====== */
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .intro-content {
+            background: #16213e;
+            border: 8px solid #4ecc71;
+            border-radius: 40px;
+            padding: 40px 55px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(78, 204, 113, 0.3);
+            animation: bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90vw;
+        }
+        .intro-content h2 {
+            font-size: 38px;
+            color: #00f2fe;
+            margin: 0 0 30px 0;
+        }
+        /* 🖮 미니 키보드 그림 */
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            background: #0c1220;
+            padding: 18px;
+            border-radius: 18px;
+            border: 3px solid #2b3555;
+            margin-bottom: 20px;
+        }
+        .kb-row {
+            display: flex;
+            gap: 7px;
+            justify-content: center;
+        }
+        .kb-key {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #7c86a8;
+            background: #222b45;
+            border: 1px solid #3a4568;
+            border-radius: 8px;
+            box-shadow: 0 4px 0 #050810;
+        }
+        .kb-key.ctrl-key { width: 78px; font-size: 14px; }
+        .kb-key.space-key { width: 200px; }
+        .kb-key.blank-key { color: transparent; }
+
+        .kb-key.ctrl-key { animation: ctrlPress 3s infinite; }
+        .kb-key.c-key { animation: cPress 3s infinite; }
+        .kb-key.v-key { animation: vPress 3s infinite; }
+
+        @keyframes ctrlPress {
+            0%, 10%, 40%, 60%, 90%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            18%, 28% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
+            68%, 78% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #00f2fe; color: #111625; }
+        }
+        @keyframes cPress {
+            0%, 10%, 40%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            18%, 28% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
+        }
+        @keyframes vPress {
+            0%, 60%, 90%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            68%, 78% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #00f2fe; color: #111625; }
+        }
+
+        .key-legend {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            font-size: 20px;
+            color: #e0e0e0;
+            margin-bottom: 24px;
+        }
+        .key-legend span.dot {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot.green { background: #4ecc71; }
+        .dot.cyan { background: #00f2fe; }
+
+        .intro-desc {
+            font-size: 24px;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin: 0 0 30px 0;
+        }
+        .intro-start-btn {
+            background: #4ecc71;
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px #27ae60;
+            transition: all 0.1s;
+        }
+        .intro-start-btn:hover { background: #5edb81; }
+        .intro-start-btn:active { transform: translateY(6px); box-shadow: 0 2px #27ae60; }
     </style>
 </head>
 <body>
+
+    <div id="intro-modal" class="intro-overlay">
+        <div class="intro-content">
+            <h2>⌨️ 복사 & 붙여넣기 단축키!</h2>
+            <div class="keyboard">
+                <div class="kb-row">
+                    <div class="kb-key">Q</div><div class="kb-key">W</div><div class="kb-key">E</div><div class="kb-key">R</div><div class="kb-key">T</div><div class="kb-key">Y</div><div class="kb-key">U</div><div class="kb-key">I</div><div class="kb-key">O</div><div class="kb-key">P</div>
+                </div>
+                <div class="kb-row">
+                    <div class="kb-key">A</div><div class="kb-key">S</div><div class="kb-key">D</div><div class="kb-key">F</div><div class="kb-key">G</div><div class="kb-key">H</div><div class="kb-key">J</div><div class="kb-key">K</div><div class="kb-key">L</div>
+                </div>
+                <div class="kb-row">
+                    <div class="kb-key">Z</div><div class="kb-key">X</div><div class="kb-key c-key">C</div><div class="kb-key v-key">V</div><div class="kb-key">B</div><div class="kb-key">N</div><div class="kb-key">M</div>
+                </div>
+                <div class="kb-row">
+                    <div class="kb-key ctrl-key">Ctrl</div>
+                    <div class="kb-key blank-key">Alt</div>
+                    <div class="kb-key space-key"></div>
+                    <div class="kb-key blank-key">Alt</div>
+                    <div class="kb-key ctrl-key">Ctrl</div>
+                </div>
+            </div>
+            <div class="key-legend">
+                <span><span class="dot green"></span>Ctrl + C = 복사</span>
+                <span><span class="dot cyan"></span>Ctrl + V = 붙여넣기</span>
+            </div>
+            <p class="intro-desc"><b>Ctrl</b>은 키보드 맨 아래 <br>양쪽 구석에 있어요! 👇</p>
+            <button id="intro-start-btn" class="intro-start-btn">시작할게요! 👽</button>
+        </div>
+    </div>
 
     <a href="copy_menu.html" class="home-btn">🏠 처음으로</a>
 
@@ -385,6 +528,11 @@
         const countTxt = document.getElementById('count');
         const copyHint = document.getElementById('copy-hint');
         const successScreen = document.getElementById('success-screen');
+
+        // 시작 전 단축키 시범 모달 닫기
+        document.getElementById('intro-start-btn').addEventListener('click', () => {
+            document.getElementById('intro-modal').style.display = 'none';
+        });
 
         // 1. 외계인 클릭
         alien.addEventListener('click', () => {

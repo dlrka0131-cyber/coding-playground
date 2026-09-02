@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>바삭바삭 붕어빵 우클릭 복사 게임</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        /* 🐟 통통 튀고 귀여운 ONE 모바일 POP 웹폰트 적용 */
-/* ⚠️ 모든 요소의 글꼴을 통일 */
+        /* ⚠️ 모든 요소의 글꼴을 프리텐다드(두꺼운체)로 통일 */
         body, button, h1, h2, h3, p, div, span, a, b {
-            font-family: 'ONEMobilePOP', sans-serif;
+            font-family: 'Pretendard', sans-serif;
+            font-weight: 700;
         }
 
         body {
@@ -93,13 +94,14 @@
 
         /* 평소 복사 대기 상태의 안내 문구 (물고기를 향해 손가락이 위로!) */
         #copy-status-text {
-            font-size: 32px;
+            font-size: 26px;
             color: #BA9B8A;
             height: 65px;
             line-height: 65px;
             margin-top: 15px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 90%;
+            width: 100%;
+            white-space: nowrap;
             border-radius: 20px;
             background: transparent;
         }
@@ -205,16 +207,12 @@
             text-shadow: 1px 1px 0px #FFF;
         }
         
-        /* 🔥 강조용 텍스트 애니메이션 (우클릭 유도) */
+        /* 🔥 강조용 텍스트 (우클릭 유도) */
         .highlight-text {
-            color: #FF0000;
+            color: #E65100;
             font-size: 48px;
+            font-weight: bold;
             display: inline-block;
-            animation: textPop 0.8s infinite alternate;
-        }
-        @keyframes textPop {
-            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
-            100% { transform: scale(1.15); color: #FF0000; text-shadow: 0 0 15px #FFD700, 0 0 20px #FF4500; }
         }
 
         #score-board {
@@ -320,9 +318,121 @@
             70% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+
+        /* ====== 시작 전 우클릭 시범 모달 ====== */
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(93, 64, 55, 0.55);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .intro-content {
+            background: #FFFBF5;
+            border: 8px solid #FF9800;
+            border-radius: 40px;
+            padding: 45px 60px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(230, 126, 34, 0.35);
+            animation: bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90vw;
+        }
+        .intro-content h2 {
+            font-size: 42px;
+            color: #D35400;
+            margin: 0 0 25px 0;
+        }
+        .mouse-demo {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mouse-emoji {
+            font-size: 140px;
+            line-height: 1;
+            filter: drop-shadow(0 8px 10px rgba(139, 90, 43, 0.3));
+        }
+        .click-ripple {
+            position: absolute;
+            top: 38%;
+            left: 62%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 5px solid #FF4500;
+            transform: translate(-50%, -50%) scale(0.3);
+            opacity: 0;
+            animation: rippleGo 1.4s ease-out infinite;
+        }
+        .finger-tap {
+            position: absolute;
+            top: 8%;
+            left: 68%;
+            font-size: 60px;
+            animation: tapGo 1.4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        }
+        .intro-desc {
+            font-size: 28px;
+            color: #5D4037;
+            line-height: 1.6;
+            margin: 0 0 30px 0;
+        }
+        .right-word {
+            color: #FF4500;
+            font-weight: bold;
+        }
+        .intro-start-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 18px 55px;
+            font-size: 32px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px #1B5E20;
+            transition: all 0.1s;
+        }
+        .intro-start-btn:hover { background: #388E3C; }
+        .intro-start-btn:active { transform: translateY(6px); box-shadow: 0 2px #1B5E20; }
+
+        @keyframes rippleGo {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            25% { opacity: 1; }
+            60% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+            100% { opacity: 0; }
+        }
+        @keyframes tapGo {
+            0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+            30% { transform: translate(-6px, 22px) rotate(-5deg); }
+            40% { transform: translate(-6px, 26px) rotate(-5deg); }
+            55% { transform: translate(0, 0) rotate(-5deg); }
+        }
     </style>
 </head>
 <body>
+
+    <div id="intro-modal" class="intro-overlay">
+        <div class="intro-content">
+            <h2>🖱️ 오른쪽 클릭(우클릭) 하는 법!</h2>
+            <div class="mouse-demo">
+                <div class="mouse-emoji">🖱️</div>
+                <div class="click-ripple"></div>
+                <div class="finger-tap">👆</div>
+            </div>
+            <p class="intro-desc">마우스의 <span class="right-word">오른쪽 버튼</span>을<br>손가락으로 눌러보세요!</p>
+            <button id="intro-start-btn" class="intro-start-btn">시작할게요! 🐟</button>
+        </div>
+    </div>
 
     <a href="copy_menu.html" class="home-btn">🏠 처음으로</a>
 
@@ -389,6 +499,11 @@
         const successScreen = document.getElementById('success-screen');
 
         document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 시작 전 우클릭 시범 모달 닫기
+        document.getElementById('intro-start-btn').addEventListener('click', () => {
+            document.getElementById('intro-modal').style.display = 'none';
+        });
 
         // 1. 왼쪽 틀 우클릭
         zoneLeft.addEventListener('contextmenu', (e) => {
