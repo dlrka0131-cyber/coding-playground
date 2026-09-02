@@ -133,7 +133,7 @@ body {
 
         .axis-label {
             position: absolute;
-            font-size: 18px; 
+            font-size: 18px;
             color: #2c3e50;
             pointer-events: none;
             z-index: 6;
@@ -144,6 +144,11 @@ body {
             font-weight: bold;
         }
 
+        /* ⭐️ 연습 모드 안내선 (목표 좌표까지 반투명 점선) */
+        .guide-line { position: absolute; pointer-events: none; z-index: 4; }
+        .guide-line-x { top: 0; height: 100%; border-left: 6px dashed rgba(255, 56, 56, 0.35); transform: translateX(-50%); }
+        .guide-line-y { left: 0; width: 100%; border-top: 6px dashed rgba(9, 132, 227, 0.35); transform: translateY(-50%); }
+
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.92);
@@ -151,9 +156,31 @@ body {
             z-index: 20; border-radius: 20px;
         }
         #result-overlay { display: none; }
-        
+        #howto-overlay { display: none; }
+
         .overlay h2 { font-size: 60px; color: #686de0; margin-bottom: 20px; text-shadow: none; }
         .overlay p { font-size: 34px; color: #34495e; margin-bottom: 40px; }
+
+        /* ⭐️ 연습 모드 진입 시 좌표 읽는 법 안내 */
+        #howto-overlay p { font-size: 26px; margin-bottom: 20px; }
+        .howto-back {
+            position: absolute; top: 20px; left: 20px; background: none; border: none;
+            font-family: 'ONEMobilePOP', sans-serif; font-size: 20px; color: #a4b0be; cursor: pointer;
+        }
+        .howto-diagram {
+            position: relative; width: 300px; height: 200px; margin-bottom: 25px;
+            background-color: #fdfbf7; border: 3px solid #30336b; border-radius: 16px;
+        }
+        .howto-axis { position: absolute; }
+        .howto-axis-x { left: 0; top: 145px; width: 100%; height: 3px; background-color: #ff3838; }
+        .howto-axis-y { left: 55px; top: 0; width: 3px; height: 100%; background-color: #0984e3; }
+        .howto-guide { position: absolute; }
+        .howto-guide-v { left: 195px; top: 60px; width: 0; height: 85px; border-left: 4px dashed rgba(255, 56, 56, 0.6); }
+        .howto-guide-h { left: 55px; top: 60px; width: 140px; height: 0; border-top: 4px dashed rgba(9, 132, 227, 0.6); }
+        .howto-star { position: absolute; left: 195px; top: 60px; transform: translate(-50%, -50%); font-size: 26px; }
+        .howto-label { position: absolute; font-size: 26px; font-weight: bold; font-family: 'Arial', sans-serif; }
+        .howto-label-x { left: 195px; top: 150px; transform: translateX(-50%); color: #ff4757; }
+        .howto-label-y { left: 8px; top: 60px; transform: translateY(-50%); color: #1e90ff; }
         
         /* 칭찬 메시지 스타일 */
         #feedback-msg { font-size: 30px; color: #1e90ff; margin-top: 20px; margin-bottom: 40px; font-weight: bold; text-align: center; line-height: 1.4; }
@@ -221,6 +248,7 @@ body {
             </div>
 
             <div class="sidebar-btn-group">
+                <button id="end-practice-btn" class="big-action-button" onclick="endGame()" style="display: none; background-color: #1e90ff;">✅ 연습 끝내기</button>
                 <!-- 선택 메뉴 페이지로 돌아가도록 링크 수정 -->
                 <button class="big-action-button home-accent" onclick="location.href='xy_menu.html'">🏠 처음으로 </button>
             </div>
@@ -233,15 +261,37 @@ body {
                 
                 <div id="start-overlay" class="overlay">
                     <h2>⭐ 3단계: XY좌표 별 찾기!</h2>
-                    <p>정확한 좌표를 클릭해 숨겨진 별을 찾으세요!</p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px;">▶ 탐험 시작!</button>
+                    <p>원하는 모드를 골라 시작하세요!</p>
+                    <div style="display: flex; gap: 20px;">
+                        <button class="big-action-button" onclick="showHowTo()" style="width: auto; padding: 20px 40px; font-size: 28px; background-color: #1e90ff; line-height: 1.6;">🔰 연습 모드<br><span style="font-size: 16px; font-weight: normal;">안내선 O · 시간제한 X</span></button>
+                        <button class="big-action-button" onclick="startGame('challenge')" style="width: auto; padding: 20px 40px; font-size: 28px; line-height: 1.6;">🔥 도전 모드<br><span style="font-size: 16px; font-weight: normal;">안내선 X · 60초</span></button>
+                    </div>
+                </div>
+
+                <div id="howto-overlay" class="overlay">
+                    <button class="howto-back" onclick="showStartOverlay()">‹ 뒤로</button>
+                    <h2 style="font-size: 42px;">🔎 좌표 읽는 법</h2>
+                    <div class="howto-diagram">
+                        <div class="howto-axis howto-axis-x"></div>
+                        <div class="howto-axis howto-axis-y"></div>
+                        <div class="howto-guide howto-guide-v"></div>
+                        <div class="howto-guide howto-guide-h"></div>
+                        <div class="howto-star">🌟</div>
+                        <div class="howto-label howto-label-x">100</div>
+                        <div class="howto-label howto-label-y">50</div>
+                    </div>
+                    <p>목표 좌표 (<span style="color:#ff4757; font-weight:bold;">100</span>, <span style="color:#1e90ff; font-weight:bold;">50</span>)이라면<br>
+                    빨간 점선을 따라 <span style="color:#ff4757; font-weight:bold;">X=100</span> 자리를 찾고<br>
+                    파란 점선을 따라 <span style="color:#1e90ff; font-weight:bold;">Y=50</span> 자리를 찾아서<br>
+                    두 선이 만나는 곳을 클릭해요! ⭐</p>
+                    <button class="big-action-button" onclick="startGame('practice')" style="width: auto; padding: 18px 50px; font-size: 30px;">이해했어요! 시작하기 🚀</button>
                 </div>
 
                 <div id="result-overlay" class="overlay">
                     <h2>탐험 종료!</h2>
                     <p style="margin-bottom: 20px;">내가 찾은 별: <span id="final-score" style="color:#e74c3c; font-weight:bold;">0</span> 개!</p>
                     <p id="feedback-msg"></p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px;">다시 탐험하기</button>
+                    <button class="big-action-button" onclick="showStartOverlay()" style="width: auto; padding: 20px 60px; font-size: 40px;">다시 탐험하기</button>
                 </div>
             </div>
         </div>
@@ -253,8 +303,10 @@ body {
         const scoreDisplay = document.getElementById('score-display');
         const timeDisplay = document.getElementById('time-display');
         const startOverlay = document.getElementById('start-overlay');
+        const howtoOverlay = document.getElementById('howto-overlay');
         const resultOverlay = document.getElementById('result-overlay');
-        const feedbackMsg = document.getElementById('feedback-msg'); 
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const endPracticeBtn = document.getElementById('end-practice-btn');
 
         /* ⭐️ 1100x700 크기에 맞춘 정중앙 좌표 설정 */
         const CENTER_X = 550;
@@ -296,6 +348,7 @@ body {
         let gameInterval;
         let targetX = 0;
         let targetY = 0;
+        let isPracticeMode = false;
 
         const xOptions = [-200, -150, -100, -50, 0, 50, 100, 150, 200];
         const yOptions = [-100, -50, 0, 50, 100];
@@ -327,19 +380,43 @@ body {
             } catch(e) {}
         }
 
-        function startGame() {
+        function showHowTo() {
+            startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'flex';
+        }
+
+        function startGame(mode) {
+            isPracticeMode = mode === 'practice';
             score = 0;
             timeLeft = 60;
             scoreDisplay.textContent = score;
-            timeDisplay.textContent = timeLeft + '초';
-            
+
             startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'none';
             resultOverlay.style.display = 'none';
-            
-            document.querySelectorAll('.click-marker, .click-tooltip, .star-anim').forEach(el => el.remove());
+
+            document.querySelectorAll('.click-marker, .click-tooltip, .star-anim, .guide-line').forEach(el => el.remove());
+
+            clearInterval(gameInterval);
+            if (isPracticeMode) {
+                timeDisplay.textContent = '연습 중';
+                endPracticeBtn.style.display = 'block';
+            } else {
+                timeDisplay.textContent = timeLeft + '초';
+                endPracticeBtn.style.display = 'none';
+                gameInterval = setInterval(updateTime, 1000);
+            }
 
             setNewTarget();
-            gameInterval = setInterval(updateTime, 1000);
+        }
+
+        function showStartOverlay() {
+            clearInterval(gameInterval);
+            endPracticeBtn.style.display = 'none';
+            document.querySelectorAll('.click-marker, .click-tooltip, .star-anim, .guide-line').forEach(el => el.remove());
+            howtoOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none';
+            startOverlay.style.display = 'flex';
         }
 
         function updateTime() {
@@ -349,10 +426,26 @@ body {
         }
 
         function setNewTarget() {
+            document.querySelectorAll('.guide-line').forEach(el => el.remove());
+
             targetX = xOptions[Math.floor(Math.random() * xOptions.length)];
             targetY = yOptions[Math.floor(Math.random() * yOptions.length)];
-            
+
             missionDisplay.innerHTML = `(<span style="color:#ff4757;">${targetX}</span>, <span style="color:#1e90ff;">${targetY}</span>)`;
+
+            if (isPracticeMode) drawGuideLines(targetX, targetY);
+        }
+
+        function drawGuideLines(x, y) {
+            const vLine = document.createElement('div');
+            vLine.className = 'guide-line guide-line-x';
+            vLine.style.left = (x * SCALE + CENTER_X) + 'px';
+            gameArea.appendChild(vLine);
+
+            const hLine = document.createElement('div');
+            hLine.className = 'guide-line guide-line-y';
+            hLine.style.top = (-y * SCALE + CENTER_Y) + 'px';
+            gameArea.appendChild(hLine);
         }
 
         gameArea.addEventListener('click', function(e) {
@@ -415,8 +508,13 @@ body {
         function endGame() {
             clearInterval(gameInterval);
             document.getElementById('final-score').textContent = score;
-            
-            if (score >= 15) {
+            endPracticeBtn.style.display = 'none';
+            document.querySelectorAll('.guide-line').forEach(el => el.remove());
+
+            if (isPracticeMode) {
+                feedbackMsg.innerHTML = "연습 잘했어요!<br>이제 도전 모드에서 실력을 확인해볼까요? 🔥";
+                feedbackMsg.style.color = "#1e90ff";
+            } else if (score >= 15) {
                 feedbackMsg.innerHTML = "와우! 완벽한 좌표 마스터네요!<br>(X, Y) 위치 찾기는 이제 문제없어요! 🚀";
                 feedbackMsg.style.color = "#ff4757";
             } else if (score >= 10) {
