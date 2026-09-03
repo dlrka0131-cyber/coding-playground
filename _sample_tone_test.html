@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="common.css">
+    <meta charset="UTF-8">
+    <title>[샘플] 톤앤매너 테스트 v3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Dongle:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Pretendard-Regular.woff');
+
+        :root {
+            --bg-1: #fff9e3;
+            --bg-2: #fff9e3;
+            --accent: #00b894;
+            --home-color: #ff9ff3;
+            --subdesc-color: #636e72;
+            --card-border-default: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            margin: 0; padding: 110px 0 60px 0; color: #4a4a4a; min-height: 100vh; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            transition: background 0.4s;
+        }
+
+        /* 🧪 샘플 테스트용 스위처 (실제 페이지엔 없음) */
+        #tone-switcher {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: #111; padding: 12px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+            font-family: 'Pretendard', sans-serif;
+        }
+        #tone-switcher button {
+            padding: 10px 18px; border-radius: 20px; border: 2px solid #555; background: #222; color: white;
+            cursor: pointer; font-size: 15px; font-weight: bold;
+        }
+        #tone-switcher button.active { background: white; color: #111; border-color: white; }
+        #tone-switcher .divider { width: 1px; background: #444; margin: 0 4px; }
+
+        .home-btn {
+            background-color: white;
+            color: var(--home-color);
+            border-color: var(--home-color);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            transition: 0.4s;
+        }
+
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 {
+            font-size: 80px; margin: 0 0 25px 0; font-family: 'ONEMobilePOP', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            color: var(--accent);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+            transition: 0.4s;
+        }
+        .sub-desc { font-size: 26px; background-color: white; padding: 15px 30px; border-radius: 40px; color: var(--subdesc-color); display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-family: 'ONEMobilePOP', sans-serif; transition: 0.4s; }
+
+        .card-container { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; max-width: 1150px; margin: 0 auto 50px auto; }
+        .card { background-color: white; border-radius: 55px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 20px; box-sizing: border-box; text-align: center; width: 250px; height: 310px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 3px solid var(--card-border-default); transition: 0.3s; text-decoration: none; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+        .card.pink, .card.mint, .card.yellow, .card.purple { border-color: var(--card-border-default); }
+        .card.pink:hover { border-color: #ff9ff3; }
+        .card.mint:hover { border-color: #48dbfb; }
+        .card.yellow:hover { border-color: #feca57; }
+        .card.purple:hover { border-color: #a29bfe; }
+
+        .card-icon { font-size: 90px; margin-top: 15px; margin-bottom: 10px; }
+
+        .tag { font-size: 20px; font-weight: 800; padding: 8px 20px; border-radius: 20px; margin-bottom: 15px; font-family: 'ONEMobilePOP', sans-serif; transition: 0.2s; }
+        .tag.pink { background-color: #ffeaa7; color: #d63031; }
+        .tag.mint { background-color: #c7ecee; color: #009432; }
+        .tag.yellow { background-color: #fef0cd; color: #f39c12; }
+        .tag.purple { background-color: #e0ece4; color: #5f27cd; }
+
+        .card h3 { font-size: 28px; color: #2d3436; margin: 0; font-family: 'ONEMobilePOP', sans-serif; transition: 0.2s; }
+
+        /* 카드 내부 텍스트(태그/제목)만 Dongle로 - 헤더/서브텍스트 폰트는 아직 미정이라 그대로 둠 */
+        body.font-dongle-cards .tag { font-family: 'Dongle', sans-serif; font-weight: 700; font-size: 26px; }
+        body.font-dongle-cards .card h3 { font-family: 'Dongle', sans-serif; font-weight: 700; font-size: 40px; }
+
+        .footer { color: rgba(0,0,0,0.4); text-shadow: none; font-family: 'ONEMobilePOP', sans-serif; transition: 0.4s; }
+
+        /* ================= 놀이터별 그라데이션 (webgradients.com 참고, 랜딩 대표색과 같은 계열, 파스텔로 톤다운) ================= */
+
+        /* 마우스 = 핑크 계열 → webgradients "Lady Lips" (밝은색이 왼쪽 위로 오도록 순서 조정) */
+        body[data-theme="mouse"] {
+            --bg-1: #fecfef; --bg-2: #ff9a9e;
+            --accent: #c2185b; --home-color: #c2185b; --subdesc-color: #9c2360;
+            --card-border-default: rgba(194, 24, 91, 0.25);
+        }
+
+        /* 키보드 = 바이올렛 계열 → webgradients 라벤더-블루 계열 */
+        body[data-theme="keyboard"] {
+            --bg-1: #e0c3fc; --bg-2: #8ec5fc;
+            --accent: #5b3a8a; --home-color: #5b3a8a; --subdesc-color: #4a3f95;
+            --card-border-default: rgba(91, 58, 138, 0.25);
+        }
+
+        /* 복사 붙여넣기 = 주황 계열 → webgradients "Juicy Peach" */
+        body[data-theme="copy"] {
+            --bg-1: #ffecd2; --bg-2: #fcb69f;
+            --accent: #c2662f; --home-color: #c2662f; --subdesc-color: #a3552a;
+            --card-border-default: rgba(194, 102, 47, 0.25);
+        }
+
+        /* 좌표 연습 = 골드/옐로우 계열 (랜딩 --badge-coord-deep: #E0B32E) */
+        body[data-theme="coord"] {
+            --bg-1: #fff8db; --bg-2: #ffd97a;
+            --accent: #9c6b0f; --home-color: #9c6b0f; --subdesc-color: #8a5c0c;
+            --card-border-default: rgba(156, 107, 15, 0.25);
+        }
+
+        /* 마크 명령어 연습 = 그린 계열 (랜딩 --badge-mc-deep: #63A946) (밝은색이 왼쪽 위로 오도록 순서 조정) */
+        body[data-theme="mc"] {
+            --bg-1: #deecdd; --bg-2: #c1dfc4;
+            --accent: #3d7a2e; --home-color: #3d7a2e; --subdesc-color: #366b28;
+            --card-border-default: rgba(61, 122, 46, 0.25);
+        }
+
+        /* ================= 미리보기 스와치 ================= */
+        #swatch-row { display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+        .swatch { width: 160px; height: 90px; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-family: 'ONEMobilePOP', sans-serif; font-size: 18px; color: #444; text-shadow: none; }
+        .swatch.mouse { background: linear-gradient(135deg, #fecfef, #ff9a9e); }
+        .swatch.keyboard { background: linear-gradient(135deg, #e0c3fc, #8ec5fc); }
+        .swatch.copy { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+        .swatch.coord { background: linear-gradient(135deg, #fff8db, #ffd97a); }
+        .swatch.mc { background: linear-gradient(135deg, #deecdd, #c1dfc4); }
+    </style>
+</head>
+<body>
+
+    <div id="tone-switcher">
+        <button class="active" onclick="setTheme('light', this)">A. 지금 (밝은 크림)</button>
+        <button onclick="setTheme('mouse', this)">🖱️ 마우스 = 핑크</button>
+        <button onclick="setTheme('keyboard', this)">⌨️ 키보드 = 바이올렛</button>
+        <button onclick="setTheme('copy', this)">📋 복사 = 주황</button>
+        <button onclick="setTheme('coord', this)">🌟 좌표 = 골드</button>
+        <button onclick="setTheme('mc', this)">⛏️ 마크 = 그린</button>
+        <span class="divider"></span>
+        <button onclick="setCardFont('mobilepop', this)" class="font-btn active">카드 폰트: ONE Mobile POP</button>
+        <button onclick="setCardFont('dongle', this)" class="font-btn">카드 폰트: Dongle (크게)</button>
+    </div>
+
+    <a href="index.html" class="home-btn">🏠 처음으로</a>
+
+    <header>
+        <h1>🖱️ 마우스 놀이터</h1>
+        <div class="sub-desc">어떤 마우스 마법을 연습해 볼까요? 원하는 놀이를 골라보세요!</div>
+    </header>
+
+    <div class="card-container">
+        <a href="mouse_smile.html" class="card pink">
+            <div class="tag pink">더블클릭 연습</div>
+            <div class="card-icon">😴</div>
+            <h3>스마일 깨우기</h3>
+        </a>
+        <a href="mouse_shuttle.html" class="card mint">
+            <div class="tag mint">마우스휠 연습</div>
+            <div class="card-icon">🚀</div>
+            <h3>우주선 왕복 여행</h3>
+        </a>
+        <a href="mouse_treasure.html" class="card yellow">
+            <div class="tag yellow">우클릭 연습</div>
+            <div class="card-icon">🎁</div>
+            <h3>비밀의 보물상자</h3>
+        </a>
+        <a href="mouse_dictation.html" class="card purple">
+            <div class="tag purple">드래그 연습</div>
+            <div class="card-icon">🦆</div>
+            <h3>마우스 받아쓰기</h3>
+        </a>
+    </div>
+
+    <footer class="footer">제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</footer>
+
+    <div style="margin-top: 20px; text-align: center; font-family: 'Pretendard', sans-serif; color: #999;">
+        <p style="font-size: 14px; opacity: 0.8;">↓ 다른 놀이터에 적용했을 때 색감 비교 (실제 페이지 아님)</p>
+        <div id="swatch-row">
+            <div class="swatch mouse">마우스</div>
+            <div class="swatch keyboard">키보드</div>
+            <div class="swatch copy">복사</div>
+            <div class="swatch coord">좌표</div>
+            <div class="swatch mc">마크</div>
+        </div>
+    </div>
+
+    <script>
+        function setTheme(theme, btn) {
+            if (theme === 'light') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', theme);
+            }
+            document.querySelectorAll('#tone-switcher button:not(.font-btn)').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        function setCardFont(font, btn) {
+            document.body.classList.toggle('font-dongle-cards', font === 'dongle');
+            document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="common.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⌨️ 화살표 키 Y좌표 점프! ⌨️</title>
+    <style>
+        body {
+            font-family: 'ONEMobilePOP', sans-serif;
+            background-color: #192a56;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        #main-wrapper {
+            display: flex;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        #sidebar {
+            background-color: #ffffff;
+            border: 6px solid #686de0;
+            border-radius: 40px;
+            padding: 30px;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff4757;
+            font-size: 36px;
+            margin-bottom: 30px;
+            margin-top: 0;
+            line-height: 1.2;
+        }
+
+        .info-box {
+            background-color: #f4f6f9;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px 0;
+            border-radius: 20px;
+            border: 3px dashed #a4b0be;
+            margin-bottom: 20px;
+            font-size: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box .label { font-size: 22px; color: #747d8c; }
+
+        #mission-display { font-size: 36px; font-weight: bold; }
+
+        #current-pos { font-size: 30px; font-weight: bold; }
+        .coord-y { color: #0984e3; }
+
+        #score-display { color: #2ed573; font-weight: bold; font-size: 42px; }
+        #time-display { color: #eb4d4b; font-weight: bold; font-size: 42px; }
+
+        .sidebar-btn-group { margin-top: auto; display: flex; flex-direction: column; gap: 15px; width: 100%; }
+
+        #game-container {
+            background-color: #ffffff;
+            border: 6px solid #686de0;
+            border-radius: 40px;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-area {
+            background-color: #fdfbf7;
+            border: 4px solid #30336b;
+            border-radius: 25px;
+            width: 1100px;
+            height: 700px;
+            position: relative;
+            overflow: hidden;
+            background-image:
+                linear-gradient(to right, rgba(189, 195, 199, 0.5) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(189, 195, 199, 0.5) 1px, transparent 1px);
+            background-size: 50px 50px, 50px 50px;
+            background-position: 550px 350px, 550px 350px;
+        }
+
+        .axis { position: absolute; z-index: 5; pointer-events: none; }
+        .axis-x { background-color: #ff3838; width: 100%; height: 4px; top: 350px; left: 0; transform: translateY(-50%); box-shadow: 0 0 4px rgba(255, 56, 56, 0.5); }
+        .axis-y { background-color: #0984e3; width: 4px; height: 100%; left: 550px; top: 0; transform: translateX(-50%); box-shadow: 0 0 4px rgba(9, 132, 227, 0.5); }
+
+        .axis-label {
+            position: absolute; font-size: 16px; color: #2c3e50; pointer-events: none; z-index: 6;
+            background: rgba(253, 251, 247, 0.9); padding: 1px 5px; border-radius: 6px;
+            font-family: 'Arial', sans-serif; font-weight: bold;
+        }
+
+        #player {
+            position: absolute; width: 50px; height: 50px; font-size: 40px;
+            display: flex; align-items: center; justify-content: center;
+            transform: translate(-50%, -50%); z-index: 9;
+            transition: left 0.15s ease-out, top 0.15s ease-out;
+        }
+
+        #target-marker {
+            position: absolute; width: 50px; height: 50px; font-size: 36px;
+            display: flex; align-items: center; justify-content: center;
+            transform: translate(-50%, -50%); z-index: 8;
+            animation: floatFlag 1s ease-in-out infinite;
+        }
+
+        @keyframes floatFlag { 0%,100% { transform: translate(-50%, -55%); } 50% { transform: translate(-50%, -45%); } }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20; border-radius: 20px;
+        }
+        #result-overlay { display: none; }
+
+        .overlay h2 { font-size: 55px; color: #ff4757; margin-bottom: 20px; }
+        .overlay p { font-size: 30px; color: #34495e; margin-bottom: 30px; text-align: center; line-height: 1.5; }
+
+        /* 키 → 효과를 문장 대신 그림으로 보여주는 규칙 카드 */
+        .rule-row { display: flex; gap: 25px; margin-bottom: 25px; }
+        .rule-card {
+            width: 170px; padding: 20px 0; border-radius: 28px; background: #dbeafe;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .rule-key {
+            width: 72px; height: 72px; border-radius: 18px; background: #ffffff; color: #2f3640;
+            display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 900;
+            box-shadow: 3px 3px 0 #93c5fd;
+        }
+        .rule-effect { font-size: 34px; font-weight: 900; color: #0984e3; }
+        .short-tip { font-size: 26px; color: #34495e; margin-bottom: 25px; }
+
+        #feedback-msg { font-size: 28px; color: #1e90ff; margin-top: 10px; margin-bottom: 30px; font-weight: bold; text-align: center; line-height: 1.4; }
+
+        .big-action-button {
+            background-color: #686de0; color: white; border: none; border-radius: 30px;
+            padding: 15px 30px; font-size: 30px; font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer; transition: all 0.1s; width: 100%;
+        }
+        .big-action-button:active { transform: scale(0.97); }
+
+        .home-accent { background-color: #f9ca24; color: #2c3e50; font-size: 24px; padding: 12px 20px; }
+
+        #key-hint {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; z-index: 7; pointer-events: none;
+        }
+        .hint-key {
+            width: 46px; height: 46px; border-radius: 10px; background: #dfe4ea; color: #2f3640;
+            display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold;
+            border: 2px solid #a4b0be; box-shadow: 2px 2px 0 #a4b0be;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-wrapper">
+        <div id="sidebar">
+            <h1>⌨️ 화살표 키<br>Y좌표 점프!</h1>
+
+            <div class="info-box">
+                <span class="label">🚩 목표 Y좌표</span>
+                <span id="mission-display">준비...</span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">📍 지금 내 Y좌표</span>
+                <span id="current-pos">Y: 0</span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">🎈 도착 성공</span>
+                <div><span id="score-display">0</span>번</div>
+            </div>
+
+            <div class="info-box">
+                <span class="label">⏰ 남은 시간</span>
+                <span id="time-display">60초</span>
+            </div>
+
+            <div class="sidebar-btn-group">
+                <button class="big-action-button home-accent" onclick="location.href='xy_menu.html'">🏠 처음으로</button>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <div id="game-area">
+                <div class="axis axis-x"></div>
+                <div class="axis axis-y"></div>
+
+                <div id="player">🎈</div>
+                <div id="target-marker" style="display:none;">🚩</div>
+
+                <div id="key-hint">
+                    <div class="hint-key">↑</div>
+                    <div class="hint-key">↓</div>
+                </div>
+
+                <div id="start-overlay" class="overlay">
+                    <h2>🎈 Y좌표 점프!</h2>
+                    <div class="rule-row">
+                        <div class="rule-card">
+                            <div class="rule-key">↓</div>
+                            <div class="rule-effect">Y −1</div>
+                        </div>
+                        <div class="rule-card">
+                            <div class="rule-key">↑</div>
+                            <div class="rule-effect">Y +1</div>
+                        </div>
+                    </div>
+                    <p class="short-tip">🚩 숫자만 보고 찾아가기!</p>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">▶ 시작하기!</button>
+                </div>
+
+                <div id="result-overlay" class="overlay">
+                    <h2>탐험 종료!</h2>
+                    <p>목표 좌표 도착: <span id="final-score" style="color:#ff4757; font-weight:bold;">0</span> 번!</p>
+                    <p id="feedback-msg"></p>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">다시 하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const missionDisplay = document.getElementById('mission-display');
+        const currentPosDisplay = document.getElementById('current-pos');
+        const scoreDisplay = document.getElementById('score-display');
+        const timeDisplay = document.getElementById('time-display');
+        const startOverlay = document.getElementById('start-overlay');
+        const resultOverlay = document.getElementById('result-overlay');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const player = document.getElementById('player');
+        const targetMarker = document.getElementById('target-marker');
+
+        const CENTER_X = 550;
+        const CENTER_Y = 350;
+        const STEP = 50; // 좌표 1칸 = 50px
+
+        const Y_MIN = -6, Y_MAX = 6;
+        const POS_X = 0; // X는 항상 0 (Y축 위에서만 이동)
+
+        let posY = 0;
+        let targetY = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval;
+        let playing = false;
+
+        // 숫자는 축 바로 옆(원래 자리)에 그대로 둠
+        const LABEL_OFFSET = 8;
+
+        function drawAxisLabels() {
+            for (let y = Y_MIN; y <= Y_MAX; y++) {
+                if (y === 0) continue;
+                let label = document.createElement('div');
+                label.className = 'axis-label';
+                label.textContent = y;
+                label.style.color = '#1e90ff';
+                label.style.left = (CENTER_X + LABEL_OFFSET) + 'px';
+                label.style.top = (-y * STEP + CENTER_Y) + 'px';
+                label.style.transform = 'translateY(-50%)';
+                gameArea.appendChild(label);
+            }
+            let zero = document.createElement('div');
+            zero.className = 'axis-label';
+            zero.textContent = '0';
+            zero.style.color = '#2c3e50';
+            zero.style.left = (CENTER_X + LABEL_OFFSET) + 'px';
+            zero.style.top = (CENTER_Y + 8) + 'px';
+            gameArea.appendChild(zero);
+        }
+        drawAxisLabels();
+
+        function playSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1046.50, now);
+                    osc.frequency.setValueAtTime(1318.51, now + 0.1);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if (type === 'step') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now); osc.stop(now + 0.08);
+                }
+            } catch (e) {}
+        }
+
+        function updatePlayerVisual() {
+            player.style.left = CENTER_X + 'px';
+            player.style.top = (-posY * STEP + CENTER_Y) + 'px';
+            currentPosDisplay.innerHTML = 'Y: <span class="coord-y">' + posY + '</span>';
+        }
+
+        function placeTarget() {
+            // 화면에는 안 보이게 위치만 미리 잡아둠 (숫자만 보고 이동하게)
+            targetMarker.style.left = CENTER_X + 'px';
+            targetMarker.style.top = (-targetY * STEP + CENTER_Y) + 'px';
+            targetMarker.style.display = 'none';
+        }
+
+        function setNewTarget() {
+            // 다음 문제를 낼 때마다 삐약이는 항상 원점(0)에서 다시 출발해요
+            posY = 0;
+            updatePlayerVisual();
+
+            do {
+                targetY = Math.floor(Math.random() * (Y_MAX - Y_MIN + 1)) + Y_MIN;
+            } while (targetY === 0);
+
+            const ySign = targetY > 0 ? '+' + targetY : targetY;
+            missionDisplay.innerHTML = 'Y: <span class="coord-y">' + ySign + '</span>';
+            placeTarget();
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = timeLeft + '초';
+
+            startOverlay.style.display = 'none';
+            resultOverlay.style.display = 'none';
+
+            setNewTarget();
+
+            playing = true;
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(updateTime, 1000);
+        }
+
+        function updateTime() {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft + '초';
+            if (timeLeft <= 0) endGame();
+        }
+
+        function tryMove(dy) {
+            if (!playing) return;
+            const ny = Math.min(Y_MAX, Math.max(Y_MIN, posY + dy));
+            if (ny === posY) return;
+
+            posY = ny;
+            updatePlayerVisual();
+            playSound('step');
+
+            if (posY === targetY) {
+                playSound('success');
+                score++;
+                scoreDisplay.textContent = score;
+                targetMarker.style.display = 'flex'; // 도착한 순간에만 짠! 하고 깃발 등장
+                setTimeout(() => {
+                    targetMarker.style.display = 'none';
+                    setNewTarget();
+                }, 500);
+            }
+        }
+
+        function endGame() {
+            playing = false;
+            clearInterval(gameInterval);
+            document.getElementById('final-score').textContent = score;
+
+            if (score >= 8) {
+                feedbackMsg.innerHTML = "최고예요! 화살표 키와 Y좌표를<br>완벽하게 연결해서 이해했어요! 🎈";
+                feedbackMsg.style.color = "#ff4757";
+            } else if (score >= 4) {
+                feedbackMsg.innerHTML = "참 잘했어요!<br>+, - 방향을 잘 찾아냈어요! 👏";
+                feedbackMsg.style.color = "#f0932b";
+            } else {
+                feedbackMsg.innerHTML = "좋아요!<br>↑ ↓ 키가 Y를 어떻게<br>바꾸는지 조금 더 연습해봐요! 😉";
+                feedbackMsg.style.color = "#1e90ff";
+            }
+
+            resultOverlay.style.display = 'flex';
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                event.preventDefault();
+            }
+            if (!playing) return;
+
+            switch (event.key) {
+                case 'ArrowUp': tryMove(1); break;
+                case 'ArrowDown': tryMove(-1); break;
+            }
+        });
+
+        updatePlayerVisual();
+    </script>
+</body>
+</html>
