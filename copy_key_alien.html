@@ -384,22 +384,46 @@
         .kb-key.space-key { width: 200px; }
         .kb-key.blank-key { color: transparent; }
 
-        .kb-key.ctrl-key { animation: ctrlPress 3s infinite; }
-        .kb-key.c-key { animation: cPress 3s infinite; }
-        .kb-key.v-key { animation: vPress 3s infinite; }
+        .kb-key.ctrl-key { animation: ctrlPress 10s infinite; }
+        .kb-key.c-key { animation: cPress 10s infinite; }
+        .kb-key.v-key { animation: vPress 10s infinite; }
 
         @keyframes ctrlPress {
-            0%, 10%, 40%, 60%, 90%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
-            18%, 28% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
-            68%, 78% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #00f2fe; color: #111625; }
+            0%, 8%, 42%, 58%, 92%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            15%, 35% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
+            65%, 85% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #ff8fd8; color: #111625; }
         }
         @keyframes cPress {
-            0%, 10%, 40%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
-            18%, 28% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
+            0%, 8%, 42%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            15%, 35% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #4ecc71; color: #111625; }
         }
         @keyframes vPress {
-            0%, 60%, 90%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
-            68%, 78% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #00f2fe; color: #111625; }
+            0%, 58%, 92%, 100% { transform: translateY(0); box-shadow: 0 4px 0 #050810; background: #222b45; color: #7c86a8; }
+            65%, 85% { transform: translateY(4px); box-shadow: 0 0 0 #050810; background: #ff8fd8; color: #111625; }
+        }
+
+        /* 키가 눌리는 타이밍에 맞춰 뜨는 한글 라벨 */
+        .combo-label-wrap {
+            position: relative;
+            height: 44px;
+            margin: -4px 0 20px 0;
+        }
+        .combo-label {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            font-size: 30px;
+            opacity: 0;
+        }
+        .combo-label.copy-label { color: #4ecc71; animation: labelCopy 10s infinite; }
+        .combo-label.paste-label { color: #ff8fd8; animation: labelPaste 10s infinite; }
+
+        @keyframes labelCopy {
+            0%, 10%, 40%, 100% { opacity: 0; transform: translateY(8px) scale(0.85); }
+            18%, 32% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes labelPaste {
+            0%, 60%, 90%, 100% { opacity: 0; transform: translateY(8px) scale(0.85); }
+            68%, 82% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .key-legend {
@@ -418,7 +442,7 @@
             margin-right: 6px;
         }
         .dot.green { background: #4ecc71; }
-        .dot.cyan { background: #00f2fe; }
+        .dot.pink { background: #ff8fd8; }
 
         .intro-desc {
             font-size: 24px;
@@ -464,9 +488,13 @@
                     <div class="kb-key ctrl-key">Ctrl</div>
                 </div>
             </div>
+            <div class="combo-label-wrap">
+                <div class="combo-label copy-label">✅ 복사!</div>
+                <div class="combo-label paste-label">✅ 붙여넣기!</div>
+            </div>
             <div class="key-legend">
                 <span><span class="dot green"></span>Ctrl + C = 복사</span>
-                <span><span class="dot cyan"></span>Ctrl + V = 붙여넣기</span>
+                <span><span class="dot pink"></span>Ctrl + V = 붙여넣기</span>
             </div>
             <p class="intro-desc"><b>Ctrl</b>은 키보드 맨 아래 <br>양쪽 구석에 있어요! 👇</p>
             <button id="intro-start-btn" class="intro-start-btn">시작할게요! 👽</button>
