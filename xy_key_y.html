@@ -150,6 +150,144 @@
 
         #feedback-msg { font-size: 28px; color: #1e90ff; margin-top: 10px; margin-bottom: 30px; font-weight: bold; text-align: center; line-height: 1.4; }
 
+        /* ⭐️ 좌표 읽는 법 안내 모달 */
+        .info-btn {
+            background: none; border: 3px solid #1e90ff; color: #1e90ff; border-radius: 30px;
+            padding: 12px 26px; font-size: 22px; font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer; margin-top: 18px;
+        }
+        .info-btn:active { transform: scale(0.97); }
+        #start-overlay { display: none; }
+        /* 제목 블록은 카드 왼쪽에 바짝 붙이고, 버튼만 따로 가운데 정렬 */
+        #howto-overlay { justify-content: center; align-items: flex-start; padding-left: 55px; box-sizing: border-box; }
+       #howto-overlay > .big-action-button { 
+           position: absolute; 
+           bottom: 40px; 
+           right: 50px; 
+       }
+
+        /* 글자 대신 그림+애니메이션으로 보여주는 Y좌표 + 화살표키 사용법 (세로 숫자선) */
+        /* 사용자가 제시한 목업 이미지를 픽셀 단위로 측정해 절대좌표로 그대로 재현 */
+        .howto-precise { position: relative; width: 650px; height: 500px; margin-bottom: 20px; }
+
+        .howto-caption-slot { position: absolute; left: 171px; top: 181px; width: 320px; height: 48px; }
+        .howto-caption { position: absolute; top: 0; left: 0; white-space: nowrap; font-size: 36px; font-weight: 900; color: #1e90ff; font-family: 'ONEMobilePOP', sans-serif; opacity: 0; }
+        .howto-caption-pos { animation: captionPos 12s ease-in-out infinite; }
+        .howto-caption-neg { animation: captionNeg 12s ease-in-out infinite; }
+        @keyframes captionPos { 0%, 3% { opacity: 0; } 6% { opacity: 1; } 47% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 0; } }
+        @keyframes captionNeg { 0%, 53% { opacity: 0; } 56% { opacity: 1; } 97% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* 화살표 키: 한 칸(1) 이동할 때마다 노랗게 반짝! */
+        .howto-key-slot { position: absolute; left: 251px; top: 246px; width: 88px; height: 88px; }
+        .howto-key-icon {
+            position: absolute; top: 0; left: 0;
+            width: 88px; height: 88px; border-radius: 20px; background: #ffffff; color: #1e90ff;
+            display: flex; align-items: center; justify-content: center; font-size: 52px; font-weight: 900;
+            box-shadow: 3px 3px 0 #93c5fd; border: 3px solid #1e90ff;
+        }
+        .howto-key-pos { animation: captionPos 12s ease-in-out infinite, keyBlinkPos 12s steps(1, end) infinite; }
+        .howto-key-neg { animation: captionNeg 12s ease-in-out infinite, keyBlinkNeg 12s steps(1, end) infinite; }
+        @keyframes keyBlinkPos {
+            0%, 8% { background-color: #ffffff; }
+            9% { background-color: #ffe066; }
+            12% { background-color: #ffffff; }
+            13.8% { background-color: #ffe066; }
+            16.8% { background-color: #ffffff; }
+            19.6% { background-color: #ffe066; }
+            22.6% { background-color: #ffffff; }
+            25.4% { background-color: #ffe066; }
+            28.4% { background-color: #ffffff; }
+            31.2% { background-color: #ffe066; }
+            34.2% { background-color: #ffffff; }
+            37% { background-color: #ffe066; }
+            40%, 100% { background-color: #ffffff; }
+        }
+        @keyframes keyBlinkNeg {
+            0%, 58% { background-color: #ffffff; }
+            59% { background-color: #ffe066; }
+            62% { background-color: #ffffff; }
+            63.8% { background-color: #ffe066; }
+            66.8% { background-color: #ffffff; }
+            69.6% { background-color: #ffe066; }
+            72.6% { background-color: #ffffff; }
+            75.4% { background-color: #ffe066; }
+            78.4% { background-color: #ffffff; }
+            81.2% { background-color: #ffe066; }
+            84.2% { background-color: #ffffff; }
+            87% { background-color: #ffe066; }
+            90%, 100% { background-color: #ffffff; }
+        }
+
+        .howto-diagram { position: absolute; left: 450px; top: 79px; width: 140px; height: 410px; }
+
+        .howto-side-label { position: absolute; left: 26px; transform: translateX(-50%); font-size: 28px; font-weight: 900; color: #1e90ff; font-family: 'Arial', sans-serif; }
+        .howto-side-top { top: -10px; }
+        .howto-side-bottom { bottom: 0px; }
+
+        .howto-line { position: absolute; left: 23px; top: 0px; width: 6px; height: 380px; background: #0984e3; border-radius: 3px; }
+        .howto-tick-wrap { position: absolute; left: 26px; transform: translateY(-50%); display: flex; align-items: center; gap: 8px; }
+        .howto-tick-mark { width: 16px; height: 3px; background: #0984e3; opacity: 0.5; }
+        .howto-tick-num { font-size: 19px; font-weight: 800; color: #a8b3c4; font-family: 'Arial', sans-serif; white-space: nowrap; }
+        .howto-tick-zero .howto-tick-num { font-size: 22px; font-weight: 900; color: #2c3e50; }
+        .howto-tick-zero .howto-tick-mark { background: #2c3e50; opacity: 1; }
+
+        .howto-tick-target-pos { animation: tickHighlightPos 12s ease-in-out infinite; }
+        .howto-tick-target-neg { animation: tickHighlightNeg 12s ease-in-out infinite; }
+        @keyframes tickHighlightPos {
+            0%, 3% { color: #a8b3c4; transform: scale(1); }
+            6% { color: #1e90ff; transform: scale(1.35); }
+            10% { color: #1e90ff; transform: scale(1.2); }
+            47% { color: #1e90ff; transform: scale(1.2); }
+            50% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+        @keyframes tickHighlightNeg {
+            0%, 53% { color: #a8b3c4; transform: scale(1); }
+            56% { color: #1e90ff; transform: scale(1.35); }
+            60% { color: #1e90ff; transform: scale(1.2); }
+            97% { color: #1e90ff; transform: scale(1.2); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+
+        /* 풍선이 한 칸씩(1칸=1) 딱딱 끊어서 이동 — steps()로 5번의 딱-딱-딱 점프 표현 */
+        .howto-cursor { position: absolute; left: -8px; font-size: 34px; transform: translateY(-50%); animation: cursorMoveY 12s ease-in-out infinite; z-index: 6; }
+        @keyframes cursorMoveY {
+            0%   { top: 190px; }
+            8%   { top: 190px; animation-timing-function: steps(5, end); }
+            37%  { top: 0px; }
+            47%  { top: 0px; }
+            50%  { top: 190px; }
+            58%  { top: 190px; animation-timing-function: steps(5, end); }
+            87%  { top: 380px; }
+            97%  { top: 380px; }
+            100% { top: 190px; }
+        }
+
+        .howto-click-pulse { position: absolute; left: 26px; width: 26px; height: 26px; margin-left: -13px; margin-top: -13px; border: 4px solid #1e90ff; border-radius: 50%; opacity: 0; }
+        .howto-click-pos { top: 0px; animation: clickPulsePos 12s ease-in-out infinite; }
+        .howto-click-neg { top: 380px; animation: clickPulseNeg 12s ease-in-out infinite; }
+        @keyframes clickPulsePos { 0%, 34% { opacity: 0; transform: scale(0.3); } 37% { opacity: 1; transform: scale(1); } 42% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; } }
+        @keyframes clickPulseNeg { 0%, 84% { opacity: 0; transform: scale(0.3); } 87% { opacity: 1; transform: scale(1); } 92% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; } }
+
+        .howto-target-char { position: absolute; left: 26px; transform: translate(-50%, -75%); font-size: 52px; opacity: 0; }
+        .howto-flag-pos { top: 0px; animation: flagPopPos 12s ease-in-out infinite; }
+        .howto-flag-neg { top: 380px; animation: flagPopNeg 12s ease-in-out infinite; }
+        @keyframes flagPopPos {
+            0%, 36% { opacity: 0; transform: translate(-50%, -75%) scale(0); }
+            39% { opacity: 1; transform: translate(-50%, -75%) scale(1.3); }
+            43% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            47% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            50% { opacity: 0; transform: translate(-50%, -75%) scale(0.5); }
+            100% { opacity: 0; }
+        }
+        @keyframes flagPopNeg {
+            0%, 50%, 86% { opacity: 0; transform: translate(-50%, -75%) scale(0); }
+            89% { opacity: 1; transform: translate(-50%, -75%) scale(1.3); }
+            93% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            97% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -75%) scale(0.5); }
+        }
+
         .big-action-button {
             background-color: #686de0; color: white; border: none; border-radius: 30px;
             padding: 15px 30px; font-size: 30px; font-family: 'ONEMobilePOP', sans-serif;
@@ -230,11 +368,87 @@
                     <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">▶ 시작하기!</button>
                 </div>
 
+                <div id="howto-overlay" class="overlay">
+                    <div class="howto-precise">
+                        <h2 style="position: absolute; left: 0; top: 0; font-size: 40px; margin: 0; color: #30336b;">🔎 Y좌표 읽는 법</h2>
+                        <div class="howto-caption-slot">
+                            <div class="howto-caption howto-caption-pos">🎯 목표 Y = 5</div>
+                            <div class="howto-caption howto-caption-neg">🎯 목표 Y = -5</div>
+                        </div>
+                        <div class="howto-key-slot">
+                            <div class="howto-key-icon howto-key-pos">↑</div>
+                            <div class="howto-key-icon howto-key-neg">↓</div>
+                        </div>
+
+                        <div class="howto-diagram">
+                            <div class="howto-line"></div>
+
+                            <div class="howto-tick-wrap" style="top:0px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num howto-tick-target-pos">5</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:38px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">4</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:76px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">3</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:114px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">2</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:152px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">1</div>
+                            </div>
+                            <div class="howto-tick-wrap howto-tick-zero" style="top:190px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">0</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:228px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">-1</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:266px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">-2</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:304px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">-3</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:342px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num">-4</div>
+                            </div>
+                            <div class="howto-tick-wrap" style="top:380px;">
+                                <div class="howto-tick-mark"></div>
+                                <div class="howto-tick-num howto-tick-target-neg">-5</div>
+                            </div>
+
+                            <div class="howto-side-label howto-side-top">▲＋</div>
+                            <div class="howto-side-label howto-side-bottom">▼－</div>
+
+                            <div class="howto-click-pulse howto-click-pos"></div>
+                            <div class="howto-target-char howto-flag-pos">🚩</div>
+
+                            <div class="howto-click-pulse howto-click-neg"></div>
+                            <div class="howto-target-char howto-flag-neg">🚩</div>
+
+                            <div class="howto-cursor">🎈</div>
+                        </div>
+                    </div>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 16px 50px; font-size: 32px; background-color: #1e90ff;">🚀 시작하기!</button>
+                </div>
+
                 <div id="result-overlay" class="overlay">
                     <h2>탐험 종료!</h2>
                     <p>목표 좌표 도착: <span id="final-score" style="color:#ff4757; font-weight:bold;">0</span> 번!</p>
                     <p id="feedback-msg"></p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">다시 하기</button>
+                    <button id="next-btn" class="big-action-button" onclick="location.href='xy_key.html'" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #2ed573; display:none;">➡️ 다음 단계로</button>
+                    <button id="retry-btn" class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">🔄 다시하기</button>
                 </div>
             </div>
         </div>
@@ -248,9 +462,23 @@
         const timeDisplay = document.getElementById('time-display');
         const startOverlay = document.getElementById('start-overlay');
         const resultOverlay = document.getElementById('result-overlay');
+        const howtoOverlay = document.getElementById('howto-overlay');
         const feedbackMsg = document.getElementById('feedback-msg');
         const player = document.getElementById('player');
         const targetMarker = document.getElementById('target-marker');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+
+        const TARGET_SCORE = 8;
+
+        function showHowTo() {
+            startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'flex';
+        }
+        function closeHowTo() {
+            howtoOverlay.style.display = 'none';
+            startOverlay.style.display = 'flex';
+        }
 
         const CENTER_X = 550;
         const CENTER_Y = 350;
@@ -350,6 +578,7 @@
             timeDisplay.textContent = timeLeft + '초';
 
             startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'none';
             resultOverlay.style.display = 'none';
 
             setNewTarget();
@@ -402,6 +631,14 @@
                 feedbackMsg.style.color = "#1e90ff";
             }
 
+            if (score >= TARGET_SCORE) {
+                nextBtn.style.display = 'block';
+                retryBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'none';
+                retryBtn.style.display = 'block';
+            }
+
             resultOverlay.style.display = 'flex';
         }
 
@@ -418,6 +655,18 @@
         });
 
         updatePlayerVisual();
+    </script>
+    <script>
+        // ⭐️ F12(개발자 도구) 및 관련 단축키 비활성화 - 학생들이 실수로 눌러서 화면이 이상해지는 것 방지용
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u'))
+            ) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>

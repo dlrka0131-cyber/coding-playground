@@ -206,6 +206,133 @@ body {
 
         #feedback-msg { font-size: 30px; color: #1e90ff; margin-top: 20px; margin-bottom: 40px; font-weight: bold; text-align: center; line-height: 1.4; }
 
+        /* ⭐️ 좌표 읽는 법 안내 모달 */
+        .info-btn {
+            background: none; border: 3px solid #686de0; color: #686de0; border-radius: 30px;
+            padding: 12px 26px; font-size: 22px; font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer; margin-top: 18px;
+        }
+        .info-btn:active { transform: scale(0.97); }
+        #start-overlay { display: none; }
+        #howto-overlay { justify-content: center; }
+
+        /* 글자 대신 그림+애니메이션으로 보여주는 좌표 입력 방법 (2D 격자 + 타이핑) */
+        .howto-diagram { position: relative; width: 340px; height: 450px; margin-top: 2px; margin-bottom: 4px; }
+
+        .howto-caption { position: absolute; top: 0; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 30px; font-weight: 900; font-family: 'ONEMobilePOP', sans-serif; opacity: 0; color: #686de0; }
+        .howto-caption-pos { animation: captionPos 16s ease-in-out infinite; }
+        .howto-caption-neg { animation: captionNeg 16s ease-in-out infinite; }
+        @keyframes captionPos { 0%, 2% { opacity: 0; } 4% { opacity: 1; } 47.5% { opacity: 1; } 49% { opacity: 0; } 100% { opacity: 0; } }
+        @keyframes captionNeg { 0%, 52% { opacity: 0; } 54% { opacity: 1; } 97.5% { opacity: 1; } 99% { opacity: 0; } 100% { opacity: 0; } }
+
+        .howto-input-row {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 6px;
+            background: #ffffff; border: 3px solid #686de0; border-radius: 16px;
+            padding: 10px 22px; font-size: 36px; font-weight: 900; font-family: 'ONEMobilePOP', sans-serif; color: #2f3542;
+        }
+        /* ⭐️ width를 ch 단위로 애니메이션하면 글꼴별 글자 폭 차이 때문에 실제 글자 뒤로 빈 칸이 남아 괄호가 밀려 보이는 문제가 있었음.
+           그래서 폭 대신 clip-path로 실제 글자 너비만큼만 잘라서 보여주는 방식으로 변경 → 항상 글자에 딱 맞게 나타남 */
+        .howto-typed { display: inline-block; overflow: hidden; white-space: nowrap; font-family: 'Arial', sans-serif; letter-spacing: 1px; clip-path: inset(0 100% 0 0); }
+        .howto-typed-pos { animation: typeRevealPos 16s infinite; }
+        .howto-typed-neg { animation: typeRevealNeg 16s infinite; }
+        @keyframes typeRevealPos { 0%, 31.3% { clip-path: inset(0 100% 0 0); } 31.4% { clip-path: inset(0 100% 0 0); animation-timing-function: steps(8, end); } 38.8% { clip-path: inset(0 0% 0 0); } 47.5% { clip-path: inset(0 0% 0 0); } 49% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 100% 0 0); } }
+        @keyframes typeRevealNeg { 0%, 81.3% { clip-path: inset(0 100% 0 0); } 81.4% { clip-path: inset(0 100% 0 0); animation-timing-function: steps(10, end); } 88.8% { clip-path: inset(0 0% 0 0); } 97.5% { clip-path: inset(0 0% 0 0); } 99% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 100% 0 0); } }
+
+        .howto-confirm {
+            position: absolute; top: 84px; left: 50%; transform: translate(-50%, 0) scale(0);
+            font-size: 36px; font-weight: 900; color: #2ed573; opacity: 0;
+            background: #ffffff; border: 3px solid #2ed573; border-radius: 30px; padding: 8px 24px;
+            white-space: nowrap;
+        }
+        .howto-confirm-pos { animation: confirmPopPos 16s ease-in-out infinite; }
+        .howto-confirm-neg { animation: confirmPopNeg 16s ease-in-out infinite; }
+        @keyframes confirmPopPos { 0%, 38.8% { opacity: 0; transform: translate(-50%, 0) scale(0); } 40% { opacity: 1; transform: translate(-50%, 0) scale(1.25); } 41% { opacity: 1; transform: translate(-50%, 0) scale(1); } 47.5% { opacity: 1; transform: translate(-50%, 0) scale(1); } 49% { opacity: 0; transform: translate(-50%, 0) scale(0.5); } 100% { opacity: 0; } }
+        @keyframes confirmPopNeg { 0%, 88.8% { opacity: 0; transform: translate(-50%, 0) scale(0); } 90% { opacity: 1; transform: translate(-50%, 0) scale(1.25); } 91% { opacity: 1; transform: translate(-50%, 0) scale(1); } 97.5% { opacity: 1; transform: translate(-50%, 0) scale(1); } 99% { opacity: 0; transform: translate(-50%, 0) scale(0.5); } 100% { opacity: 0; } }
+
+        /* ⭐️ 실제 게임(삐약이 좌표여행)처럼 X축으로 먼저 걸어간 뒤 Y축으로 이동하는 경로를 노란 선으로 그려서 보여줌 */
+        .howto-trail-x { position: absolute; height: 6px; background: rgba(241, 196, 15, 0.75); border-radius: 3px; transform: translateY(-50%); z-index: 3; }
+        .howto-trail-y { position: absolute; width: 6px; background: rgba(241, 196, 15, 0.75); border-radius: 3px; transform: translateX(-50%); z-index: 3; }
+        .howto-trail-x-pos { left: 170px; top: 280px; animation: trailXPos 16s linear infinite; }
+        .howto-trail-y-pos { left: 300px; bottom: 170px; animation: trailYPos 16s linear infinite; }
+        .howto-trail-x-neg { right: 170px; top: 280px; animation: trailXNeg 16s linear infinite; }
+        .howto-trail-y-neg { left: 40px; top: 280px; animation: trailYNeg 16s linear infinite; }
+        @keyframes trailXPos { 0% { width: 0; opacity: 0; } 2% { width: 0; opacity: 1; } 14.4% { width: 130px; opacity: 1; } 47.5% { width: 130px; opacity: 1; } 49% { opacity: 0; } 50% { width: 0; opacity: 0; } 100% { width: 0; opacity: 0; } }
+        @keyframes trailYPos { 0%, 16.3% { height: 0; opacity: 0; } 16.31% { opacity: 1; } 28.8% { height: 130px; opacity: 1; } 47.5% { height: 130px; opacity: 1; } 49% { opacity: 0; } 50% { height: 0; opacity: 0; } 100% { height: 0; opacity: 0; } }
+        @keyframes trailXNeg { 0%, 50% { width: 0; opacity: 0; } 52% { width: 0; opacity: 1; } 64.4% { width: 130px; opacity: 1; } 97.5% { width: 130px; opacity: 1; } 99% { opacity: 0; } 100% { width: 0; opacity: 0; } }
+        @keyframes trailYNeg { 0%, 66.3% { height: 0; opacity: 0; } 66.31% { opacity: 1; } 78.8% { height: 130px; opacity: 1; } 97.5% { height: 130px; opacity: 1; } 99% { opacity: 0; } 100% { height: 0; opacity: 0; } }
+
+        .howto-grid-axis { position: absolute; }
+        .howto-grid-axis-x { left: 20px; top: 280px; width: 300px; height: 5px; background: #ff3838; }
+        .howto-grid-axis-y { left: 170px; top: 140px; width: 5px; height: 280px; background: #0984e3; }
+
+        .howto-grid-tick-x { position: absolute; top: 290px; transform: translateX(-50%); font-size: 22px; font-weight: 800; color: #a8b3c4; font-family: 'Arial', sans-serif; }
+        .howto-grid-tick-y { position: absolute; left: 178px; transform: translateY(-50%); font-size: 22px; font-weight: 800; color: #a8b3c4; font-family: 'Arial', sans-serif; }
+        .howto-grid-zero { color: #2c3e50 !important; font-weight: 700; font-size: 12px; }
+
+        .howto-tick-target-pos { animation: tickHighlightPos 16s ease-in-out infinite; }
+        .howto-tick-target-neg { animation: tickHighlightNeg 16s ease-in-out infinite; }
+        @keyframes tickHighlightPos {
+            0%, 2% { color: #a8b3c4; transform: scale(1); }
+            4% { color: #ff4757; transform: scale(1.3); }
+            6% { color: #ff4757; transform: scale(1.15); }
+            47.5% { color: #ff4757; transform: scale(1.15); }
+            49% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+        @keyframes tickHighlightNeg {
+            0%, 52% { color: #a8b3c4; transform: scale(1); }
+            54% { color: #ff4757; transform: scale(1.3); }
+            56% { color: #ff4757; transform: scale(1.15); }
+            97.5% { color: #ff4757; transform: scale(1.15); }
+            99% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+        /* Y좌표 눈금은 삐약이가 X축 이동을 마치고 Y축으로 걷기 시작하는 시점(약 16%)에 맞춰 반짝임 */
+        .howto-tick-target-pos-y { animation: tickHighlightPosY 16s ease-in-out infinite; }
+        .howto-tick-target-neg-y { animation: tickHighlightNegY 16s ease-in-out infinite; }
+        @keyframes tickHighlightPosY {
+            0%, 16% { color: #a8b3c4; transform: scale(1); }
+            16.3% { color: #0984e3; transform: scale(1.3); }
+            18% { color: #0984e3; transform: scale(1.15); }
+            47.5% { color: #0984e3; transform: scale(1.15); }
+            49% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+        @keyframes tickHighlightNegY {
+            0%, 66% { color: #a8b3c4; transform: scale(1); }
+            66.3% { color: #0984e3; transform: scale(1.3); }
+            68% { color: #0984e3; transform: scale(1.15); }
+            97.5% { color: #0984e3; transform: scale(1.15); }
+            99% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+
+        /* ⭐️ 실제 '삐약이 좌표여행' 게임처럼: 원점에서 출발 → X좌표만큼 먼저 이동 → 잠깐 멈춤 → Y좌표만큼 이동 → 도착해서 콩콩 뛰기 → (입력/확인 후) 사라짐 */
+        .howto-walk-chick { position: absolute; font-size: 40px; transform: translate(-50%, -75%); animation: chickWalk 16s ease-in-out infinite; z-index: 6; }
+        @keyframes chickWalk {
+            0%      { opacity: 0; left: 170px; top: 280px; transform: translate(-50%, -75%) scale(1); }
+            1%      { opacity: 1; }
+            2%      { left: 170px; top: 280px; }
+            14.4%   { left: 300px; top: 280px; }
+            16.3%   { left: 300px; top: 280px; }
+            28.8%   { left: 300px; top: 150px; }
+            30%     { transform: translate(-50%, -75%) scale(1.3); }
+            32%     { transform: translate(-50%, -75%) scale(1); }
+            47.5%   { left: 300px; top: 150px; opacity: 1; }
+            49%     { opacity: 0; }
+            50%     { opacity: 0; left: 170px; top: 280px; transform: translate(-50%, -75%) scale(1); }
+            52%     { opacity: 1; left: 170px; top: 280px; }
+            64.4%   { left: 40px; top: 280px; }
+            66.3%   { left: 40px; top: 280px; }
+            78.8%   { left: 40px; top: 410px; }
+            80%     { transform: translate(-50%, -75%) scale(1.3); }
+            82%     { transform: translate(-50%, -75%) scale(1); }
+            97.5%   { left: 40px; top: 410px; opacity: 1; }
+            99%     { opacity: 0; }
+            100%    { opacity: 0; left: 170px; top: 280px; }
+        }
+
         .big-action-button {
             background-color: #686de0; color: white; border: none; border-radius: 30px;
             padding: 15px 30px; font-size: 32px; font-family: 'ONEMobilePOP', sans-serif;
@@ -315,11 +442,42 @@ body {
                     <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px;">▶ 탐험 시작!</button>
                 </div>
 
+                <div id="howto-overlay" class="overlay">
+                    <h2 style="font-size: 36px; margin-top: 0; margin-bottom: 0; color: #30336b;">🔎 좌표 입력하는 법</h2>
+                    <div class="howto-diagram">
+                        <!-- ⭐️ 실제 게임에서는 목표 좌표를 알려주지 않고 삐약이가 이동한 자리를 보고 직접 써야 하므로, 정답을 미리 알려주는 "목표 좌표" 문구는 표시하지 않음 -->
+                        <div class="howto-input-row howto-caption-pos">( <span class="howto-typed howto-typed-pos">200, 100</span> )</div>
+                        <div class="howto-input-row howto-caption-neg">( <span class="howto-typed howto-typed-neg">-200, -100</span> )</div>
+
+                        <div class="howto-confirm howto-confirm-pos">✅ 확인!</div>
+                        <div class="howto-confirm howto-confirm-neg">✅ 확인!</div>
+
+                        <div class="howto-grid-axis howto-grid-axis-x"></div>
+                        <div class="howto-grid-axis howto-grid-axis-y"></div>
+
+                        <div class="howto-grid-tick-x howto-tick-target-neg" style="left:40px;">-200</div>
+                        <div class="howto-grid-tick-x howto-grid-zero" style="left:170px;">(0,0)</div>
+                        <div class="howto-grid-tick-x howto-tick-target-pos" style="left:300px;">200</div>
+
+                        <div class="howto-grid-tick-y howto-tick-target-pos-y" style="top:150px;">100</div>
+                        <div class="howto-grid-tick-y howto-tick-target-neg-y" style="top:410px;">-100</div>
+
+                        <!-- ⭐️ 실제 게임처럼 X축 먼저 → Y축 순서로 걸어가는 삐약이 이동 시뮬레이션 -->
+                        <div class="howto-trail-x howto-trail-x-pos"></div>
+                        <div class="howto-trail-y howto-trail-y-pos"></div>
+                        <div class="howto-trail-x howto-trail-x-neg"></div>
+                        <div class="howto-trail-y howto-trail-y-neg"></div>
+                        <div class="howto-walk-chick">🐥</div>
+                    </div>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 14px 46px; font-size: 30px;">🚀 탐험 시작!</button>
+                </div>
+
                 <div id="result-overlay" class="overlay">
                     <h2>탐험 종료!</h2>
                     <p style="margin-bottom: 20px;">내 최종 점수: <span id="final-score" style="color:#e74c3c; font-weight:bold;">0</span> 점!</p>
                     <p id="feedback-msg"></p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px;">다시 탐험하기</button>
+                    <button id="next-btn" class="big-action-button" onclick="location.href='xy_menu.html'" style="width: auto; padding: 20px 60px; font-size: 40px; background-color:#2ed573; display:none;">🎉 모든 단계 완료! 처음으로</button>
+                    <button id="retry-btn" class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px;">🔄 다시하기</button>
                 </div>
             </div>
         </div>
@@ -331,8 +489,22 @@ body {
         const scoreDisplay = document.getElementById('score-display');
         const startOverlay = document.getElementById('start-overlay');
         const resultOverlay = document.getElementById('result-overlay');
-        const feedbackMsg = document.getElementById('feedback-msg'); 
-        
+        const howtoOverlay = document.getElementById('howto-overlay');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+
+        const TARGET_SCORE = 70;
+
+        function showHowTo() {
+            startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'flex';
+        }
+        function closeHowTo() {
+            howtoOverlay.style.display = 'none';
+            startOverlay.style.display = 'flex';
+        }
+
         const chick = document.getElementById('chick-target');
         const lineX = document.getElementById('line-x');
         const lineY = document.getElementById('line-y');
@@ -420,6 +592,7 @@ body {
             inputCoord.value = '';
 
             startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'none';
             resultOverlay.style.display = 'none';
             chick.style.display = 'block';
 
@@ -626,8 +799,28 @@ body {
                 feedbackMsg.style.color = "#1e90ff";
             }
 
+            if (score >= TARGET_SCORE) {
+                nextBtn.style.display = 'block';
+                retryBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'none';
+                retryBtn.style.display = 'block';
+            }
+
             resultOverlay.style.display = 'flex';
         }
+    </script>
+    <script>
+        // ⭐️ F12(개발자 도구) 및 관련 단축키 비활성화 - 학생들이 실수로 눌러서 화면이 이상해지는 것 방지용
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u'))
+            ) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>

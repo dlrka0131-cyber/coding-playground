@@ -30,7 +30,7 @@ body {
             border-radius: 40px; 
             padding: 30px;
             box-shadow: none; 
-            width: 320px;
+            width: 320px;<h2 style="font-size: 42px; margin-top: 0; margin-bottom: 14px; color: #30336b;">🔎 X좌표 읽는 법</h2>
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -155,7 +155,100 @@ body {
         .overlay p { font-size: 34px; color: #34495e; margin-bottom: 40px; }
         
         #feedback-msg { font-size: 30px; color: #1e90ff; margin-top: 20px; margin-bottom: 40px; font-weight: bold; text-align: center; line-height: 1.4; }
-        
+
+        /* ⭐️ 좌표 읽는 법 안내 모달 */
+        .info-btn {
+            background: none; border: 3px solid #ff4757; color: #ff4757; border-radius: 30px;
+            padding: 12px 26px; font-size: 22px; font-family: 'ONEMobilePOP', sans-serif;
+            cursor: pointer; margin-top: 18px;
+        }
+        .info-btn:active { transform: scale(0.97); }
+        #start-overlay { display: none; }
+        #howto-overlay { justify-content: center; }
+
+        /* 글자 대신 그림+애니메이션으로 보여주는 X좌표 읽는 법 */
+        /* 순서: ①"목표좌표 X=100" 문구 등장 → ②눈금에 이미 적힌 100이 빨갛게 반짝 → ③손가락이 천천히 그 자리로 이동 → ④클릭! → ⑤외계인 뽕! (0→+100→0→-100 반복, 9초, 느리게) */
+        .howto-diagram { position: relative; width: 520px; height: 172px; margin-top: 18px; margin-bottom: 26px; }
+
+        /* 목표좌표 문구 (예: 🎯 목표좌표 X = 100) */
+        .howto-caption { position: absolute; top: -30px; left: 0px; width: 520px; text-align: center; font-size: 38px; font-weight: 900; color: #ff4757; font-family: 'ONEMobilePOP', sans-serif; opacity: 0; }
+        .howto-caption-pos { animation: captionPos 12s ease-in-out infinite; }
+        .howto-caption-neg { animation: captionNeg 12s ease-in-out infinite; }
+        @keyframes captionPos { 0%, 3% { opacity: 0; } 6% { opacity: 1; } 47% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 0; } }
+        @keyframes captionNeg { 0%, 53% { opacity: 0; } 56% { opacity: 1; } 97% { opacity: 1; } 100% { opacity: 0; } }
+
+        .howto-side-label { position: absolute; top: 46px; font-size: 32px; font-weight: 900; color: #ff4757; font-family: 'Arial', sans-serif; }
+        .howto-side-left { left: 6px; }
+        .howto-side-right { right: 6px; }
+
+        /* 눈금이 이미 그려진 숫자선 (100, -100 이 항상 보임) */
+        .howto-line { position: absolute; left: 20px; top: 96px; width: 480px; height: 6px; background: #ff3838; border-radius: 3px; }
+        .howto-tick-wrap { position: absolute; top: 90px; transform: translateX(-50%); text-align: center; }
+        .howto-tick-mark { width: 3px; height: 16px; background: #ff3838; opacity: 0.5; margin: 0 auto 4px; }
+        .howto-tick-num { font-size: 19px; font-weight: 800; color: #a8b3c4; font-family: 'Arial', sans-serif; white-space: nowrap; transition: none; }
+        .howto-tick-zero .howto-tick-num { font-size: 22px; font-weight: 900; color: #2c3e50; }
+        .howto-tick-zero .howto-tick-mark { background: #2c3e50; opacity: 1; }
+
+        /* 지금 배우고 있는 목표 숫자(100 / -100)는 눈금 위에서 빨갛게 반짝! */
+        .howto-tick-target-pos { animation: tickHighlightPos 12s ease-in-out infinite; }
+        .howto-tick-target-neg { animation: tickHighlightNeg 12s ease-in-out infinite; }
+        @keyframes tickHighlightPos {
+            0%, 3% { color: #a8b3c4; transform: scale(1); }
+            6% { color: #ff4757; transform: scale(1.35); }
+            10% { color: #ff4757; transform: scale(1.2); }
+            47% { color: #ff4757; transform: scale(1.2); }
+            50% { color: #a8b3c4; transform: scale(1); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+        @keyframes tickHighlightNeg {
+            0%, 53% { color: #a8b3c4; transform: scale(1); }
+            56% { color: #ff4757; transform: scale(1.35); }
+            60% { color: #ff4757; transform: scale(1.2); }
+            97% { color: #ff4757; transform: scale(1.2); }
+            100% { color: #a8b3c4; transform: scale(1); }
+        }
+
+        /* 움직이는 손가락 커서 - 눈금 숫자가 반짝인 다음, 천천히 그 자리로 이동해서 손끝이 빨간선 위(조금 더 아래)에 닿음 */
+        .howto-cursor { position: absolute; top: 74px; font-size: 34px; transform: translateX(-50%); animation: cursorMove 12s ease-in-out infinite; z-index: 6; }
+        @keyframes cursorMove {
+            0%   { left: 263px; }
+            22%  { left: 263px; }
+            40%  { left: 423px; }
+            47%  { left: 423px; }
+            50%  { left: 263px; }
+            72%  { left: 263px; }
+            90%  { left: 103px; }
+            97%  { left: 103px; }
+            100% { left: 263px; }
+        }
+
+        /* 클릭 순간 반짝 퍼지는 링 효과 */
+        .howto-click-pulse { position: absolute; top: 96px; width: 26px; height: 26px; margin-left: -13px; margin-top: -13px; border: 4px solid #ff4757; border-radius: 50%; opacity: 0; }
+        .howto-click-pos { left: 423px; animation: clickPulsePos 12s ease-in-out infinite; }
+        .howto-click-neg { left: 103px; animation: clickPulseNeg 12s ease-in-out infinite; }
+        @keyframes clickPulsePos { 0%, 39% { opacity: 0; transform: scale(0.3); } 41% { opacity: 1; transform: scale(1); } 46% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; } }
+        @keyframes clickPulseNeg { 0%, 89% { opacity: 0; transform: scale(0.3); } 91% { opacity: 1; transform: scale(1); } 96% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; } }
+
+        /* 뽕! 하고 튀어나오는 외계인 (손가락이 도착해서 클릭한 순간에 등장) */
+        .howto-target-char { position: absolute; top: 96px; transform: translate(-50%, -75%); font-size: 56px; opacity: 0; }
+        .howto-alien-pos { left: 423px; animation: alienPopPos 12s ease-in-out infinite; }
+        .howto-alien-neg { left: 103px; animation: alienPopNeg 12s ease-in-out infinite; }
+        @keyframes alienPopPos {
+            0%, 40% { opacity: 0; transform: translate(-50%, -75%) scale(0); }
+            43% { opacity: 1; transform: translate(-50%, -75%) scale(1.3); }
+            46% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            47% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            50% { opacity: 0; transform: translate(-50%, -75%) scale(0.5); }
+            100% { opacity: 0; }
+        }
+        @keyframes alienPopNeg {
+            0%, 50%, 90% { opacity: 0; transform: translate(-50%, -75%) scale(0); }
+            93% { opacity: 1; transform: translate(-50%, -75%) scale(1.3); }
+            96% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            97% { opacity: 1; transform: translate(-50%, -75%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -75%) scale(0.5); }
+        }
+
         .big-action-button {
             background-color: #686de0; color: white; border: none; border-radius: 30px;
             padding: 15px 30px; font-size: 32px; font-family: 'ONEMobilePOP', sans-serif;
@@ -234,11 +327,55 @@ body {
                     <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">▶ 탐험 시작!</button>
                 </div>
 
+                <div id="howto-overlay" class="overlay">
+                    <h2 style="font-size: 30px; margin-top: 30; margin-bottom: 30px; color: #30336b;">🔎 X좌표 읽는 법</h2>
+                    <div class="howto-diagram">
+                        <div class="howto-caption howto-caption-pos">🎯 목표좌표 X = 100</div>
+                        <div class="howto-caption howto-caption-neg">🎯 목표좌표 X = -100</div>
+
+                        <div class="howto-line"></div>
+
+                        <div class="howto-tick-wrap" style="left:103px;">
+                            <div class="howto-tick-mark"></div>
+                            <div class="howto-tick-num howto-tick-target-neg">-100</div>
+                        </div>
+                        <div class="howto-tick-wrap" style="left:183px;">
+                            <div class="howto-tick-mark"></div>
+                            <div class="howto-tick-num">-50</div>
+                        </div>
+                        <div class="howto-tick-wrap howto-tick-zero" style="left:263px;">
+                            <div class="howto-tick-mark"></div>
+                            <div class="howto-tick-num">0</div>
+                        </div>
+                        <div class="howto-tick-wrap" style="left:343px;">
+                            <div class="howto-tick-mark"></div>
+                            <div class="howto-tick-num">50</div>
+                        </div>
+                        <div class="howto-tick-wrap" style="left:423px;">
+                            <div class="howto-tick-mark"></div>
+                            <div class="howto-tick-num howto-tick-target-pos">100</div>
+                        </div>
+
+                        <div class="howto-side-label howto-side-left">◀－</div>
+                        <div class="howto-side-label howto-side-right">＋▶</div>
+
+                        <div class="howto-click-pulse howto-click-pos"></div>
+                        <div class="howto-target-char howto-alien-pos">👽</div>
+
+                        <div class="howto-click-pulse howto-click-neg"></div>
+                        <div class="howto-target-char howto-alien-neg">👽</div>
+
+                        <div class="howto-cursor">👆</div>
+                    </div>
+                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 18px 50px; font-size: 34px; background-color: #ff4757;">🚀 탐험 시작!</button>
+                </div>
+
                 <div id="result-overlay" class="overlay">
                     <h2>탐험 종료!</h2>
                     <p style="margin-bottom: 20px;">만난 외계인: <span id="final-score" style="color:#ff4757; font-weight:bold;">0</span> 명!</p>
                     <p id="feedback-msg"></p>
-                    <button class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">다시 탐험하기</button>
+                    <button id="next-btn" class="big-action-button" onclick="location.href='xy_y.html'" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #2ed573; display:none;">➡️ 다음 단계로</button>
+                    <button id="retry-btn" class="big-action-button" onclick="startGame()" style="width: auto; padding: 20px 60px; font-size: 40px; background-color: #ff4757;">🔄 다시하기</button>
                 </div>
             </div>
         </div>
@@ -251,11 +388,25 @@ body {
         const timeDisplay = document.getElementById('time-display');
         const startOverlay = document.getElementById('start-overlay');
         const resultOverlay = document.getElementById('result-overlay');
-        const feedbackMsg = document.getElementById('feedback-msg'); 
+        const howtoOverlay = document.getElementById('howto-overlay');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+
+        const TARGET_SCORE = 15;
+
+        function showHowTo() {
+            startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'flex';
+        }
+        function closeHowTo() {
+            howtoOverlay.style.display = 'none';
+            startOverlay.style.display = 'flex';
+        }
 
         const CENTER_X = 550;
         const CENTER_Y = 350;
-        const SCALE = 2.5; 
+        const SCALE = 2.5;
 
         function drawAxisLabels() {
             for (let x = -200; x <= 200; x += 50) {
@@ -327,8 +478,9 @@ body {
             timeDisplay.textContent = timeLeft + '초';
             
             startOverlay.style.display = 'none';
+            howtoOverlay.style.display = 'none';
             resultOverlay.style.display = 'none';
-            
+
             document.querySelectorAll('.click-marker, .click-tooltip, .alien-anim').forEach(el => el.remove());
 
             setNewTarget();
@@ -349,7 +501,7 @@ body {
 
         gameArea.addEventListener('click', function(e) {
             // ⭐️ 시작 또는 결과 오버레이 창을 클릭했을 때는 반응하지 않도록 차단
-            if (e.target.closest('#start-overlay') || e.target.closest('#result-overlay')) return;
+            if (e.target.closest('#start-overlay') || e.target.closest('#result-overlay') || e.target.closest('#howto-overlay')) return;
 
             if (timeLeft <= 0 || startOverlay.style.display !== 'none') return;
 
@@ -419,8 +571,28 @@ body {
                 feedbackMsg.style.color = "#1e90ff";
             }
 
+            if (score >= TARGET_SCORE) {
+                nextBtn.style.display = 'block';
+                retryBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'none';
+                retryBtn.style.display = 'block';
+            }
+
             resultOverlay.style.display = 'flex';
         }
+    </script>
+    <script>
+        // ⭐️ F12(개발자 도구) 및 관련 단축키 비활성화 - 학생들이 실수로 눌러서 화면이 이상해지는 것 방지용
+        document.addEventListener('keydown', function (e) {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u'))
+            ) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
