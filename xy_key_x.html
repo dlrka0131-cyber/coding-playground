@@ -638,6 +638,7 @@
                 event.preventDefault();
             }
             if (!playing) return;
+            if (event.repeat) return; // 키를 꾹 눌러서 자동으로 계속 이동하는 것 방지 (한 번 누를 때마다 1칸만)
 
             switch (event.key) {
                 case 'ArrowRight': tryMove(1); break;
