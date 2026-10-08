@@ -432,6 +432,9 @@ body {
         let timeLeft = 60;
         let gameInterval;
         let targetY = 0;
+        let targetHit = false; // ⭐️ 연타 방지: 정답을 맞춘 뒤 다음 문제로 넘어갈 때까지 추가 클릭을 무시
+        let missCooldown = false; // ⭐️ 연타 방지: 틀린 곳을 클릭한 뒤 잠깐 동안 클릭을 무시 (아무 데나 마구 누르기 방지)
+        const MISS_COOLDOWN_MS = 700;
 
         const yOptions = [-100, -50, 50, 100];
 
@@ -485,6 +488,7 @@ body {
         }
 
         function setNewTarget() {
+            targetHit = false; // ⭐️ 새 문제가 나오면 다시 클릭을 받을 수 있도록 잠금 해제
             targetY = yOptions[Math.floor(Math.random() * yOptions.length)];
             missionDisplay.innerHTML = `<span style="color:#1e90ff;">Y : ${targetY}</span>`;
         }
@@ -494,6 +498,8 @@ body {
             if (e.target.closest('#start-overlay') || e.target.closest('#result-overlay') || e.target.closest('#howto-overlay')) return;
 
             if (timeLeft <= 0 || startOverlay.style.display !== 'none') return;
+            if (targetHit) return; // ⭐️ 이미 정답을 맞혀 다음 문제로 넘어가는 중이면 연타로 인한 중복 채점을 막음
+            if (missCooldown) return; // ⭐️ 방금 틀렸으면 잠깐 기다렸다가 다시 클릭
 
             const rect = gameArea.getBoundingClientRect();
             const clickX_px = e.clientX - rect.left; 
@@ -508,6 +514,7 @@ body {
             if(mathX < -220 || mathX > 220 || mathY < -120 || mathY > 120) return;
 
             if (Math.abs(mathX) <= 10 && mathY === targetY) {
+                targetHit = true; // ⭐️ 정답 처리 즉시 잠금 (setNewTarget에서 다시 풀림)
                 playSound('success');
                 score++;
                 scoreDisplay.textContent = score;
@@ -527,6 +534,8 @@ body {
                 
             } else {
                 playSound('miss');
+                missCooldown = true; // ⭐️ 틀리면 잠깐 클릭 잠금
+                setTimeout(() => { missCooldown = false; }, MISS_COOLDOWN_MS);
                 
                 const marker = document.createElement('div');
                 marker.className = 'click-marker';
