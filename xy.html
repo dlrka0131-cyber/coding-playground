@@ -463,6 +463,8 @@ body {
         let targetY = 0;
         let isPracticeMode = false;
         let targetHit = false; // ⭐️ 연타 방지: 정답을 맞춘 뒤 다음 문제로 넘어갈 때까지 추가 클릭을 무시
+        let missCooldown = false; // ⭐️ 연타 방지: 틀린 곳을 클릭한 뒤 잠깐 동안 클릭을 무시 (아무 데나 마구 누르기 방지)
+        const MISS_COOLDOWN_MS = 700;
 
         const xOptions = [-200, -150, -100, -50, 0, 50, 100, 150, 200];
         const yOptions = [-100, -50, 0, 50, 100];
@@ -578,6 +580,7 @@ body {
 
             if (timeLeft <= 0 || startOverlay.style.display !== 'none') return;
             if (targetHit) return; // ⭐️ 이미 정답을 맞혀 다음 문제로 넘어가는 중이면 연타로 인한 중복 채점을 막음
+            if (missCooldown) return; // ⭐️ 방금 틀렸으면 잠깐 기다렸다가 다시 클릭
 
             const rect = gameArea.getBoundingClientRect();
             const clickX_px = e.clientX - rect.left;
@@ -612,6 +615,8 @@ body {
                 
             } else {
                 playSound('miss');
+                missCooldown = true; // ⭐️ 틀리면 잠깐 클릭 잠금
+                setTimeout(() => { missCooldown = false; }, MISS_COOLDOWN_MS);
                 
                 const marker = document.createElement('div');
                 marker.className = 'click-marker';

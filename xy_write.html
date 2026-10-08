@@ -724,6 +724,10 @@ body {
                 scoreDisplay.textContent = score;
                 
                 inputCoord.value = '';
+                // ⭐️ 연타 방지: 다음 문제로 넘어가기 전까지 입력 잠금 (같은 답을 다시 눌러 중복 득점하는 것 방지)
+                isAnimating = true;
+                inputCoord.disabled = true;
+                submitBtn.disabled = true;
                 
                 chick.textContent = '💛';
                 chick.style.fontSize = '80px';

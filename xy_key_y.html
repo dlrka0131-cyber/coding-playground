@@ -493,6 +493,7 @@
         let timeLeft = 60;
         let gameInterval;
         let playing = false;
+        let targetHit = false; // ⭐️ 연타 방지: 도착한 뒤 다음 문제가 나올 때까지 이동을 무시
 
         // 숫자는 축 바로 옆(원래 자리)에 그대로 둠
         const LABEL_OFFSET = 8;
@@ -558,6 +559,7 @@
         }
 
         function setNewTarget() {
+            targetHit = false; // ⭐️ 새 문제가 나오면 다시 움직일 수 있도록 잠금 해제
             // 다음 문제를 낼 때마다 삐약이는 항상 원점(0)에서 다시 출발해요
             posY = 0;
             updatePlayerVisual();
@@ -595,7 +597,7 @@
         }
 
         function tryMove(dy) {
-            if (!playing) return;
+            if (!playing || targetHit) return; // ⭐️ 도착 직후 키를 연타해 왔다 갔다 하며 중복 득점하는 것 방지
             const ny = Math.min(Y_MAX, Math.max(Y_MIN, posY + dy));
             if (ny === posY) return;
 
@@ -604,6 +606,7 @@
             playSound('step');
 
             if (posY === targetY) {
+                targetHit = true; // ⭐️ 도착 즉시 잠금 (setNewTarget에서 다시 풀림)
                 playSound('success');
                 score++;
                 scoreDisplay.textContent = score;
