@@ -116,13 +116,7 @@ body {
         .css-led-box { display: flex; flex-direction: column; align-items: center; font-size: 18px; color: #999; font-weight: bold; gap: 6px; }
         .css-led-box.num { color: #2e7d32; font-size: 22px; }
         .css-led { width: 22px; height: 22px; background: #d0c8c0; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        .css-led.on { width: 30px; height: 30px; animation: blinkLed 1.2s infinite; }
-
-        @keyframes blinkLed {
-            0% { background: #00ff00; box-shadow: 0 0 22px #00ff00; }
-            50% { background: #00cc00; box-shadow: 0 0 6px #00cc00; }
-            100% { background: #00ff00; box-shadow: 0 0 22px #00ff00; }
-        }
+        .css-led.on { width: 30px; height: 30px; background: #00e000; box-shadow: 0 0 22px #00e000; }
 
         @keyframes glowNum {
             0%, 100% { background: #ffcdd2; box-shadow: 0 5px 0 #e6b3b8; }
@@ -339,12 +333,11 @@ body {
                 missionBox.style.minHeight = '0';
 
                 missionBox.innerHTML = `
-                    <div id="mission-title" style="margin: 0; font-size: 48px;">${stages[stageIdx].title}</div>
-
                     <div class="prep-layout">
                         ${document.getElementById('macaron-template').innerHTML}
 
                         <div class="prep-cards">
+                            <div id="mission-title" style="margin: 0; font-size: 48px; text-align: left;">${stages[stageIdx].title}</div>
                             <div style="font-size: 36px; color: #4527a0; text-align: left;">👀 내 키보드 숫자판 위를 보세요!</div>
                             <div class="prep-card on">
                                 <div class="q"><span class="dot green"></span> <span><span class="green-word">초록불</span>이 켜져 있어요</span></div>
