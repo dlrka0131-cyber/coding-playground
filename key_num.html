@@ -106,46 +106,76 @@ body {
             50% { transform: translateY(15px); }
         }
 
+        /* ✨ 준비 단계: 숫자판만 크게 ✨ */
         .css-kb {
-            background: #fdfaf6; border: 6px solid #eaddd3; border-radius: 20px; padding: 20px 25px;
-            display: inline-block; box-shadow: 0 10px 25px rgba(103,58,183,0.1); margin: 10px 0;
+            background: #fdfaf6; border: 6px solid #eaddd3; border-radius: 28px; padding: 22px 26px 26px;
+            display: inline-block; box-shadow: 0 10px 25px rgba(103,58,183,0.1);
             user-select: none; font-family: sans-serif; pointer-events: none;
         }
-        .css-led-box { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #888; font-weight: bold; gap: 4px; }
-        .css-led { width: 12px; height: 12px; background: #d0c8c0; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        
+        .css-led-row { display: flex; justify-content: space-around; margin-bottom: 18px; }
+        .css-led-box { display: flex; flex-direction: column; align-items: center; font-size: 18px; color: #999; font-weight: bold; gap: 6px; }
+        .css-led-box.num { color: #2e7d32; font-size: 22px; }
+        .css-led { width: 22px; height: 22px; background: #d0c8c0; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .css-led.on { width: 30px; height: 30px; animation: blinkLed 1.2s infinite; }
+
         @keyframes blinkLed {
-            0% { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
-            50% { background: #00cc00; box-shadow: 0 0 5px #00cc00; }
-            100% { background: #00ff00; box-shadow: 0 0 15px #00ff00; }
+            0% { background: #00ff00; box-shadow: 0 0 22px #00ff00; }
+            50% { background: #00cc00; box-shadow: 0 0 6px #00cc00; }
+            100% { background: #00ff00; box-shadow: 0 0 22px #00ff00; }
         }
-        .css-led.on { animation: blinkLed 1.2s infinite; }
-        
+
         @keyframes glowNum {
-            0%, 100% { background: #ffcdd2; box-shadow: 0 3px 0 #e6b3b8; }
-            50% { background: #ff4081; box-shadow: 0 0 25px #ff4081; color: white; transform: scale(1.15); }
+            0%, 100% { background: #ffcdd2; box-shadow: 0 5px 0 #e6b3b8; }
+            50% { background: #ff4081; box-shadow: 0 0 30px #ff4081; color: white; transform: scale(1.1); }
         }
         .css-key.num-highlight { animation: glowNum 1.2s infinite ease-in-out; position: relative; }
 
-        .css-kb-layout { display: flex; gap: 15px; }
-        .css-kb-main { width: 620px; display: flex; flex-direction: column; gap: 5px; }
-        .css-kb-nav { width: 118px; display: flex; flex-direction: column; gap: 5px; }
-        .css-kb-numpad { display: grid; grid-template-columns: repeat(4, 36px); grid-template-rows: repeat(5, 36px); gap: 5px; }
-        .css-row { display: flex; gap: 5px; }
-        .css-row.space-between { justify-content: space-between; }
+        .css-kb-numpad { display: grid; grid-template-columns: repeat(4, 66px); grid-template-rows: repeat(5, 66px); gap: 9px; }
         .css-key {
-            width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: bold; color: #555; text-transform: capitalize;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: bold; color: #555;
         }
-        .css-key.coral { background: #ffa089; box-shadow: 0 3px 0 #e28169; color: white; }
-        .css-key.mint { background: #bdf0cb; box-shadow: 0 3px 0 #a2d6b1; }
-        .css-key.yellow { background: #ffeaa7; box-shadow: 0 3px 0 #e5d292; }
-        .css-key.blue { background: #b3e5fc; box-shadow: 0 3px 0 #95cbe3; }
-        .css-key.purple { background: #dcd0ff; box-shadow: 0 3px 0 #c2b5e6; }
-        .css-key.pink { background: #ffcdd2; box-shadow: 0 3px 0 #e6b3b8; }
-        .css-key.tall { grid-row: span 2; height: 77px; }
-        .css-key.wide { grid-column: span 2; width: 77px; }
-        .flex-1 { flex: 1; }
+        .css-key.pink { background: #ffcdd2; box-shadow: 0 5px 0 #e6b3b8; }
+        .css-key.tall { grid-row: span 2; }
+        .css-key.wide { grid-column: span 2; }
+
+        .prep-layout { display: flex; align-items: center; gap: 50px; margin: 20px 0 10px; }
+        .prep-cards { display: flex; flex-direction: column; gap: 22px; width: 560px; }
+        .prep-card {
+            text-align: left; border-radius: 28px; padding: 22px 30px; border: 5px solid;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.06);
+        }
+        .prep-card .q { font-size: 34px; color: #333; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+        .prep-card .a { font-size: 30px; display: flex; align-items: center; gap: 10px; }
+        .prep-card.on { background: #e8f5e9; border-color: #81c784; }
+        .prep-card.on .a { color: #2e7d32; }
+        .prep-card.off { background: #fce4ec; border-color: #f48fb1; }
+        .prep-card.off .a { color: #c2185b; }
+        .dot { display: inline-block; width: 30px; height: 30px; border-radius: 50%; flex: none; }
+        .dot.green { background: #00e000; box-shadow: 0 0 14px #00e000; }
+        .dot.gray { background: #bdbdbd; }
+        .keycap {
+            display: inline-block; background: #ff4081; color: white; border-radius: 12px;
+            padding: 2px 16px; box-shadow: 0 4px 0 #c2185b; font-size: 30px;
+        }
+        .green-word { color: #2e7d32; }
+
+        .prep-check {
+            cursor: pointer; font-size: 32px; color: #9e9e9e; display: flex; align-items: center; justify-content: center; gap: 18px;
+            margin: 10px 0 22px; background: #f5f5f5; padding: 18px 36px; border-radius: 24px; border: 5px solid #e0e0e0;
+            transition: all 0.25s; user-select: none;
+        }
+        .prep-check input { width: 40px; height: 40px; cursor: pointer; accent-color: #43a047; }
+        .prep-check:hover { border-color: #f48fb1; color: #d81b60; }
+        .prep-check.checked { background: #e8f5e9; border-color: #66bb6a; color: #2e7d32; transform: scale(1.04); }
+
+        #start-btn { font-size: 36px; padding: 18px 60px; }
+        #start-btn.locked { background: #cfcfcf; color: #f5f5f5; box-shadow: 0 8px 0 #b0b0b0; cursor: not-allowed; }
+        #start-btn.ready { background: #43a047; box-shadow: 0 8px 0 #2e7d32; animation: readyPulse 1s infinite ease-in-out; }
+        @keyframes readyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
     </style>
 </head>
 <body>
@@ -175,54 +205,17 @@ body {
     <!-- 첫 화면 마카롱 키보드 디자인 템플릿 -->
     <template id="macaron-template">
         <div class="css-kb">
-            <div class="css-kb-layout">
-                <div class="css-kb-main">
-                    <div class="css-row space-between">
-                        <div class="css-key coral">Esc</div>
-                        <div class="css-row"><div class="css-key mint">F1</div><div class="css-key mint">F2</div><div class="css-key mint">F3</div><div class="css-key mint">F4</div></div>
-                        <div class="css-row"><div class="css-key mint">F5</div><div class="css-key mint">F6</div><div class="css-key mint">F7</div><div class="css-key mint">F8</div></div>
-                        <div class="css-row"><div class="css-key mint">F9</div><div class="css-key mint">F10</div><div class="css-key mint">F11</div><div class="css-key mint">F12</div></div>
-                    </div>
-                    <div class="css-row">
-                        <div class="css-key yellow">~</div><div class="css-key yellow">1</div><div class="css-key yellow">2</div><div class="css-key yellow">3</div><div class="css-key yellow">4</div><div class="css-key yellow">5</div><div class="css-key yellow">6</div><div class="css-key yellow">7</div><div class="css-key yellow">8</div><div class="css-key yellow">9</div><div class="css-key yellow">0</div><div class="css-key yellow">-</div><div class="css-key yellow">=</div><div class="css-key purple flex-1">←</div>
-                    </div>
-                    <div class="css-row">
-                        <div class="css-key purple" style="width: 55px;">Tab</div><div class="css-key blue">Q</div><div class="css-key blue">W</div><div class="css-key blue">E</div><div class="css-key blue">R</div><div class="css-key blue">T</div><div class="css-key blue">Y</div><div class="css-key blue">U</div><div class="css-key blue">I</div><div class="css-key blue">O</div><div class="css-key blue">P</div><div class="css-key blue">[</div><div class="css-key blue">]</div><div class="css-key blue flex-1">\</div>
-                    </div>
-                    <div class="css-row">
-                        <div class="css-key purple" style="width: 70px;">Caps</div><div class="css-key blue">A</div><div class="css-key blue">S</div><div class="css-key blue">D</div><div class="css-key blue">F</div><div class="css-key blue">G</div><div class="css-key blue">H</div><div class="css-key blue">J</div><div class="css-key blue">K</div><div class="css-key blue">L</div><div class="css-key blue">;</div><div class="css-key blue">'</div><div class="css-key purple flex-1">Enter</div>
-                    </div>
-                    <div class="css-row">
-                        <div class="css-key purple" style="width: 90px;">Shift</div><div class="css-key blue">Z</div><div class="css-key blue">X</div><div class="css-key blue">C</div><div class="css-key blue">V</div><div class="css-key blue">B</div><div class="css-key blue">N</div><div class="css-key blue">M</div><div class="css-key blue">,</div><div class="css-key blue">.</div><div class="css-key blue">/</div><div class="css-key purple flex-1">Shift</div>
-                    </div>
-                    <div class="css-row">
-                        <div class="css-key purple" style="width: 45px;">Ctrl</div><div class="css-key purple" style="width: 45px;">Win</div><div class="css-key purple" style="width: 45px;">Alt</div><div class="css-key yellow flex-1">Space</div><div class="css-key purple" style="width: 45px;">한/영</div><div class="css-key purple" style="width: 45px;">Alt</div><div class="css-key purple" style="width: 45px;">Ctrl</div>
-                    </div>
-                </div>
-                
-                <div class="css-kb-nav">
-                    <div style="height: 36px;"></div> 
-                    <div class="css-row"><div class="css-key purple">Ins</div><div class="css-key purple">Hm</div><div class="css-key purple">Pu</div></div>
-                    <div class="css-row"><div class="css-key purple">Del</div><div class="css-key purple">End</div><div class="css-key purple">Pd</div></div>
-                    <div style="height: 36px;"></div>
-                    <div class="css-row" style="justify-content: center;"><div class="css-key mint">↑</div></div>
-                    <div class="css-row"><div class="css-key mint">←</div><div class="css-key mint">↓</div><div class="css-key mint">→</div></div>
-                </div>
-                
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <div style="height: 36px; display: flex; justify-content: space-around; align-items: center; padding: 0 10px;">
-                        <div class="css-led-box"><div class="css-led on"></div><span>Num</span></div>
-                        <div class="css-led-box"><div class="css-led"></div><span>Caps</span></div>
-                        <div class="css-led-box"><div class="css-led"></div><span>Scroll</span></div>
-                    </div>
-                    <div class="css-kb-numpad">
-                        <div class="css-key pink num-highlight">Num</div><div class="css-key pink">/</div><div class="css-key pink">*</div><div class="css-key pink">-</div>
-                        <div class="css-key pink">7</div><div class="css-key pink">8</div><div class="css-key pink">9</div><div class="css-key pink tall">+</div>
-                        <div class="css-key pink">4</div><div class="css-key pink">5</div><div class="css-key pink">6</div>
-                        <div class="css-key pink">1</div><div class="css-key pink">2</div><div class="css-key pink">3</div><div class="css-key pink tall">Ent</div>
-                        <div class="css-key pink wide">0</div><div class="css-key pink">.</div>
-                    </div>
-                </div>
+            <div class="css-led-row">
+                <div class="css-led-box num"><div class="css-led on"></div><span>Num</span></div>
+                <div class="css-led-box"><div class="css-led"></div><span>Caps</span></div>
+                <div class="css-led-box"><div class="css-led"></div><span>Scroll</span></div>
+            </div>
+            <div class="css-kb-numpad">
+                <div class="css-key pink num-highlight">Num</div><div class="css-key pink">/</div><div class="css-key pink">*</div><div class="css-key pink">-</div>
+                <div class="css-key pink">7</div><div class="css-key pink">8</div><div class="css-key pink">9</div><div class="css-key pink tall">+</div>
+                <div class="css-key pink">4</div><div class="css-key pink">5</div><div class="css-key pink">6</div>
+                <div class="css-key pink">1</div><div class="css-key pink">2</div><div class="css-key pink">3</div><div class="css-key pink tall">Ent</div>
+                <div class="css-key pink wide">0</div><div class="css-key pink">.</div>
             </div>
         </div>
     </template>
@@ -281,6 +274,15 @@ body {
             }
         };
 
+        // ✨ 체크하면 시작하기 버튼이 잠금 해제되며 초록색으로 바뀜 ✨
+        window.onLightCheck = function(cb) {
+            const btn = document.getElementById('start-btn');
+            document.getElementById('check-label').classList.toggle('checked', cb.checked);
+            btn.classList.toggle('locked', !cb.checked);
+            btn.classList.toggle('ready', cb.checked);
+            btn.textContent = cb.checked ? '🚀 시작하기' : '🔒 시작하기';
+        };
+
         function updateUI(showCompletedIdx) {
             const missionBox = document.getElementById('mission-box');
             const numpadArea = document.getElementById('numpad-area');
@@ -330,37 +332,33 @@ body {
             if (stageIdx === 0) {
                 numpadArea.style.display = 'none';
                 missionBox.style.width = '1250px';
-                missionBox.style.minHeight = '720px'; 
-                
+                missionBox.style.minHeight = '0';
+
                 missionBox.innerHTML = `
-                    <div id="mission-title" style="margin-top: 5px; font-size: 45px;">${stages[stageIdx].title}</div>
-                    
-                    <div style="text-align: left; background: #fffaf2; padding: 20px 35px; border-radius: 25px; border: 4px dashed #ffb6c1; font-size: 26px; line-height: 1.5; color: #424242; font-weight: bold; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-top: 10px;">
-                        <div style="margin-bottom: 8px;">
-                            <span style="color:#673ab7">1.</span> 키보드 맨 위를 볼까요? 화면처럼 내 키보드에도 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 켜져 있나요?
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <span style="color:#673ab7">2.</span> 내 키보드에도 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 들어왔다면 <b style="color:#d81b60;">아래 네모 박스에 체크</b>해 주세요.
-                        </div>
-                        <div>
-                            <span style="color:#673ab7">3.</span> 내 키보드에 <span style="color:#2e7d32; font-size: 30px;">초록불</span>이 안들어와있다면 <span style="color:#d81b60; font-size: 30px;">Num</span> 버튼을 눌러 <span style="color:#2e7d32; font-size: 30px;">초록불</span>을 켜주세요.
+                    <div id="mission-title" style="margin: 0; font-size: 48px;">${stages[stageIdx].title}</div>
+
+                    <div class="prep-layout">
+                        ${document.getElementById('macaron-template').innerHTML}
+
+                        <div class="prep-cards">
+                            <div style="font-size: 36px; color: #673ab7; text-align: left;">👀 내 키보드 숫자판 위를 보세요!</div>
+                            <div class="prep-card on">
+                                <div class="q"><span class="dot green"></span> <span class="green-word">초록불</span>이 켜져 있어요</div>
+                                <div class="a">👉 아래 네모에 체크 ✔</div>
+                            </div>
+                            <div class="prep-card off">
+                                <div class="q"><span class="dot gray"></span> 불이 꺼져 있어요</div>
+                                <div class="a">👉 <span class="keycap">Num</span> 키를 눌러 켜요!</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div style="transform: scale(1.1); transform-origin: center; margin: 25px 0 5px 0;">
-                        ${document.getElementById('macaron-template').innerHTML}
-                    </div>
-                    
-                    <div style="font-size: 45px; animation: bounceDown 1s infinite; margin-bottom: 5px;">👇</div>
-                    
-                    <label style="cursor: pointer; font-size: 30px; color: #d81b60; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; background: #fce4ec; padding: 15px 30px; border-radius: 20px; border: 4px solid #f8bbd0;">
-                        <input type="checkbox" id="check-light" style="width: 35px; height: 35px; cursor: pointer; accent-color: #d81b60;">
-                        네! 내 키보드에 초록불이 켜진 것을 확인했어요!
+                    <label class="prep-check" id="check-label">
+                        <input type="checkbox" id="check-light" onchange="onLightCheck(this)">
+                        네! <span class="green-word">초록불</span>이 켜진 것을 확인했어요!
                     </label>
 
-                    <div style="margin-bottom: 10px;">
-                        <button class="btn" onclick="checkAndStart()">✨ 시작하기</button>
-                    </div>
+                    <button class="btn locked" id="start-btn" onclick="checkAndStart()">🔒 시작하기</button>
                 `;
             } else {
                 numpadArea.style.display = 'flex';
