@@ -39,14 +39,17 @@
     text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,0 7px 0 rgba(180,90,130,.18)}
   .hero p{display:inline-block;background:#fff;border-radius:999px;padding:9px 22px;font-size:18px;font-weight:700;color:#d2557f;
     box-shadow:0 5px 0 #ffd0e2;margin:0}
-  .lvtabs{display:flex;justify-content:center;gap:14px;margin:0 0 26px;flex-wrap:wrap}
-  .lv{font-family:inherit;border:4px solid #fff;border-radius:24px;padding:10px 22px 10px 16px;background:#fff;cursor:pointer;color:var(--ink);
-    box-shadow:0 5px 0 rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;text-align:left;transition:transform .1s}
-  .lv:hover{transform:translateY(-3px)}
-  .lv .le{font-size:34px}
-  .lv b{display:block;font-size:21px;font-weight:900}
-  .lv small{display:block;font-size:13px;font-weight:600;opacity:.75}
-  .lv.on{background:var(--lc);color:#fff;box-shadow:0 5px 0 var(--ld)}
+  .lvtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:900px;margin:0 auto 34px}
+  @media (max-width:640px){.lvtabs{grid-template-columns:minmax(0,1fr)}}
+  .lv{position:relative;font-family:inherit;border:4px solid var(--lc);border-radius:26px;padding:16px 14px;background:var(--lt);color:var(--ld);cursor:pointer;
+    box-shadow:0 6px 0 var(--lc);display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;transition:transform .12s}
+  .lv:hover{transform:translateY(-4px)}
+  .lv .le{font-size:46px;line-height:1}
+  .lv b{display:block;font-size:28px;font-weight:900;line-height:1.2}
+  .lv b small{font-size:15px;font-weight:800;opacity:.8}
+  .lv > span > small{display:block;font-size:14px;font-weight:700;opacity:.85;margin-top:2px}
+  .lv.on{background:var(--lc);border-color:var(--ld);color:#fff;box-shadow:0 6px 0 var(--ld);transform:scale(1.04)}
+  .lv.on::after{content:"";position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);border:11px solid transparent;border-top-color:var(--ld)}
   .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
   @media (max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
@@ -85,7 +88,7 @@
     background-image:radial-gradient(#dfe6ee 1.2px,transparent 1.2px);background-size:16px 16px}
   .scripts{display:flex;flex-wrap:wrap;gap:30px 40px;align-items:flex-start}
   .olabel{display:inline-block;background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-size:15px;font-weight:800;margin:0 0 14px}
-  .warn{display:flex;gap:10px;align-items:flex-start;background:#fff0f0;border:3px solid #ff8a8a;border-radius:18px;padding:12px 14px;margin:0 0 14px;
+  .warn{display:flex;gap:10px;align-items:center;background:#fff0f0;border:3px solid #ff8a8a;border-radius:18px;padding:12px 14px;margin:0 0 14px;
     font-size:16px;line-height:1.5;color:#8a2a2a;word-break:keep-all}
   .warn i{font-size:28px;color:#ff4d4d;animation:bob 1.2s ease-in-out infinite}
   .warn b{color:#e02424}
@@ -232,9 +235,9 @@ const funcHow = (name, why) => ({t:`'${name}' 함수 만드는 방법`,
     '함수 정의하기 블록 아래에 함수가 할 일을 블록으로 붙여요.', '<b>저장</b>하고 나오면 함수 꾸러미에 새 함수 블록이 생겨요.']});
 
 const LV = [
-  {k:'초급', em:'🌱', s:'기본 명령어로 움직여요', c:'#3ccf7a', d:'#24a85c'},
-  {k:'중급', em:'🌿', s:'변수 · 신호 · 묻고 대답하기', c:'#3ab0ff', d:'#1b8bd6'},
-  {k:'고급', em:'🌳', s:'리스트 · 함수', c:'#8e7dff', d:'#6a58e0'},
+  {k:'초급', em:'🌱', s:'기본 명령어로 움직여요', c:'#3ccf7a', d:'#24a85c', lt:'#dcf8e6'},
+  {k:'중급', em:'🌿', s:'변수 · 신호 · 묻고 대답하기', c:'#3ab0ff', d:'#1b8bd6', lt:'#dcefff'},
+  {k:'고급', em:'🌳', s:'리스트 · 함수', c:'#8e7dff', d:'#6a58e0', lt:'#ebe6ff'},
 ];
 
 const ITEMS = [
@@ -382,7 +385,6 @@ const setLv = l => { curLv = l; try { sessionStorage.setItem('entryLv', l); } ca
 const inLv = l => ITEMS.map((it, i) => ({it, i})).filter(x => x.it.lv === l);
 const entryBtn = `<a class="home entry" href="${ENTRY_URL}" target="_blank" rel="noopener"><span class="hi"><i class="ti ti-external-link"></i></span>엔트리 열기</a>`;
 
-const PAL = ['#ffe08a', '#b9f0c4', '#c2e4ff', '#ffc8dc', '#e3d6ff', '#ffd6ad', '#c3f1eb', '#fff1a6', '#ffcfc4', '#d6f5b0'];
 const DECO = [['☁️', 4, 10, 0], ['⭐', 90, 8, 1], ['🌈', 3, 55, 2], ['💖', 93, 42, 3], ['🍭', 91, 80, 1.5], ['☁️', 82, 22, 2.5], ['✨', 8, 86, .5], ['🎀', 14, 30, 3.5]];
 const RAINBOW = ['#ff6b8b', '#ff9f43', '#f5c400', '#3ccf7a', '#3ab0ff', '#8e7dff'];
 function home(){
@@ -396,11 +398,11 @@ function home(){
       <h1>${title}</h1>
       <p>블록은 마법 명령어 🪄 나는 꼬마 마법 개발자 🧙 엔트리 친구들을 움직여 볼까요?</p></div>
     <div class="lvtabs">${LV.map((l, i) => `
-      <button class="lv${i === curLv ? ' on' : ''}" data-lv="${i}" style="--lc:${l.c};--ld:${l.d}">
+      <button class="lv${i === curLv ? ' on' : ''}" data-lv="${i}" style="--lc:${l.c};--ld:${l.d};--lt:${l.lt}">
         <span class="le">${l.em}</span><span><b>${l.k} <small style="display:inline">${inLv(i).length}개</small></b><small>${l.s}</small></span></button>`).join('')}</div>
     <div class="grid">${inLv(curLv).map(({it, i}, n) => `
-      <a class="card" href="#/${i + 1}" style="background:${PAL[n % PAL.length]}">
-        <span class="no">${n + 1}</span><div class="em">${it.em}</div>
+      <a class="card" href="#/${i + 1}" style="background:${LV[curLv].lt}">
+        <span class="no" style="background:${LV[curLv].c};color:#fff">${n + 1}</span><div class="em">${it.em}</div>
         <h3>${it.t}</h3><p>${it.s}</p></a>`).join('')}</div>`;
   app.querySelectorAll('.lv').forEach(b => b.onclick = () => { setLv(+b.dataset.lv); home(); });
 }
@@ -420,9 +422,7 @@ function detail(i){
         <div class="stage" id="stage"><div class="ch" id="ch">${it.ch}</div></div>
         <div id="ctrls"></div></div>
       <div class="box"><h4><i class="ti ti-puzzle"></i> 엔트리 코드</h4>
-        ${negs.length ? `<div class="warn"><i class="ti ti-alert-triangle"></i><div><b>주의!</b> 숫자 앞에 빼기가 붙은 곳이 있어요:
-          ${negs.map(v => `<b>${v}</b>`).join(', ')}<br>엔트리에서 따라 만들 때 <b>-</b> 를 빠뜨리지 않았는지 꼭 확인하세요!
-          빼기가 없으면 전혀 다르게 움직여요.</div></div>` : ''}
+        ${negs.length ? `<div class="warn"><i class="ti ti-alert-triangle"></i><div><b>주의!</b> 빼기(-) 꼭 확인하기: ${negs.map(v => `<b>${v}</b>`).join(', ')}</div></div>` : ''}
         <div class="code"><div class="scripts">${it.scripts.map(script).join('')}</div></div></div>
     </div>
     ${it.how ? `<div class="box how"><h4><i class="ti ti-bulb"></i> ${it.how.t}</h4>
