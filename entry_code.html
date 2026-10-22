@@ -13,57 +13,61 @@
   }
   *{box-sizing:border-box}
   body{margin:0;color:var(--ink);font-family:'Pretendard',sans-serif;min-height:100vh;background-color:#fff6fb;
-    background-image:linear-gradient(180deg,#ffe6f2 0%,#fff6dc 50%,#e2f5ff 100%);background-attachment:fixed}
-  .home{font-family:inherit;font-size:17px;font-weight:800;color:#fff;background:#ff7fa8;border-radius:999px;padding:6px 20px 6px 6px;
-    display:inline-flex;align-items:center;gap:10px;box-shadow:0 5px 0 #e35d8a;transition:transform .1s,box-shadow .1s}
-  .home .hi{width:34px;height:34px;border-radius:50%;background:#fff;color:#ff7fa8;display:inline-flex;align-items:center;justify-content:center;font-size:20px}
-  .home:hover{transform:translateY(-2px);box-shadow:0 7px 0 #e35d8a}
-  .home:active{transform:translateY(3px);box-shadow:0 2px 0 #e35d8a}
-  body{display:flex;flex-direction:column}
-  .wrap{flex:1 0 auto;width:100%}
+    background-image:linear-gradient(180deg,#ffe6f2 0%,#fff6dc 50%,#e2f5ff 100%);background-attachment:fixed;
+    display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .wrap{position:relative;z-index:1;flex:1 0 auto;width:100%;max-width:1040px;margin:0 auto;padding:28px 16px 60px}
+  .deco{position:fixed;font-size:36px;pointer-events:none;z-index:0;animation:drift 6s ease-in-out infinite}
   footer{position:relative;z-index:1;background:#63C24B;text-align:center;flex:0 0 auto;
     padding:clamp(8px,1.4vh,14px) 24px clamp(10px,2vh,22px);font-family:'Dongle',sans-serif;font-weight:700;
     font-size:clamp(17px,2.8vh,24px);color:#fff;text-shadow:0 1px 3px rgba(31,22,55,.25)}
-  a{color:inherit;text-decoration:none}
-  .wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:28px 16px 60px}
-  .deco{position:fixed;font-size:36px;pointer-events:none;z-index:0;animation:drift 6s ease-in-out infinite}
+
+  /* ---------- 위쪽 버튼 ---------- */
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .home{font-family:inherit;font-size:17px;font-weight:800;color:#fff;background:var(--hc,#ff7fa8);border-radius:999px;padding:6px 20px 6px 6px;
+    display:inline-flex;align-items:center;gap:10px;box-shadow:0 5px 0 var(--hd,#e35d8a);transition:transform .1s,box-shadow .1s}
+  .home .hi{width:34px;height:34px;border-radius:50%;background:#fff;color:var(--hc,#ff7fa8);display:inline-flex;align-items:center;justify-content:center;font-size:20px}
+  .home:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--hd,#e35d8a)}
+  .home:active{transform:translateY(3px);box-shadow:0 2px 0 var(--hd,#e35d8a)}
+  .home.entry{--hc:#16b84a;--hd:#0e9139}
 
   /* ---------- 목록 ---------- */
-  .hero{text-align:center;margin:10px 0 34px}
+  .hero{text-align:center;margin:0 0 26px}
   .hero .logo{font-size:60px;display:inline-block;animation:bob 2.4s ease-in-out infinite}
   .hero h1{font-size:48px;font-weight:900;margin:6px 0 14px;letter-spacing:1px}
   .hero h1 b{display:inline-block;font-weight:900;animation:bob 2.4s ease-in-out infinite;
     text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,0 7px 0 rgba(180,90,130,.18)}
   .hero p{display:inline-block;background:#fff;border-radius:999px;padding:9px 22px;font-size:18px;font-weight:700;color:#d2557f;
     box-shadow:0 5px 0 #ffd0e2;margin:0}
+  .lvtabs{display:flex;justify-content:center;gap:14px;margin:0 0 26px;flex-wrap:wrap}
+  .lv{font-family:inherit;border:4px solid #fff;border-radius:24px;padding:10px 22px 10px 16px;background:#fff;cursor:pointer;color:var(--ink);
+    box-shadow:0 5px 0 rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;text-align:left;transition:transform .1s}
+  .lv:hover{transform:translateY(-3px)}
+  .lv .le{font-size:34px}
+  .lv b{display:block;font-size:21px;font-weight:900}
+  .lv small{display:block;font-size:13px;font-weight:600;opacity:.75}
+  .lv.on{background:var(--lc);color:#fff;box-shadow:0 5px 0 var(--ld)}
   .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
   @media (max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
-  .card{position:relative;border-radius:28px;padding:22px 18px 20px;text-align:center;border:4px solid #fff;
+  .card{position:relative;border-radius:28px;padding:20px 12px 18px;text-align:center;border:4px solid #fff;
     box-shadow:0 6px 0 rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;cursor:pointer}
   .card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 12px 0 rgba(0,0,0,.08)}
   .card:active{transform:translateY(0)}
-  .card .no{position:absolute;top:12px;left:14px;width:34px;height:34px;border-radius:50%;background:#fff;
+  .card .no{position:absolute;top:12px;left:14px;width:34px;height:34px;border-radius:50%;background:#fff;font-weight:800;
     display:flex;align-items:center;justify-content:center;font-size:18px}
-  .card .em{font-size:64px;line-height:1.2;margin:8px 0 6px}
-  .card{padding:20px 12px 18px}
-  .card .em{font-size:54px}
+  .card .em{font-size:54px;line-height:1.2;margin:8px 0 6px}
   .card h3{font-size:19px;font-weight:800;margin:0 0 6px;word-break:keep-all}
   .card p{font-size:14px;font-weight:500;margin:0;opacity:.75;line-height:1.4;word-break:keep-all}
-  .card .no{font-weight:800}
-  .btn{font-weight:700}
-  .title h2{font-weight:800}
 
   /* ---------- 상세 ---------- */
-  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-  .btn{font-family:inherit;font-size:18px;border:3px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;
-    padding:8px 18px;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:6px}
-  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
-  .btn.ghost{border-color:var(--line);box-shadow:0 4px 0 var(--line)}
-  .title{display:flex;align-items:center;gap:14px;margin:4px 0 6px}
+  .btn{font-family:inherit;font-size:18px;font-weight:700;border:3px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;
+    padding:8px 18px;cursor:pointer;box-shadow:0 4px 0 var(--line);display:inline-flex;align-items:center;gap:6px}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+  .title{display:flex;align-items:center;gap:14px;margin:4px 0 6px;flex-wrap:wrap}
   .title .em{font-size:54px}
-  .title h2{font-size:38px;margin:0}
-  .title .no{font-size:18px;background:#ff7a59;color:#fff;border-radius:999px;padding:4px 12px}
+  .title h2{font-size:38px;font-weight:800;margin:0}
+  .title .no{font-size:18px;font-weight:800;color:#fff;border-radius:999px;padding:4px 14px}
   .desc{font-size:20px;color:var(--soft);margin:0 0 22px}
   .panes{display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px}
   @media (max-width:820px){.panes{grid-template-columns:minmax(0,1fr)}}
@@ -73,31 +77,59 @@
     background-image:linear-gradient(#bfe6c4,#bfe6c4);background-size:100% 36px;background-position:bottom;background-repeat:no-repeat}
   .ch{position:absolute;left:50%;bottom:36px;font-size:64px;line-height:1;transform:translateX(-50%);user-select:none}
   .bubble{position:absolute;left:50%;bottom:120px;transform:translateX(-10%);background:#fff;border:3px solid var(--ink);
-    border-radius:16px;padding:6px 12px;font-size:17px;white-space:nowrap}
+    border-radius:16px;padding:6px 12px;font-size:17px;font-weight:700;white-space:nowrap;z-index:3}
   .ctrls{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  .hint{font-size:15px;color:var(--soft);text-align:center;margin:10px 0 0}
+  .hint{font-size:15px;color:var(--soft);text-align:center;margin:10px 0 0;word-break:keep-all}
+  .hint b{color:#ff7a59}
   .code{overflow-x:auto;padding:14px 8px 18px 14px;border-radius:18px;background:#f6f9fc;
     background-image:radial-gradient(#dfe6ee 1.2px,transparent 1.2px);background-size:16px 16px}
-  .scripts{display:flex;flex-wrap:wrap;gap:34px 40px;align-items:flex-start}
+  .scripts{display:flex;flex-wrap:wrap;gap:30px 40px;align-items:flex-start}
+  .olabel{display:inline-block;background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-size:15px;font-weight:800;margin:0 0 14px}
+  .warn{display:flex;gap:10px;align-items:flex-start;background:#fff0f0;border:3px solid #ff8a8a;border-radius:18px;padding:12px 14px;margin:0 0 14px;
+    font-size:16px;line-height:1.5;color:#8a2a2a;word-break:keep-all}
+  .warn i{font-size:28px;color:#ff4d4d;animation:bob 1.2s ease-in-out infinite}
+  .warn b{color:#e02424}
+  .how{margin-top:20px}
+  .how .intro{background:#fff7d6;border-radius:16px;padding:12px 16px;font-size:17px;line-height:1.6;margin:0 0 14px;word-break:keep-all}
+  .how .intro b{color:#d2557f}
+  .how ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .how li{display:flex;gap:12px;align-items:center;font-size:17px;line-height:1.5;word-break:keep-all}
+  .how li::before{counter-increment:step;content:counter(step);flex:0 0 34px;height:34px;border-radius:50%;background:#ff7a59;color:#fff;
+    font-weight:800;display:flex;align-items:center;justify-content:center}
+  .how ol{counter-reset:step}
+  .how li b{color:#16a34a}
+  .nav{display:flex;justify-content:space-between;margin-top:24px;gap:10px}
+
+  /* ---------- 미리보기 조작 ---------- */
   .key{font-family:inherit;font-weight:800;font-size:20px;color:#fff;background:#5b8def;border:0;border-radius:18px;
     padding:14px 26px;box-shadow:0 6px 0 #3e6cc9;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .08s,box-shadow .08s}
   .key i{font-size:24px}
   .key:active,.key.on{transform:translateY(4px);box-shadow:0 2px 0 #3e6cc9}
   .key.wide{min-width:240px}
+  .key.sm{font-size:17px;padding:10px 18px}
+  .pill{font-family:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 16px;cursor:pointer}
+  .pill.on{background:#ff7a59;border-color:#ff7a59;color:#fff}
+  .ask{display:flex;gap:8px;justify-content:center;margin-top:12px}
+  .ask input{font-family:inherit;font-size:17px;font-weight:600;padding:10px 14px;border:3px solid var(--line);border-radius:14px;width:170px;color:var(--ink)}
+  .ask input:focus{outline:none;border-color:#5b8def}
+  .err{color:#e03a3a;font-size:14px;font-weight:700;text-align:center;margin:6px 0 0;min-height:1.2em}
   .score{position:absolute;left:12px;top:12px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 14px;font-size:18px;font-weight:800}
+  .sig{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#0db33c;color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;font-size:16px}
+  .lst{position:absolute;right:10px;top:10px;width:128px;background:#fff;border:3px solid #e05fd0;border-radius:12px;font-size:14px;font-weight:700;overflow:hidden}
+  .lst h5{margin:0;background:#e05fd0;color:#fff;padding:4px 8px;font-size:14px}
+  .lst ol{margin:0;padding:4px 8px 4px 28px;min-height:36px}
+  .lst li{padding:1px 4px;border-radius:4px}
+  .lst li.on{background:#ffe08c}
+  .lst .cnt{font-size:12px;color:var(--soft);padding:0 8px 5px}
   .frames{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;color:var(--soft)}
   .fr{background:#fffaf0;border:3px solid var(--line);border-radius:14px;padding:6px 10px 4px;text-align:center;font-size:30px;line-height:1.15;transition:transform .1s}
   .fr small{display:block;font-size:12px;font-weight:700;color:var(--soft)}
   .fr.on{border-color:#ff7a59;background:#ffece5;transform:scale(1.1)}
-  .pill{font-family:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 16px;cursor:pointer}
-  .pill.on{background:#ff7a59;border-color:#ff7a59;color:#fff}
-  .hint b{color:#ff7a59}
   .drawsq{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 4s linear infinite}
-  .nav{display:flex;justify-content:space-between;margin-top:24px;gap:10px}
+  .drawpart{stroke-dasharray:240;stroke-dashoffset:240;animation:drawOnce .5s linear forwards}
 
   /* ---------- 엔트리 블록 ---------- */
-  .ec{display:flex;flex-direction:column;align-items:flex-start;
-    font-size:17px;font-weight:700;color:#fff}
+  .ec{display:flex;flex-direction:column;align-items:flex-start;font-size:17px;font-weight:700;color:#fff}
   .stack{margin-left:22px;display:flex;flex-direction:column;align-items:flex-start}
   .b{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 6px 0 16px;border-radius:4px 22px 22px 4px;
     position:relative;white-space:nowrap;background:var(--c);border:1.5px solid var(--k)}
@@ -108,24 +140,31 @@
   .b.hat .hc{position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:#fff;
     border:4px solid var(--c);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:24px}
   .b.chead{border-radius:4px 22px 22px 0;border-bottom:0}
+  .b.cmid{border-radius:0 22px 22px 0;border-top:0;border-bottom:0;padding-right:16px}
   .cbody{display:flex}
   .arm{width:24px;background:var(--c);border-left:1.5px solid var(--k)}
-  .kids{display:flex;flex-direction:column;align-items:flex-start;padding:0 0 0 0}
+  .kids{display:flex;flex-direction:column;align-items:flex-start}
   .b.foot{height:22px;width:190px;border-radius:0 12px 12px 4px;padding:0;border-top:0}
   .num{background:#ffe08c;border:1.5px solid #f2a62a;color:#3a2a00;border-radius:16px;padding:3px 12px;font-size:15px}
+  .num.neg{background:#ffe1e1;border:2.5px solid #ff2e2e;color:#c40000;animation:negpulse 1.4s ease-in-out infinite}
   .txt{background:#fff;border:1.5px solid rgba(0,0,0,.15);color:#333;border-radius:6px;padding:3px 10px;font-size:15px}
   .dd{background:var(--d);border-radius:4px;padding:4px 8px 4px 10px;font-size:15px}
+  .rep{display:inline-flex;align-items:center;gap:6px;background:var(--c);border:1.5px solid var(--k);border-radius:18px;padding:3px 10px 3px 4px;font-size:15px}
+  .rep.solo{padding:3px 12px}
+  .bool{display:inline-flex;align-items:center;gap:6px;background:var(--c);padding:4px 18px;font-size:15px;
+    clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%)}
+  .fname{background:rgba(255,255,255,.22);border:1.5px dashed #fff;border-radius:6px;padding:3px 10px;font-size:15px}
   .start{--c:#0db33c;--k:#0a9632;--d:#09902f}
   .flow{--c:#3dbbea;--k:#2b9fd1;--d:#2b9fd1}
   .looks{--c:#ff3d64;--k:#e0264f;--d:#d0284a}
   .move{--c:#a94af0;--k:#8c33d4;--d:#8c33d4}
-  .sound{--c:#7cc11d;--k:#63a00f;--d:#5e980e}
   .brush{--c:#ff9b00;--k:#e08600;--d:#d98000}
   .data{--c:#e05fd0;--k:#c247b3;--d:#b9409f}
   .calc{--c:#f4af18;--k:#d9930a;--d:#d9930a}
-  .rep{display:inline-flex;align-items:center;gap:6px;background:var(--c);border:1.5px solid var(--k);border-radius:18px;padding:3px 10px 3px 4px;font-size:15px}
+  .judge{--c:#4f80ff;--k:#3a64d8;--d:#3a64d8}
+  .func{--c:#78909c;--k:#5f7581;--d:#5f7581}
 
-  /* ---------- 미리보기 움직임 ---------- */
+  /* ---------- 움직임 ---------- */
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   @keyframes jump{0%,100%{bottom:36px}50%{bottom:136px}}
   @keyframes run{0%{left:12%;transform:translateX(-50%) scaleX(-1)}49%{transform:translateX(-50%) scaleX(-1)}
@@ -139,7 +178,9 @@
   @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-30px)}}
   @keyframes fade{from{opacity:1}to{opacity:0}}
   @keyframes draw{0%{stroke-dashoffset:400}80%,100%{stroke-dashoffset:0}}
+  @keyframes drawOnce{to{stroke-dashoffset:0}}
   @keyframes drift{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(6deg)}}
+  @keyframes negpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,46,46,.55)}50%{box-shadow:0 0 0 6px rgba(255,46,46,0)}}
   .jumping{animation:jump .7s ease-in-out}
 </style>
 </head>
@@ -148,110 +189,198 @@
 <footer>제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</footer>
 
 <script>
+const ENTRY_URL = 'https://playentry.org/ws/new?type=normal&mode=block&lang=ko';
+
 /* 블록 데이터
-   대본: 문자열 = 글자, {n} = 숫자칸, {t} = 글자칸, {d} = 고르는 칸
-   블록: {c:분류, p:[...], i:아이콘, k:[안쪽 블록들]}  (k가 있으면 감싸는 블록) */
+   대본: 문자열 = 글자, {n} = 숫자칸, {t} = 글자칸, {d} = 고르는 칸, {r} = 끼우는 동그란 블록, {b} = 끼우는 육각 블록(판단), {f} = 함수 이름
+   블록: {c:분류, p:[...], k:[안쪽 블록들], e:[아니면 안쪽 블록들]}
+   스크립트: {o:오브젝트 이름(없어도 됨), h:머리 블록, b:[블록들]} */
 const N = v => ({n:v}), T = v => ({t:v}), D = v => ({d:v});
+const R = (c, p) => ({r:{c, p}});
+const ANSWER = R('data', ['대답']);
 const wait = s => ({c:'flow', p:[N(s), '초 기다리기']});
 const loop = k => ({c:'flow', p:['계속 반복하기'], k});
 const times = (n, k) => ({c:'flow', p:[N(n), '번 반복하기'], k});
-// 블록 안에 끼워 넣는 동그란 블록 (예: 계산 블록의 무작위 수)
-const rnd = (a, b) => ({r:{c:'calc', p:[N(a), '부터', N(b), '사이의 무작위 수']}});
+const ifElse = (cond, k, e) => ({c:'flow', p:['만약', cond, '(이)라면'], k, e});
+const say = (w, s) => ({c:'looks', p:[typeof w === 'string' ? T(w) : w, '을(를)', N(s), '초 동안 말하기']});
+const ask = q => ({c:'data', p:[T(q), '을(를) 묻고 대답 기다리기']});
+const rnd = (a, b) => R('calc', [N(a), '부터', typeof b === 'object' ? b : N(b), '사이의 무작위 수']);
 const START = {i:'player-play', p:['시작하기 버튼을 클릭했을 때']};
 const CLICK = {i:'hand-click', p:['오브젝트를 클릭했을 때']};
 const KEY = k => ({i:'keyboard', p:[D(k), '키를 눌렀을 때']});
+const GOT = s => ({i:'broadcast', p:[D(s), '신호를 받았을 때']});
+const FUNC = name => ({c:'func', i:'math-function', p:['함수 정의하기', {f:name}]});
+const CALL = name => ({c:'func', p:[name]});
 
-const ITEMS = [
-  {em:'🐣', ch:'🥚', bg:'#ffe9a8', t:'애니메이션', s:'그림을 하나씩 빠르게 바꾸면 움직이는 것처럼 보여요', pv:'frames', frames:['🥚','🐣','🐥'],
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([{c:'looks', p:[D('다음'), '모양으로 바꾸기']}, wait('0.1')])]}]},
-  {em:'🐸', ch:'🐸', bg:'#c9f2c0', t:'점프하기', s:'스페이스 키를 누르면 폴짝 뛰어올라요', pv:'jump',
-   scripts:[{h:{i:'keyboard', p:[D('스페이스'), '키를 눌렀을 때']}, b:[
-     times(10, [{c:'move', p:['y 좌표를', N(10), '만큼 바꾸기']}]),
-     times(10, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}])]}]},
-  {em:'🚗', ch:'🚗', bg:'#c8e6ff', t:'화살표로 움직이기', s:'화살표 키로 왼쪽, 오른쪽으로 움직여요', pv:'arrows',
-   scripts:[
-     {h:{i:'keyboard', p:[D('오른쪽 화살표'), '키를 눌렀을 때']}, b:[{c:'move', p:['x 좌표를', N(10), '만큼 바꾸기']}]},
-     {h:{i:'keyboard', p:[D('왼쪽 화살표'), '키를 눌렀을 때']}, b:[{c:'move', p:['x 좌표를', N(-10), '만큼 바꾸기']}]}]},
-  {em:'⚽', ch:'⚽', bg:'#ffd6cc', t:'벽에 튕기기', s:'계속 가다가 벽에 닿으면 반대로 돌아와요', pv:'bounce',
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([{c:'move', p:['이동 방향으로', N(5), '만큼 움직이기']}, {c:'move', p:['화면 끝에 닿으면 튕기기']}])]}]},
-  {em:'💬', ch:'🤖', bg:'#e6dcff', t:'말하기', s:'말풍선으로 친구에게 인사해요', pv:'talk', lines:['안녕!', '나는 엔트리봇이야'],
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     {c:'looks', p:[T('안녕!'), '을(를)', N(2), '초 동안 말하기']},
-     {c:'looks', p:[T('나는 엔트리봇이야'), '을(를)', N(2), '초 동안 말하기']}]}]},
-  {em:'🌀', ch:'⭐', bg:'#fff3b8', t:'빙글빙글 돌기', s:'방향을 조금씩 계속 돌려요', pv:'spin',
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([{c:'move', p:['방향을', N(10), '만큼 회전하기']}])]}]},
-  {em:'🎈', ch:'🎈', bg:'#ffd3e6', t:'커졌다 작아지기', s:'풍선처럼 커졌다가 작아져요', pv:'grow',
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([times(10, [{c:'looks', p:['크기를', N(5), '만큼 바꾸기']}]),
-           times(10, [{c:'looks', p:['크기를', N(-5), '만큼 바꾸기']}])])]}]},
-  {em:'🐭', ch:'🐭', bg:'#d9f5ef', t:'마우스 따라가기', s:'마우스가 가는 곳으로 졸졸 따라가요', pv:'follow',
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
-  {em:'🐶', ch:'🐶', bg:'#ffe2c2', t:'누르면 소리 내기', s:'강아지를 클릭하면 멍멍 짖어요', pv:'click',
-   scripts:[{h:{i:'hand-click', p:['오브젝트를 클릭했을 때']}, b:[
-     {c:'sound', p:['소리', D('강아지 짖는 소리'), '재생하기']},
-     {c:'looks', p:[D('다음'), '모양으로 바꾸기']}]}]},
-  {em:'👻', ch:'👻', bg:'#e3e8f0', t:'숨바꼭질', s:'나타났다 사라졌다 해요', pv:'hide',
-   scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
-     loop([{c:'looks', p:['모양 숨기기']}, wait('0.5'), {c:'looks', p:['모양 보이기']}, wait('0.5')])]}]},
-  {em:'🐰', ch:'🐰', t:'순간이동', s:'1초마다 아무 곳으로 뿅 하고 나타나요', pv:'teleport',
-   scripts:[{h:START, b:[loop([{c:'move', p:['x:', rnd(-200, 200), 'y:', rnd(-100, 100), '위치로 이동하기']}, wait(1)])]}]},
-  {em:'✏️', ch:'✏️', t:'네모 그리기', s:'붓으로 네모를 그려요', pv:'draw',
-   scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']},
-     times(4, [{c:'move', p:['이동 방향으로', N(100), '만큼 움직이기']}, {c:'move', p:['방향을', N(90), '만큼 회전하기']}])]}]},
-  {em:'🦄', ch:'🦄', t:'무지개 색 바꾸기', s:'색깔이 알록달록 계속 바뀌어요', pv:'hue',
-   scripts:[{h:START, b:[loop([{c:'looks', p:[D('색깔'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
-  {em:'🚀', ch:'🚀', t:'카운트다운', s:'3, 2, 1 숫자를 세고 출발해요', pv:'talk', lines:['3', '2', '1', '출발!'], ms:1000,
-   scripts:[{h:START, b:['3', '2', '1', '출발!'].map(w => ({c:'looks', p:[T(w), '을(를)', N(1), '초 동안 말하기']}))}]},
-  {em:'🦋', ch:'🦋', t:'동그랗게 날기', s:'조금 가고 조금 돌면 동그라미를 그리며 날아요', pv:'orbit',
-   scripts:[{h:START, b:[loop([{c:'move', p:['이동 방향으로', N(5), '만큼 움직이기']}, {c:'move', p:['방향을', N(5), '만큼 회전하기']}])]}]},
-  {em:'☁️', ch:'☁️', t:'둥실둥실', s:'구름처럼 위아래로 둥실둥실 떠다녀요', pv:'float',
-   scripts:[{h:START, b:[loop([times(10, [{c:'move', p:['y 좌표를', N(2), '만큼 바꾸기']}]),
-     times(10, [{c:'move', p:['y 좌표를', N(-2), '만큼 바꾸기']}])])]}]},
-  {em:'✨', ch:'🧚', t:'스르르 사라지기', s:'조금씩 투명해지다가 사라져요', pv:'fade',
-   scripts:[{h:START, b:[times(10, [{c:'looks', p:[D('투명도'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
-  {em:'🍄', ch:'🍄', t:'누르면 커지기', s:'클릭할 때마다 쑥쑥 커져요', pv:'clickgrow',
-   scripts:[{h:CLICK, b:[{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}]}]},
-  {em:'🎹', ch:'🎹', t:'키보드 피아노', s:'키를 누르면 피아노 소리가 나요', pv:'piano',
-   scripts:[['a', '도'], ['s', '레'], ['d', '미']].map(([k, n]) =>
-     ({h:KEY(k), b:[{c:'sound', p:['소리', D('피아노_' + n), '재생하기']}]}))},
-  {em:'🌟', ch:'🌟', t:'점수 올리기', s:'별을 클릭할 때마다 점수가 1점씩 올라가요', pv:'score',
-   scripts:[{h:START, b:[{c:'data', p:[D('점수'), '를', N(0), '(으)로 정하기']}]},
-            {h:CLICK, b:[{c:'data', p:[D('점수'), '에', N(1), '만큼 더하기']}]}]},
+/* 만드는 방법 */
+const varHow = (name, why) => ({t:`'${name}' 변수 만드는 방법`,
+  intro:`변수는 숫자나 글자를 담아 두는 <b>이름표 붙은 상자</b>예요. ${why}`,
+  steps:['블록 꾸러미에서 <b>자료</b>를 눌러요.', '<b>변수 추가하기</b> 버튼을 눌러요.',
+    `변수 이름 칸에 <b>${name}</b>(이)라고 쓰고 <b>확인</b>을 눌러요.`,
+    `실행 화면 왼쪽 위에 <b>${name}</b> 상자가 생겼는지 확인해요.`,
+    `자료 꾸러미에 새로 생긴 블록에서 ▾를 눌러 <b>${name}</b>을(를) 골라 써요.`]});
+const listHow = (name, why, items) => ({t:`'${name}' 리스트 만드는 방법`,
+  intro:`리스트는 여러 개를 차례대로 줄 세워 담는 <b>서랍장</b>이에요. 변수는 하나만, 리스트는 여러 개를 담아요. ${why}`,
+  steps:['블록 꾸러미에서 <b>자료</b>를 눌러요.', '<b>리스트 추가하기</b> 버튼을 눌러요.',
+    `리스트 이름 칸에 <b>${name}</b>(이)라고 쓰고 <b>확인</b>을 눌러요.`,
+    items ? `실행 화면에 생긴 ${name} 리스트 아래의 <b>+</b> 버튼을 눌러 <b>${items}</b>을(를) 하나씩 넣어요.`
+          : `실행 화면에 빈 <b>${name}</b> 리스트가 생겼는지 확인해요.`]});
+const funcHow = (name, why) => ({t:`'${name}' 함수 만드는 방법`,
+  intro:`함수는 자주 쓰는 블록 묶음에 <b>이름을 붙여 한 블록으로 만든 것</b>이에요. ${why}`,
+  steps:['블록 꾸러미에서 <b>함수</b>를 눌러요.', '<b>함수 만들기</b> 버튼을 눌러요.',
+    `<b>함수 정의하기</b> 블록의 이름 칸에 <b>${name}</b>(이)라고 써요.`,
+    '함수 정의하기 블록 아래에 함수가 할 일을 블록으로 붙여요.', '<b>저장</b>하고 나오면 함수 꾸러미에 새 함수 블록이 생겨요.']});
+
+const LV = [
+  {k:'초급', em:'🌱', s:'기본 명령어로 움직여요', c:'#3ccf7a', d:'#24a85c'},
+  {k:'중급', em:'🌿', s:'변수 · 신호 · 묻고 대답하기', c:'#3ab0ff', d:'#1b8bd6'},
+  {k:'고급', em:'🌳', s:'리스트 · 함수', c:'#8e7dff', d:'#6a58e0'},
 ];
 
-const ICON = {flow:'hierarchy', move:'arrows-move', looks:'circles', sound:'volume', brush:'brush', data:'database'};
+const ITEMS = [
+  /* ---------- 초급 ---------- */
+  {lv:0, em:'🐣', ch:'🥚', t:'애니메이션', s:'그림을 하나씩 빠르게 바꾸면 움직이는 것처럼 보여요', pv:'frames', frames:['🥚','🐣','🐥'],
+   scripts:[{h:START, b:[loop([{c:'looks', p:[D('다음'), '모양으로 바꾸기']}, wait('0.1')])]}]},
+  {lv:0, em:'🐸', ch:'🐸', t:'점프하기', s:'스페이스 키를 누르면 폴짝 뛰어올라요', pv:'jump',
+   scripts:[{h:KEY('스페이스'), b:[
+     times(10, [{c:'move', p:['y 좌표를', N(10), '만큼 바꾸기']}]),
+     times(10, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}])]}]},
+  {lv:0, em:'🚗', ch:'🚗', t:'화살표로 움직이기', s:'화살표 키로 왼쪽, 오른쪽으로 움직여요', pv:'arrows',
+   scripts:[
+     {h:KEY('오른쪽 화살표'), b:[{c:'move', p:['x 좌표를', N(10), '만큼 바꾸기']}]},
+     {h:KEY('왼쪽 화살표'), b:[{c:'move', p:['x 좌표를', N(-10), '만큼 바꾸기']}]}]},
+  {lv:0, em:'⚽', ch:'⚽', t:'벽에 튕기기', s:'계속 가다가 벽에 닿으면 반대로 돌아와요', pv:'bounce',
+   scripts:[{h:START, b:[loop([{c:'move', p:['이동 방향으로', N(5), '만큼 움직이기']}, {c:'move', p:['화면 끝에 닿으면 튕기기']}])]}]},
+  {lv:0, em:'💬', ch:'🤖', t:'말하기', s:'말풍선으로 친구에게 인사해요', pv:'talk', lines:['안녕!', '나는 엔트리봇이야'],
+   scripts:[{h:START, b:[say('안녕!', 2), say('나는 엔트리봇이야', 2)]}]},
+  {lv:0, em:'🌀', ch:'⭐', t:'빙글빙글 돌기', s:'방향을 조금씩 계속 돌려요', pv:'spin',
+   scripts:[{h:START, b:[loop([{c:'move', p:['방향을', N(10), '만큼 회전하기']}])]}]},
+  {lv:0, em:'🎈', ch:'🎈', t:'커졌다 작아지기', s:'풍선처럼 커졌다가 작아져요', pv:'grow',
+   scripts:[{h:START, b:[
+     loop([times(10, [{c:'looks', p:['크기를', N(5), '만큼 바꾸기']}]),
+           times(10, [{c:'looks', p:['크기를', N(-5), '만큼 바꾸기']}])])]}]},
+  {lv:0, em:'🐭', ch:'🐭', t:'마우스 따라가기', s:'마우스가 가는 곳으로 졸졸 따라가요', pv:'follow',
+   scripts:[{h:START, b:[loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
+  {lv:0, em:'👻', ch:'👻', t:'숨바꼭질', s:'나타났다 사라졌다 해요', pv:'hide',
+   scripts:[{h:START, b:[loop([{c:'looks', p:['모양 숨기기']}, wait('0.5'), {c:'looks', p:['모양 보이기']}, wait('0.5')])]}]},
+  {lv:0, em:'🐰', ch:'🐰', t:'순간이동', s:'1초마다 아무 곳으로 뿅 하고 나타나요', pv:'teleport',
+   scripts:[{h:START, b:[loop([{c:'move', p:['x:', rnd(-200, 200), 'y:', rnd(-100, 100), '위치로 이동하기']}, wait(1)])]}]},
+  {lv:0, em:'✏️', ch:'✏️', t:'네모 그리기', s:'붓으로 네모를 그려요', pv:'draw',
+   scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']},
+     times(4, [{c:'move', p:['이동 방향으로', N(100), '만큼 움직이기']}, {c:'move', p:['방향을', N(90), '만큼 회전하기']}])]}]},
+  {lv:0, em:'🦄', ch:'🦄', t:'무지개 색 바꾸기', s:'색깔이 알록달록 계속 바뀌어요', pv:'hue',
+   scripts:[{h:START, b:[loop([{c:'looks', p:[D('색깔'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
+  {lv:0, em:'🚀', ch:'🚀', t:'카운트다운', s:'3, 2, 1 숫자를 세고 하늘로 슝 날아가요', pv:'rocket', lines:['3', '2', '1', '출발!'],
+   scripts:[{h:START, b:[say('3', 1), say('2', 1), say('1', 1), say('출발!', 1),
+     {c:'move', p:[N(2), '초 동안 x:', N(0), 'y:', N(300), '만큼 움직이기']}]}]},
+  {lv:0, em:'🦋', ch:'🦋', t:'동그랗게 날기', s:'조금 가고 조금 돌면 동그라미를 그리며 날아요', pv:'orbit',
+   scripts:[{h:START, b:[loop([{c:'move', p:['이동 방향으로', N(5), '만큼 움직이기']}, {c:'move', p:['방향을', N(5), '만큼 회전하기']}])]}]},
+  {lv:0, em:'☁️', ch:'☁️', t:'둥실둥실', s:'구름처럼 위아래로 둥실둥실 떠다녀요', pv:'float',
+   scripts:[{h:START, b:[loop([times(10, [{c:'move', p:['y 좌표를', N(2), '만큼 바꾸기']}]),
+     times(10, [{c:'move', p:['y 좌표를', N(-2), '만큼 바꾸기']}])])]}]},
+  {lv:0, em:'✨', ch:'🧚', t:'스르르 사라지기', s:'조금씩 투명해지다가 사라져요', pv:'fade',
+   scripts:[{h:START, b:[times(10, [{c:'looks', p:[D('투명도'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
+  {lv:0, em:'🍄', ch:'🍄', t:'누르면 커지기', s:'클릭할 때마다 쑥쑥 커져요', pv:'clickgrow',
+   scripts:[{h:CLICK, b:[{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}]}]},
+
+  /* ---------- 중급 ---------- */
+  {lv:1, em:'🌟', ch:'🌟', t:'점수 올리기', s:'별을 클릭할 때마다 점수가 1점씩 올라가요', pv:'score',
+   scripts:[{h:START, b:[{c:'data', p:[D('점수'), '를', N(0), '(으)로 정하기']}]},
+            {h:CLICK, b:[{c:'data', p:[D('점수'), '에', N(1), '만큼 더하기']}]}],
+   how:varHow('점수', '시작할 때 점수 상자를 0으로 정해 두고, 별을 누를 때마다 1을 더하면 점수가 올라가요!')},
+  {lv:1, em:'⏰', ch:'⏰', t:'타이머', s:'10초부터 거꾸로 세다가 0이 되면 알려 줘요', pv:'timer',
+   scripts:[{h:START, b:[{c:'data', p:[D('시간'), '를', N(10), '(으)로 정하기']},
+     times(10, [wait(1), {c:'data', p:[D('시간'), '에', N(-1), '만큼 더하기']}]),
+     say('시간 끝!', 2)]}],
+   how:varHow('시간', '시간 상자에 <b>-1</b>을 더하면 1씩 줄어들어요. 10번 반복하면 10 → 0이 돼요!')},
+  {lv:1, em:'📨', ch:'🐢', t:'신호 보내기', s:'닭이 출발 신호를 보내면 거북이가 달려요', pv:'signal',
+   scripts:[{o:'🐔 닭', h:START, b:[say('준비, 출발!', 2), {c:'start', p:[D('출발'), '신호 보내기']}]},
+            {o:'🐢 거북이', h:GOT('출발'), b:[times(20, [{c:'move', p:['x 좌표를', N(10), '만큼 바꾸기']}])]}],
+   how:{t:"'출발' 신호 만드는 방법",
+     intro:'신호는 오브젝트끼리 주고받는 <b>쪽지</b>예요. 닭이 출발 쪽지를 보내면, 쪽지를 받은 거북이가 움직여요.',
+     steps:['블록 꾸러미에서 <b>시작</b>을 눌러요.', '<b>신호 추가하기</b> 버튼을 눌러요.',
+       '신호 이름 칸에 <b>출발</b>이라고 쓰고 <b>확인</b>을 눌러요.',
+       '닭에게는 <b>출발 신호 보내기</b>, 거북이에게는 <b>출발 신호를 받았을 때</b> 블록을 넣어요.']}},
+  {lv:1, em:'🙋', ch:'🤖', t:'이름 묻기', s:'이름을 물어보고 대답해 준 이름으로 인사해요', pv:'ask',
+   scripts:[{h:START, b:[ask('이름이 뭐야?'), say(R('calc', [T('반가워, '), '과(와)', ANSWER, '를 합치기']), 2)]}],
+   how:{t:'알아 두기',
+     intro:'<b>묻고 대답 기다리기</b>를 쓰면 실행 화면 아래에 글자를 쓰는 칸이 생겨요. 쓴 글자는 <b>대답</b> 블록에 저장돼요.',
+     steps:['<b>묻고 대답 기다리기</b>와 <b>대답</b> 블록은 <b>자료</b> 꾸러미에 있어요.',
+       '<b>합치기</b> 블록은 <b>계산</b> 꾸러미에 있어요.',
+       '<b>반가워,</b> 뒤에 띄어쓰기를 한 칸 넣으면 더 자연스러워요.']}},
+  {lv:1, em:'🦉', ch:'🦉', t:'덧셈 퀴즈', s:'문제를 내고 맞으면 정답, 틀리면 다시!', pv:'quiz',
+   scripts:[{h:START, b:[ask('3 + 4 는?'),
+     ifElse({b:{c:'judge', p:[ANSWER, '=', N(7)]}}, [say('정답!', 2)], [say('다시 생각해 봐', 2)])]}],
+   how:{t:'알아 두기',
+     intro:'<b>만약 ~ (이)라면 / 아니면</b> 블록은 갈림길이에요. 대답이 7이면 위쪽, 아니면 아래쪽 블록이 실행돼요.',
+     steps:['<b>만약 (이)라면 아니면</b> 블록은 <b>흐름</b> 꾸러미에 있어요.',
+       '육각형 <b>( ) = ( )</b> 블록은 <b>판단</b> 꾸러미에 있어요.',
+       '<b>대답</b> 블록은 <b>자료</b> 꾸러미에 있어요.']}},
+
+  /* ---------- 고급 ---------- */
+  {lv:2, em:'🧺', ch:'🧺', t:'과일 바구니', s:'좋아하는 과일 3개를 물어보고 리스트에 담아요', pv:'listAdd',
+   scripts:[{h:START, b:[times(3, [ask('좋아하는 과일은?'), {c:'data', p:[ANSWER, '항목을', D('과일'), '에 추가하기']}]),
+     say('다 모았어!', 2)]}],
+   how:listHow('과일', '대답할 때마다 과일 리스트 맨 끝에 하나씩 쌓여요.')},
+  {lv:2, em:'🍽️', ch:'🍽️', t:'점심 메뉴 뽑기', s:'메뉴 리스트에서 아무거나 하나를 뽑아요', pv:'listPick',
+   menu:['짜장면', '피자', '김밥', '떡볶이', '치킨'],
+   scripts:[{h:CLICK, b:[say(R('data', [D('메뉴'), '의', rnd(1, R('data', [D('메뉴'), '항목 수'])), '번째 항목']), 2)]}],
+   how:listHow('메뉴', '1부터 항목 수 사이의 무작위 번호를 뽑아서, 그 번째 항목을 말해요.', '짜장면, 피자, 김밥, 떡볶이, 치킨')},
+  {lv:2, em:'🐇', ch:'🐇', t:'점프 함수', s:'점프 블록 묶음을 함수 하나로 만들어 써요', pv:'funcJump',
+   scripts:[{o:'함수 만들기', h:FUNC('점프'), b:[
+       times(10, [{c:'move', p:['y 좌표를', N(10), '만큼 바꾸기']}]),
+       times(10, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}])]},
+     {o:'함수 쓰기', h:KEY('스페이스'), b:[CALL('점프')]},
+     {h:START, b:[times(3, [CALL('점프')])]}],
+   how:funcHow('점프', '점프 블록 하나만 끼우면 안에 숨어 있는 블록들이 한 번에 실행돼요.')},
+  {lv:2, em:'🌸', ch:'🌸', t:'함수로 꽃 그리기', s:'네모 그리기 함수를 돌려 가며 8번 쓰면 꽃이 돼요', pv:'funcFlower',
+   scripts:[{o:'함수 만들기', h:FUNC('네모 그리기'), b:[
+       times(4, [{c:'move', p:['이동 방향으로', N(100), '만큼 움직이기']}, {c:'move', p:['방향을', N(90), '만큼 회전하기']}])]},
+     {o:'함수 쓰기', h:START, b:[{c:'brush', p:['그리기 시작하기']},
+       times(8, [CALL('네모 그리기'), {c:'move', p:['방향을', N(45), '만큼 회전하기']}])]}],
+   how:funcHow('네모 그리기', '네모 그리는 블록을 8번 다시 만들 필요 없이, 함수 블록 하나로 끝!')},
+];
+
+const ICON = {flow:'hierarchy', move:'arrows-move', looks:'circles', brush:'brush', data:'database', start:'broadcast', func:'math-function'};
 
 /* ---------- 블록 그리기 ---------- */
 let z;
 const part = p => typeof p === 'string' ? `<span>${p}</span>`
-  : p.n !== undefined ? `<span class="num">${p.n}</span>`
+  : p.n !== undefined ? `<span class="num${String(p.n).startsWith('-') ? ' neg' : ''}">${p.n}</span>`
   : p.t !== undefined ? `<span class="txt">${p.t}</span>`
-  : p.r ? `<span class="rep ${p.r.c}">${parts(p.r.p)}</span>`
+  : p.r ? `<span class="rep ${p.r.c}${p.r.p.length === 1 ? ' solo' : ''}">${parts(p.r.p)}</span>`
+  : p.b ? `<span class="bool ${p.b.c}">${parts(p.b.p)}</span>`
+  : p.f !== undefined ? `<span class="fname">${p.f}</span>`
   : `<span class="dd">${p.d} ▾</span>`;
 const parts = ps => ps.map(part).join('');
 const icon = c => `<span class="ic"><i class="ti ti-${ICON[c]}"></i></span>`;
+const arm = (c, kids) => `<div class="cbody ${c}"><div class="arm"></div><div class="kids">${kids.map(block).join('')}</div></div>`;
 
 function block(bk){
   if (!bk.k) return `<div class="b ${bk.c}" style="z-index:${z--}">${parts(bk.p)}${icon(bk.c)}</div>`;
-  return `<div class="b chead ${bk.c}" style="z-index:${z--}">${parts(bk.p)}${icon(bk.c)}</div>
-    <div class="cbody ${bk.c}"><div class="arm"></div><div class="kids">${bk.k.map(block).join('')}</div></div>
+  return `<div class="b chead ${bk.c}" style="z-index:${z--}">${parts(bk.p)}${icon(bk.c)}</div>${arm(bk.c, bk.k)}
+    ${bk.e ? `<div class="b cmid ${bk.c}" style="z-index:${z--}">아니면</div>${arm(bk.c, bk.e)}` : ''}
     <div class="b foot ${bk.c}" style="z-index:${z--}"></div>`;
 }
 function script(s){
   z = 500;
-  return `<div class="ec">
-    <div class="b hat start" style="z-index:${z--}"><span class="hc"><i class="ti ti-${s.h.i}"></i></span>${parts(s.h.p)}</div>
-    <div class="stack">${s.b.map(block).join('')}</div></div>`;
+  return `<div>${s.o ? `<div class="olabel">${s.o}</div>` : ''}<div class="ec">
+    <div class="b hat ${s.h.c || 'start'}" style="z-index:${z--}"><span class="hc"><i class="ti ti-${s.h.i}"></i></span>${parts(s.h.p)}</div>
+    <div class="stack">${s.b.map(block).join('')}</div></div></div>`;
 }
+// 빼기(-)가 붙은 숫자 찾기
+const negatives = it => [...new Set((JSON.stringify(it.scripts).match(/"n":"?-[\d.]+/g) || []).map(s => s.replace(/"n":"?/, '')))];
 
 /* ---------- 화면 ---------- */
 const app = document.getElementById('app');
 let timers = [], cleanups = [];
 function reset(){ timers.forEach(clearInterval); timers = []; cleanups.forEach(f => f()); cleanups = []; }
+
+let curLv = 0;
+try { curLv = +sessionStorage.getItem('entryLv') || 0; } catch (_) {}
+const setLv = l => { curLv = l; try { sessionStorage.setItem('entryLv', l); } catch (_) {} };
+const inLv = l => ITEMS.map((it, i) => ({it, i})).filter(x => x.it.lv === l);
+const entryBtn = `<a class="home entry" href="${ENTRY_URL}" target="_blank" rel="noopener"><span class="hi"><i class="ti ti-external-link"></i></span>엔트리 열기</a>`;
 
 const PAL = ['#ffe08a', '#b9f0c4', '#c2e4ff', '#ffc8dc', '#e3d6ff', '#ffd6ad', '#c3f1eb', '#fff1a6', '#ffcfc4', '#d6f5b0'];
 const DECO = [['☁️', 4, 10, 0], ['⭐', 90, 8, 1], ['🌈', 3, 55, 2], ['💖', 93, 42, 3], ['🍭', 91, 80, 1.5], ['☁️', 82, 22, 2.5], ['✨', 8, 86, .5], ['🎀', 14, 30, 3.5]];
@@ -261,35 +390,46 @@ function home(){
   const title = [...'엔트리 코드 놀이터'].map(c => c === ' ' ? ' '
     : `<b style="color:${RAINBOW[ci % RAINBOW.length]};animation-delay:${(ci++) * 0.12}s">${c}</b>`).join('');
   app.innerHTML = `
-    <div class="top"><a class="home" href="index.html"><span class="hi"><i class="ti ti-arrow-left"></i></span>코딩 놀이터</a></div>
+    <div class="top"><a class="home" href="index.html"><span class="hi"><i class="ti ti-arrow-left"></i></span>코딩 놀이터</a>${entryBtn}</div>
     ${DECO.map(([e, x, y, d]) => `<span class="deco" style="left:${x}%;top:${y}%;animation-delay:${d}s">${e}</span>`).join('')}
     <div class="hero"><div class="logo">🧩</div>
       <h1>${title}</h1>
       <p>블록은 마법 명령어 🪄 나는 꼬마 마법 개발자 🧙 엔트리 친구들을 움직여 볼까요?</p></div>
-    <div class="grid">${ITEMS.map((it, i) => `
-      <a class="card" href="#/${i + 1}" style="background:${PAL[i % PAL.length]}">
-        <span class="no">${i + 1}</span><div class="em">${it.em}</div>
+    <div class="lvtabs">${LV.map((l, i) => `
+      <button class="lv${i === curLv ? ' on' : ''}" data-lv="${i}" style="--lc:${l.c};--ld:${l.d}">
+        <span class="le">${l.em}</span><span><b>${l.k} <small style="display:inline">${inLv(i).length}개</small></b><small>${l.s}</small></span></button>`).join('')}</div>
+    <div class="grid">${inLv(curLv).map(({it, i}, n) => `
+      <a class="card" href="#/${i + 1}" style="background:${PAL[n % PAL.length]}">
+        <span class="no">${n + 1}</span><div class="em">${it.em}</div>
         <h3>${it.t}</h3><p>${it.s}</p></a>`).join('')}</div>`;
+  app.querySelectorAll('.lv').forEach(b => b.onclick = () => { setLv(+b.dataset.lv); home(); });
 }
 
 function detail(i){
-  const it = ITEMS[i];
+  const it = ITEMS[i], l = LV[it.lv], list = inLv(it.lv), pos = list.findIndex(x => x.i === i);
+  const prev = list[pos - 1], next = list[pos + 1], negs = negatives(it);
+  setLv(it.lv);
   app.innerHTML = `
     <div class="top">
-      <a class="home" href="#/"><span class="hi"><i class="ti ti-home"></i></span>처음으로</a>
+      <a class="home" href="#/"><span class="hi"><i class="ti ti-home"></i></span>처음으로</a>${entryBtn}
     </div>
-    <div class="title"><span class="em">${it.em}</span><h2>${it.t}</h2><span class="no">${i + 1}번</span></div>
+    <div class="title"><span class="em">${it.em}</span><h2>${it.t}</h2><span class="no" style="background:${l.c}">${l.k} ${pos + 1}번</span></div>
     <p class="desc">${it.s}</p>
     <div class="panes">
       <div class="box"><h4><i class="ti ti-eye"></i> 이렇게 움직여요</h4>
         <div class="stage" id="stage"><div class="ch" id="ch">${it.ch}</div></div>
         <div id="ctrls"></div></div>
       <div class="box"><h4><i class="ti ti-puzzle"></i> 엔트리 코드</h4>
+        ${negs.length ? `<div class="warn"><i class="ti ti-alert-triangle"></i><div><b>주의!</b> 숫자 앞에 빼기가 붙은 곳이 있어요:
+          ${negs.map(v => `<b>${v}</b>`).join(', ')}<br>엔트리에서 따라 만들 때 <b>-</b> 를 빠뜨리지 않았는지 꼭 확인하세요!
+          빼기가 없으면 전혀 다르게 움직여요.</div></div>` : ''}
         <div class="code"><div class="scripts">${it.scripts.map(script).join('')}</div></div></div>
     </div>
+    ${it.how ? `<div class="box how"><h4><i class="ti ti-bulb"></i> ${it.how.t}</h4>
+      <p class="intro">${it.how.intro}</p><ol>${it.how.steps.map(s => `<li>${s}</li>`).join('')}</ol></div>` : ''}
     <div class="nav">
-      ${i > 0 ? `<a class="btn ghost" href="#/${i}"><i class="ti ti-chevron-left"></i> ${ITEMS[i - 1].t}</a>` : '<span></span>'}
-      ${i < ITEMS.length - 1 ? `<a class="btn ghost" href="#/${i + 2}">${ITEMS[i + 1].t} <i class="ti ti-chevron-right"></i></a>` : '<span></span>'}
+      ${prev ? `<a class="btn" href="#/${prev.i + 1}"><i class="ti ti-chevron-left"></i> ${prev.it.t}</a>` : '<span></span>'}
+      ${next ? `<a class="btn" href="#/${next.i + 1}">${next.it.t} <i class="ti ti-chevron-right"></i></a>` : '<span></span>'}
     </div>`;
   preview(it);
 }
@@ -298,9 +438,28 @@ function detail(i){
 function preview(it){
   const stage = document.getElementById('stage'), ch = document.getElementById('ch'), ctrls = document.getElementById('ctrls');
   const hint = t => ctrls.innerHTML = `<p class="hint">${t}</p>`;
+  const later = (f, ms) => timers.push(setTimeout(f, ms));
   const onKey = f => { addEventListener('keydown', f); cleanups.push(() => removeEventListener('keydown', f)); };
   const flash = id => { const b = document.getElementById(id); b.classList.add('on'); setTimeout(() => b.classList.remove('on'), 120); };
   const pop = () => { ch.style.animation = 'none'; void ch.offsetWidth; ch.style.animation = 'wiggle .4s'; };
+  const add = (cls, text) => { const d = document.createElement('div'); d.className = cls; d.textContent = text || ''; stage.appendChild(d); return d; };
+  const bubble = text => { const b = add('bubble', text); if (!text) b.style.display = 'none'; return b; };
+  const listBox = (name, items) => {
+    const d = add('lst'); d.innerHTML = `<h5>${name}</h5><ol></ol><div class="cnt"></div>`;
+    const ol = d.querySelector('ol'), cnt = d.querySelector('.cnt');
+    const set = arr => { ol.innerHTML = arr.map(x => `<li></li>`).join(''); [...ol.children].forEach((li, i) => li.textContent = arr[i]); cnt.textContent = `항목 수: ${arr.length}`; };
+    set(items || []); return {ol, set};
+  };
+  const askBox = (ph, tip, fn) => {
+    ctrls.innerHTML = `<div class="ask"><input id="ans" placeholder="${ph}" maxlength="12" autocomplete="off"><button class="key sm" id="ok">확인</button></div>
+      <p class="err" id="err"></p><p class="hint" style="margin-top:2px">${tip}</p>`;
+    const inp = document.getElementById('ans'), err = document.getElementById('err');
+    const submit = () => { const v = inp.value.trim(); if (!v){ err.textContent = '먼저 대답을 써 주세요'; return; } inp.value = ''; fn(v); };
+    document.getElementById('ok').onclick = submit;
+    inp.onkeydown = e => { if (e.key === 'Enter') submit(); };
+    inp.oninput = () => err.textContent = '';
+  };
+  const jumpOnce = () => { ch.classList.remove('jumping'); void ch.offsetWidth; ch.classList.add('jumping'); };
 
   switch (it.pv){
     case 'frames': {
@@ -309,23 +468,21 @@ function preview(it){
           `<div class="fr" id="fr${i}"><span>${e}</span><small>모양 ${i + 1}</small></div>`).join('<i class="ti ti-chevron-right"></i>')}</div>
         <div class="ctrls"><button class="pill on" data-ms="700">천천히 보기</button><button class="pill" data-ms="100">코드대로 0.1초</button></div>
         <p class="hint">그림(모양)을 하나씩 빠르게 바꿔 보여 주면 살아 움직이는 것처럼 보여요.<br>이게 바로 <b>애니메이션</b>이에요!</p>`;
-      const show = () => {
+      const step = () => {
         ch.textContent = it.frames[f];
         it.frames.forEach((_, i) => document.getElementById('fr' + i).classList.toggle('on', i === f));
         f = (f + 1) % it.frames.length;
       };
-      const run = ms => { clearInterval(t); t = setInterval(show, ms); timers.push(t); };
+      const run = ms => { clearInterval(t); t = setInterval(step, ms); timers.push(t); };
       ctrls.querySelectorAll('.pill').forEach(b => b.onclick = () => {
         ctrls.querySelectorAll('.pill').forEach(x => x.classList.toggle('on', x === b)); run(+b.dataset.ms);
       });
-      show(); run(700); break;
+      step(); run(700); break;
     }
-    case 'jump': {
-      const go = () => { ch.classList.remove('jumping'); void ch.offsetWidth; ch.classList.add('jumping'); };
+    case 'jump':
       ctrls.innerHTML = `<div class="ctrls"><button class="key wide" id="go"><i class="ti ti-space"></i> 스페이스</button></div><p class="hint">버튼을 누르거나 키보드 스페이스 키를 눌러 보세요</p>`;
-      document.getElementById('go').onclick = go;
-      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); go(); flash('go'); } }); break;
-    }
+      document.getElementById('go').onclick = jumpOnce;
+      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); jumpOnce(); flash('go'); } }); break;
     case 'arrows': {
       let x = 50;
       const mv = d => { x = Math.max(10, Math.min(90, x + d)); ch.style.left = x + '%'; ch.style.transform = `translateX(-50%) scaleX(${d > 0 ? -1 : 1})`; };
@@ -338,12 +495,11 @@ function preview(it){
     case 'bounce':
       ch.style.animation = 'run 3s linear infinite'; hint('벽에 닿으면 반대로 가요'); break;
     case 'talk': {
-      const b = document.createElement('div'); b.className = 'bubble'; stage.appendChild(b);
+      const b = bubble();
       let n = 0;
       const step = () => { const l = it.lines[n % (it.lines.length + 1)]; b.style.display = l ? '' : 'none'; b.textContent = l || ''; n++; };
-      const ms = it.ms || 2000;
-      step(); timers.push(setInterval(step, ms));
-      hint(`${ms / 1000}초씩 차례대로 말해요`); break;
+      step(); timers.push(setInterval(step, 2000));
+      hint('2초씩 차례대로 말해요'); break;
     }
     case 'spin':
       ch.style.animation = 'spin 2s linear infinite'; hint('계속 빙글빙글 돌아요'); break;
@@ -357,16 +513,6 @@ function preview(it){
       stage.style.cursor = 'crosshair';
       hint('미리보기 칸 위에서 마우스를 움직여 보세요'); break;
     }
-    case 'click': {
-      const b = document.createElement('div'); b.className = 'bubble'; b.style.display = 'none'; b.textContent = '멍멍!'; stage.appendChild(b);
-      ch.style.cursor = 'pointer';
-      ch.onclick = () => {
-        ch.textContent = ch.textContent === '🐶' ? '🐕' : '🐶';
-        ch.style.animation = 'none'; void ch.offsetWidth; ch.style.animation = 'wiggle .4s';
-        b.style.display = ''; clearTimeout(ch._t); ch._t = setTimeout(() => b.style.display = 'none', 900);
-      };
-      hint('강아지를 클릭해 보세요'); break;
-    }
     case 'hide':
       ch.style.animation = 'blink 1s steps(1) infinite'; hint('0.5초마다 숨었다 나타나요'); break;
     case 'teleport': {
@@ -379,6 +525,19 @@ function preview(it){
       hint('100만큼 가고 90도 돌기를 4번 하면 네모!'); break;
     case 'hue':
       ch.style.animation = 'hue 2s linear infinite'; hint('색깔이 조금씩 계속 바뀌어요'); break;
+    case 'rocket': {
+      const b = bubble();
+      const seq = () => {
+        ch.style.transition = 'none'; ch.style.bottom = '36px';
+        let n = 0;
+        const next = () => {
+          if (n < it.lines.length){ b.style.display = ''; b.textContent = it.lines[n++]; later(next, 1000); return; }
+          b.style.display = 'none'; ch.style.transition = 'bottom 2s ease-in'; ch.style.bottom = '320px'; later(seq, 3500);
+        };
+        next();
+      };
+      seq(); hint('1초씩 숫자를 센 다음, <b>2초 동안</b> 하늘로 슝!'); break;
+    }
     case 'orbit':
       ch.style.bottom = '80px'; ch.style.animation = 'orbit 3s linear infinite'; hint('조금 가고 조금 돌면 동그라미가 돼요'); break;
     case 'float':
@@ -391,29 +550,97 @@ function preview(it){
       ch.onclick = () => { s = s >= 2 ? 1 : s + 0.15; ch.style.transform = `translateX(-50%) scale(${s})`; };
       hint('버섯을 클릭해 보세요 (너무 커지면 처음 크기로 돌아와요)'); break;
     }
-    case 'piano': {
-      const notes = [['a', '도', 262, '#ff6b8b', '#d94a6a'], ['s', '레', 294, '#ffa43a', '#d9821c'], ['d', '미', 330, '#3ab0ff', '#1b8bd6']];
-      let ac;
-      const play = (f, id) => {
-        ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-        const o = ac.createOscillator(), g = ac.createGain();
-        o.type = 'triangle'; o.frequency.value = f;
-        g.gain.setValueAtTime(0.4, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.8);
-        o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + 0.8);
-        flash(id); pop();
-      };
-      ctrls.innerHTML = `<div class="ctrls">${notes.map(([k, n, , c, d]) =>
-        `<button class="key" id="k${k}" style="background:${c};box-shadow:0 6px 0 ${d}">${n} <small style="opacity:.8">${k.toUpperCase()}</small></button>`).join('')}</div>
-        <p class="hint">버튼을 누르거나 키보드 A, S, D 키를 눌러 보세요</p>`;
-      notes.forEach(([k, , f]) => document.getElementById('k' + k).onclick = () => play(f, 'k' + k));
-      onKey(e => { const n = notes.find(x => x[0] === e.key.toLowerCase()); if (n) play(n[2], 'k' + n[0]); }); break;
-    }
     case 'score': {
       let score = 0;
-      const b = document.createElement('div'); b.className = 'score'; b.textContent = '점수 0'; stage.appendChild(b);
+      const b = add('score', '점수 0');
       ch.style.cursor = 'pointer';
       ch.onclick = () => { b.textContent = '점수 ' + (++score); pop(); };
       hint('별을 클릭해 보세요'); break;
+    }
+    case 'timer': {
+      const sc = add('score'), b = bubble();
+      const run = () => {
+        let tm = 10; sc.textContent = '시간 ' + tm; b.style.display = 'none';
+        const tick = () => {
+          sc.textContent = '시간 ' + (--tm); pop();
+          if (tm > 0) later(tick, 1000); else { b.style.display = ''; b.textContent = '시간 끝!'; later(run, 3000); }
+        };
+        later(tick, 1000);
+      };
+      run(); hint('1초마다 시간 상자에 <b>-1</b>을 더해서 1씩 줄어요'); break;
+    }
+    case 'signal': {
+      const hen = add('ch', '🐔'); hen.style.left = '14%';
+      const b = bubble(), sig = add('sig', '📨 출발 신호!');
+      b.style.left = '14%';
+      const seq = () => {
+        sig.style.display = 'none'; ch.style.transition = 'none'; ch.style.left = '34%'; ch.style.transform = 'translateX(-50%) scaleX(-1)';
+        b.style.display = ''; b.textContent = '준비, 출발!';
+        later(() => { b.style.display = 'none'; sig.style.display = ''; }, 2000);
+        later(() => { ch.style.transition = 'left 2s linear'; ch.style.left = '86%'; }, 2700);
+        later(seq, 6000);
+      };
+      seq(); hint('닭이 신호를 보내면, 신호를 받은 거북이가 달려요'); break;
+    }
+    case 'ask': {
+      const b = bubble('이름이 뭐야?');
+      askBox('이름을 써 보세요', '쓴 이름이 <b>대답</b>에 저장돼요', v => {
+        b.textContent = '반가워, ' + v; pop(); later(() => b.textContent = '이름이 뭐야?', 3000);
+      }); break;
+    }
+    case 'quiz': {
+      const b = bubble('3 + 4 는?');
+      askBox('숫자를 써 보세요', '대답이 7이면 정답, 아니면 다시 생각해 봐!', v => {
+        b.textContent = v === '7' ? '정답!' : '다시 생각해 봐'; if (v === '7') pop();
+        later(() => b.textContent = '3 + 4 는?', 2500);
+      }); break;
+    }
+    case 'listAdd': {
+      ch.style.left = '30%';
+      const b = bubble('좋아하는 과일은?'), box = listBox('과일');
+      b.style.left = '22%';
+      let fruits = [];
+      askBox('과일 이름을 써 보세요', '대답이 리스트에 차례대로 쌓여요 (3번)', v => {
+        if (fruits.length >= 3) fruits = [];
+        fruits.push(v); box.set(fruits); pop();
+        if (fruits.length === 3){ b.textContent = '다 모았어!'; later(() => { fruits = []; box.set(fruits); b.textContent = '좋아하는 과일은?'; }, 4000); }
+      }); break;
+    }
+    case 'listPick': {
+      ch.style.left = '30%'; ch.style.cursor = 'pointer';
+      const b = bubble(), box = listBox('메뉴', it.menu);
+      b.style.left = '22%';
+      ch.onclick = () => {
+        let n = 0; const lis = [...box.ol.children];
+        const spin = () => {
+          const k = Math.floor(Math.random() * lis.length);
+          lis.forEach((li, i) => li.classList.toggle('on', i === k));
+          if (++n < 12) later(spin, 90); else { b.style.display = ''; b.textContent = it.menu[k] + '!'; pop(); }
+        };
+        b.style.display = 'none'; spin();
+      };
+      hint('접시를 클릭해 보세요'); break;
+    }
+    case 'funcJump': {
+      ctrls.innerHTML = `<div class="ctrls"><button class="key" id="go"><i class="ti ti-space"></i> 스페이스</button>
+        <button class="key" id="go3" style="background:#16b84a;box-shadow:0 6px 0 #0e9139"><i class="ti ti-player-play"></i> 시작</button></div>
+        <p class="hint">스페이스는 <b>점프</b> 1번, 시작은 <b>점프</b> 3번!</p>`;
+      const three = () => { jumpOnce(); later(jumpOnce, 750); later(jumpOnce, 1500); };
+      document.getElementById('go').onclick = jumpOnce;
+      document.getElementById('go3').onclick = three;
+      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); jumpOnce(); flash('go'); } }); break;
+    }
+    case 'funcFlower': {
+      ch.style.display = 'none';
+      const colors = ['#ff6b8b', '#ff9f43', '#f5c400', '#3ccf7a', '#3ab0ff', '#8e7dff', '#e05fd0', '#ff7a59'];
+      const drawAll = () => {
+        stage.querySelector('svg')?.remove();
+        stage.insertAdjacentHTML('beforeend', `<svg viewBox="0 0 200 200" style="position:absolute;left:50%;top:6px;width:200px;transform:translateX(-50%)">
+          ${colors.map((c, i) => `<rect class="drawpart" x="100" y="45" width="55" height="55" transform="rotate(${i * 45} 100 100)" fill="none"
+            stroke="${c}" stroke-width="5" stroke-linejoin="round" style="animation-delay:${i * 0.5}s"/>`).join('')}</svg>`);
+      };
+      drawAll(); timers.push(setInterval(drawAll, 6000));
+      hint('네모 그리기 함수를 쓰고 45도 돌리기를 8번 하면 꽃!'); break;
     }
   }
 }
