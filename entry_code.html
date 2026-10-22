@@ -41,23 +41,24 @@
     text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,0 7px 0 rgba(180,90,130,.18)}
   .hero p{display:inline-block;background:#fff;border-radius:999px;padding:9px 22px;font-size:18px;font-weight:700;color:#d2557f;
     box-shadow:0 5px 0 #ffd0e2;margin:0}
-  .lvtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:900px;margin:0 auto 34px}
-  @media (max-width:640px){.lvtabs{grid-template-columns:minmax(0,1fr)}}
-  .lv{position:relative;font-family:inherit;border:4px solid var(--lc);border-radius:26px;padding:16px 14px;background:var(--lt);color:var(--ld);cursor:pointer;
-    box-shadow:0 6px 0 var(--lc);display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;transition:transform .12s}
-  .lv:hover{transform:translateY(-4px)}
+  .lvtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;padding:0 18px}
+  .lv{position:relative;font-family:inherit;border:0;border-radius:24px 24px 0 0;padding:14px 14px 16px;margin-top:12px;background:var(--lt);color:var(--ld);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;transition:margin .12s,padding .12s}
+  .lv:hover{margin-top:6px;padding-bottom:22px}
   .lv .le{font-size:46px;line-height:1}
   .lv b{display:block;font-size:28px;font-weight:900;line-height:1.2}
   .lv b small{font-size:15px;font-weight:800;opacity:.8}
   .lv > span > small{display:block;font-size:14px;font-weight:700;opacity:.85;margin-top:2px}
-  .lv.on{background:var(--lc);border-color:var(--ld);color:#fff;box-shadow:0 6px 0 var(--ld);transform:scale(1.04)}
-  .lv.on::after{content:"";position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);border:11px solid transparent;border-top-color:var(--ld)}
+  .lv.on{background:var(--bc);color:#fff;margin-top:0;padding:20px 14px 22px}
+  .board{background:var(--bc);border-radius:30px;padding:24px;box-shadow:0 8px 0 var(--bd)}
+  @media (max-width:640px){.lvtabs{padding:0 8px;gap:6px}.lv{flex-direction:column;gap:4px;padding:10px 4px 12px;text-align:center}
+    .lv .le{font-size:30px}.lv b{font-size:20px}.lv > span > small{display:none}.board{padding:14px}}
   .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
   @media (max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
-  .card{position:relative;border-radius:28px;padding:20px 12px 18px;text-align:center;border:4px solid #fff;
-    box-shadow:0 6px 0 rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;cursor:pointer}
-  .card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 12px 0 rgba(0,0,0,.08)}
+  .card{position:relative;border-radius:24px;padding:20px 12px 18px;text-align:center;background:#fff;
+    box-shadow:0 6px 0 var(--bd);transition:transform .15s,box-shadow .15s;cursor:pointer}
+  .card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 12px 0 var(--bd)}
   .card:active{transform:translateY(0)}
   .card .no{position:absolute;top:12px;left:14px;width:34px;height:34px;border-radius:50%;background:#fff;font-weight:800;
     display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -395,13 +396,13 @@ function home(){
     <div class="top home-top"><a class="home" href="index.html"><span class="hi"><i class="ti ti-arrow-left"></i></span>코딩 놀이터</a>
       <h1 class="ttl">${title}</h1>${entryBtn}</div>
     <div class="hero"><p>블록은 마법 명령어 🪄 나는 꼬마 마법 개발자 🧙 엔트리 친구들을 움직여 볼까요?</p></div>
-    <div class="lvtabs">${LV.map((l, i) => `
+    <div style="--bc:${LV[curLv].c};--bd:${LV[curLv].d}"><div class="lvtabs">${LV.map((l, i) => `
       <button class="lv${i === curLv ? ' on' : ''}" data-lv="${i}" style="--lc:${l.c};--ld:${l.d};--lt:${l.lt}">
         <span class="le">${l.em}</span><span><b>${l.k} <small style="display:inline">${inLv(i).length}개</small></b><small>${l.s}</small></span></button>`).join('')}</div>
-    <div class="grid">${inLv(curLv).map(({it, i}, n) => `
-      <a class="card" href="#/${i + 1}" style="background:${LV[curLv].lt}">
+    <div class="board"><div class="grid">${inLv(curLv).map(({it, i}, n) => `
+      <a class="card" href="#/${i + 1}">
         <span class="no" style="background:${LV[curLv].c};color:#fff">${n + 1}</span><div class="em">${it.em}</div>
-        <h3>${it.t}</h3><p>${it.s}</p></a>`).join('')}</div>`;
+        <h3>${it.t}</h3><p>${it.s}</p></a>`).join('')}</div></div></div>`;
   app.querySelectorAll('.lv').forEach(b => b.onclick = () => { setLv(+b.dataset.lv); home(); });
 }
 
