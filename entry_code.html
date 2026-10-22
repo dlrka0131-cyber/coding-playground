@@ -85,6 +85,13 @@
   .key:active,.key.on{transform:translateY(4px);box-shadow:0 2px 0 #3e6cc9}
   .key.wide{min-width:240px}
   .score{position:absolute;left:12px;top:12px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 14px;font-size:18px;font-weight:800}
+  .frames{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;color:var(--soft)}
+  .fr{background:#fffaf0;border:3px solid var(--line);border-radius:14px;padding:6px 10px 4px;text-align:center;font-size:30px;line-height:1.15;transition:transform .1s}
+  .fr small{display:block;font-size:12px;font-weight:700;color:var(--soft)}
+  .fr.on{border-color:#ff7a59;background:#ffece5;transform:scale(1.1)}
+  .pill{font-family:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 16px;cursor:pointer}
+  .pill.on{background:#ff7a59;border-color:#ff7a59;color:#fff}
+  .hint b{color:#ff7a59}
   .drawsq{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 4s linear infinite}
   .nav{display:flex;justify-content:space-between;margin-top:24px;gap:10px}
 
@@ -155,7 +162,7 @@ const CLICK = {i:'hand-click', p:['오브젝트를 클릭했을 때']};
 const KEY = k => ({i:'keyboard', p:[D(k), '키를 눌렀을 때']});
 
 const ITEMS = [
-  {em:'🐥', ch:'🐥', bg:'#ffe9a8', t:'걷는 애니메이션', s:'모양을 계속 바꾸면 걷는 것처럼 보여요', pv:'frames', frames:['🐥','🐤'],
+  {em:'🐣', ch:'🥚', bg:'#ffe9a8', t:'애니메이션', s:'그림을 하나씩 빠르게 바꾸면 움직이는 것처럼 보여요', pv:'frames', frames:['🥚','🐣','🐥'],
    scripts:[{h:{i:'player-play', p:['시작하기 버튼을 클릭했을 때']}, b:[
      loop([{c:'looks', p:[D('다음'), '모양으로 바꾸기']}, wait('0.1')])]}]},
   {em:'🐸', ch:'🐸', bg:'#c9f2c0', t:'점프하기', s:'스페이스 키를 누르면 폴짝 뛰어올라요', pv:'jump',
@@ -297,10 +304,21 @@ function preview(it){
 
   switch (it.pv){
     case 'frames': {
-      let f = 0;
-      timers.push(setInterval(() => ch.textContent = it.frames[++f % it.frames.length], 300));
-      ch.style.animation = 'bob .6s ease-in-out infinite';
-      hint('모양 두 개를 번갈아 보여 줘요'); break;
+      let f = 0, t;
+      ctrls.innerHTML = `<div class="frames">${it.frames.map((e, i) =>
+          `<div class="fr" id="fr${i}"><span>${e}</span><small>모양 ${i + 1}</small></div>`).join('<i class="ti ti-chevron-right"></i>')}</div>
+        <div class="ctrls"><button class="pill on" data-ms="700">천천히 보기</button><button class="pill" data-ms="100">코드대로 0.1초</button></div>
+        <p class="hint">그림(모양)을 하나씩 빠르게 바꿔 보여 주면 살아 움직이는 것처럼 보여요.<br>이게 바로 <b>애니메이션</b>이에요!</p>`;
+      const show = () => {
+        ch.textContent = it.frames[f];
+        it.frames.forEach((_, i) => document.getElementById('fr' + i).classList.toggle('on', i === f));
+        f = (f + 1) % it.frames.length;
+      };
+      const run = ms => { clearInterval(t); t = setInterval(show, ms); timers.push(t); };
+      ctrls.querySelectorAll('.pill').forEach(b => b.onclick = () => {
+        ctrls.querySelectorAll('.pill').forEach(x => x.classList.toggle('on', x === b)); run(+b.dataset.ms);
+      });
+      show(); run(700); break;
     }
     case 'jump': {
       const go = () => { ch.classList.remove('jumping'); void ch.offsetWidth; ch.classList.add('jumping'); };
