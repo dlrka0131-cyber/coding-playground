@@ -41,7 +41,7 @@
     text-shadow:3px 0 #fff,-3px 0 #fff,0 3px #fff,0 -3px #fff,2px 2px #fff,-2px -2px #fff,2px -2px #fff,-2px 2px #fff,0 7px 0 rgba(180,90,130,.18)}
   .hero p{display:inline-block;background:#fff;border-radius:999px;padding:9px 22px;font-size:18px;font-weight:700;color:#d2557f;
     box-shadow:0 5px 0 #ffd0e2;margin:0}
-  .lvtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;padding:0 18px}
+  .lvtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;padding:0 32px}
   .lv{position:relative;font-family:inherit;border:0;border-radius:24px 24px 0 0;padding:14px 14px 16px;margin-top:12px;background:var(--lt);color:var(--ld);cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;transition:margin .12s,padding .12s}
   .lv:hover{margin-top:6px;padding-bottom:22px}
@@ -49,10 +49,10 @@
   .lv b{display:block;font-size:28px;font-weight:900;line-height:1.2}
   .lv b small{font-size:15px;font-weight:800;opacity:.8}
   .lv > span > small{display:block;font-size:14px;font-weight:700;opacity:.85;margin-top:2px}
-  .lv.on{background:var(--bc);color:#fff;margin-top:0;padding:20px 14px 22px}
+  .lv.on{background:var(--bc);color:#fff;margin-top:0;padding:20px 14px 22px;margin-bottom:-1px}
   .board{background:var(--bc);border-radius:30px;padding:24px;box-shadow:0 8px 0 var(--bd)}
-  @media (max-width:640px){.lvtabs{padding:0 8px;gap:6px}.lv{flex-direction:column;gap:4px;padding:10px 4px 12px;text-align:center}
-    .lv .le{font-size:30px}.lv b{font-size:20px}.lv > span > small{display:none}.board{padding:14px}}
+  @media (max-width:640px){.lvtabs{padding:0 20px;gap:6px}.lv{flex-direction:column;gap:4px;padding:10px 4px 12px;text-align:center}
+    .lv .le{font-size:30px}.lv b{font-size:20px}.lv > span > small{display:none}.board{padding:14px;border-radius:20px}}
   .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
   @media (max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
@@ -95,6 +95,13 @@
     font-size:16px;line-height:1.5;color:#8a2a2a;word-break:keep-all}
   .warn i{font-size:28px;color:#ff4d4d;animation:bob 1.2s ease-in-out infinite}
   .warn b{color:#e02424}
+  .tip{display:flex;gap:10px;align-items:center;background:#eef6ff;border:3px solid #9cccff;border-radius:18px;padding:12px 14px;margin:0 0 14px;
+    font-size:16px;line-height:1.5;color:#1e4f86;word-break:keep-all}
+  .tip i{font-size:28px;color:#3a8ee6}
+  .tip b{color:#1b6fd1}
+  .tip .dd{color:#fff;font-weight:700;margin:0 2px}
+  .paint{position:absolute;inset:0}
+  .stamp{position:absolute;bottom:36px;font-size:40px;transform:translateX(-50%)}
   .how{margin-top:20px}
   .how .intro{background:#fff7d6;border-radius:16px;padding:12px 16px;font-size:17px;line-height:1.6;margin:0 0 14px;word-break:keep-all}
   .how .intro b{color:#d2557f}
@@ -216,6 +223,11 @@ const KEY = k => ({i:'keyboard', p:[D(k), '키를 눌렀을 때']});
 const GOT = s => ({i:'broadcast', p:[D(s), '신호를 받았을 때']});
 const FUNC = name => ({c:'func', i:'math-function', p:['함수 정의하기', {f:name}]});
 const CALL = name => ({c:'func', p:[name]});
+const CLONE = {c:'flow', i:'copy', p:['복제본이 처음 생성되었을 때']};
+const condHow = (what, where) => ({t:'알아 두기',
+  intro:`<b>만약 ~ (이)라면</b> 블록은 질문이에요. ${what}`,
+  steps:['<b>만약</b> 블록은 <b>흐름</b> 꾸러미에 있어요.', `육각형 <b>${where}</b> 블록은 <b>판단</b> 꾸러미에 있어요.`,
+    '육각형 블록을 만약 블록의 빈칸에 쏙 끼워요.']});
 
 /* 만드는 방법 */
 const varHow = (name, why) => ({t:`'${name}' 변수 만드는 방법`,
@@ -287,8 +299,23 @@ const ITEMS = [
    scripts:[{h:START, b:[times(10, [{c:'looks', p:[D('투명도'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
   {lv:0, em:'🍄', ch:'🍄', t:'누르면 커지기', s:'클릭할 때마다 쑥쑥 커져요', pv:'clickgrow',
    scripts:[{h:CLICK, b:[{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}]}]},
+  {lv:0, em:'😆', ch:'😀', t:'표정 바꾸기', s:'클릭할 때마다 표정이 바뀌어요', pv:'clickface', frames:['😀', '😆', '😮', '😴'],
+   scripts:[{h:CLICK, b:[{c:'looks', p:[D('다음'), '모양으로 바꾸기']}]}]},
+  {lv:0, em:'🐾', ch:'🐾', t:'도장 찍기', s:'옆으로 가면서 발자국 도장을 쾅쾅 찍어요', pv:'stamp',
+   scripts:[{h:START, b:[{c:'move', p:['x:', N(-180), 'y:', N(0), '위치로 이동하기']},
+     times(10, [{c:'brush', p:['도장 찍기']}, {c:'move', p:['x 좌표를', N(40), '만큼 바꾸기']}])]}]},
+  {lv:0, em:'🖍️', ch:'🖍️', t:'마우스로 그림 그리기', s:'마우스를 따라다니며 선을 그려요', pv:'paint',
+   scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']}, loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
 
   /* ---------- 중급 ---------- */
+  {lv:1, em:'🏃', ch:'🏃', t:'누르고 있으면 달리기', s:'스페이스 키를 누르고 있는 동안만 앞으로 가요', pv:'holdmove',
+   scripts:[{h:START, b:[loop([{c:'flow', p:['만약', {b:{c:'judge', p:[D('스페이스'), '키가 눌러져 있는가?']}}, '(이)라면'],
+     k:[{c:'move', p:['x 좌표를', N(5), '만큼 바꾸기']}]}])]}],
+   how:condHow('스페이스 키가 눌러져 있으면 앞으로 가고, 아니면 아무것도 안 해요. 계속 반복하기 안에 넣어야 계속 물어봐요.', '키가 눌러져 있는가?')},
+  {lv:1, em:'😴', ch:'😴', t:'만지면 깨어나기', s:'마우스가 닿으면 깨고, 아니면 다시 잠들어요', pv:'hoverElse',
+   scripts:[{h:START, b:[loop([ifElse({b:{c:'judge', p:[D('마우스포인터'), '에 닿았는가?']}},
+     [{c:'looks', p:[D('깬 얼굴'), '모양으로 바꾸기']}], [{c:'looks', p:[D('자는 얼굴'), '모양으로 바꾸기']}])])]}],
+   how:condHow('마우스에 닿았으면 위쪽(깬 얼굴), 아니면 아래쪽(자는 얼굴) 블록이 실행돼요. <b>아니면</b>이 있으면 둘 중 하나는 꼭 실행돼요.', '에 닿았는가?')},
   {lv:1, em:'🌟', ch:'🌟', t:'점수 올리기', s:'별을 클릭할 때마다 점수가 1점씩 올라가요', pv:'score',
    scripts:[{h:START, b:[{c:'data', p:[D('점수'), '를', N(0), '(으)로 정하기']}]},
             {h:CLICK, b:[{c:'data', p:[D('점수'), '에', N(1), '만큼 더하기']}]}],
@@ -321,6 +348,14 @@ const ITEMS = [
      steps:['<b>만약 (이)라면 아니면</b> 블록은 <b>흐름</b> 꾸러미에 있어요.',
        '육각형 <b>( ) = ( )</b> 블록은 <b>판단</b> 꾸러미에 있어요.',
        '<b>대답</b> 블록은 <b>자료</b> 꾸러미에 있어요.']}},
+  {lv:1, em:'🌠', ch:'⭐', t:'별똥별 복제', s:'별을 복제해서 하늘에서 별비가 내려요', pv:'clone',
+   scripts:[{o:'원본', h:START, b:[{c:'looks', p:['모양 숨기기']}, loop([{c:'flow', p:[D('자신'), '의 복제본 만들기']}, wait('0.5')])]},
+            {o:'복제본', h:CLONE, b:[{c:'move', p:['x:', rnd(-200, 200), 'y:', N(130), '위치로 이동하기']}, {c:'looks', p:['모양 보이기']},
+              times(30, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}]), {c:'flow', p:['이 복제본 삭제하기']}]}],
+   how:{t:'알아 두기',
+     intro:'<b>복제</b>는 오브젝트를 똑같이 하나 더 만드는 마법이에요. 원본은 숨어서 복제본만 계속 만들고, 복제본은 생기자마자 아래로 떨어져요.',
+     steps:['<b>복제본 만들기</b>, <b>복제본이 처음 생성되었을 때</b>, <b>이 복제본 삭제하기</b>는 모두 <b>흐름</b> 꾸러미에 있어요.',
+       '다 떨어진 복제본은 <b>삭제</b>해야 컴퓨터가 느려지지 않아요.']}},
 
   /* ---------- 고급 ---------- */
   {lv:2, em:'🧺', ch:'🧺', t:'과일 바구니', s:'좋아하는 과일 3개를 물어보고 리스트에 담아요', pv:'listAdd',
@@ -344,6 +379,13 @@ const ITEMS = [
      {o:'함수 쓰기', h:START, b:[{c:'brush', p:['그리기 시작하기']},
        times(8, [CALL('네모 그리기'), {c:'move', p:['방향을', N(45), '만큼 회전하기']}])]}],
    how:funcHow('네모 그리기', '네모 그리는 블록을 8번 다시 만들 필요 없이, 함수 블록 하나로 끝!')},
+  {lv:2, em:'⭐', ch:'⭐', t:'별 그리기 함수', s:'별 그리기 함수로 별 3개를 나란히 그려요', pv:'funcStar',
+   scripts:[{o:'함수 만들기', h:FUNC('별 그리기'), b:[{c:'brush', p:['그리기 시작하기']},
+       times(5, [{c:'move', p:['이동 방향으로', N(60), '만큼 움직이기']}, {c:'move', p:['방향을', N(144), '만큼 회전하기']}]),
+       {c:'brush', p:['그리기 멈추기']}]},
+     {o:'함수 쓰기', h:START, b:[{c:'move', p:['x:', N(-150), 'y:', N(0), '위치로 이동하기']},
+       times(3, [CALL('별 그리기'), {c:'move', p:['x 좌표를', N(120), '만큼 바꾸기']}])]}],
+   how:funcHow('별 그리기', '별을 그리는 블록 묶음을 함수로 만들어 두면, 별 3개를 그릴 때 함수 블록만 3번 쓰면 돼요.')},
 ];
 
 const ICON = {flow:'hierarchy', move:'arrows-move', looks:'circles', brush:'brush', data:'database', start:'broadcast', func:'math-function'};
@@ -374,6 +416,22 @@ function script(s){
     <div class="stack">${s.b.map(block).join('')}</div></div></div>`;
 }
 // 빼기(-)가 붙은 숫자 찾기
+// ▾ 칸이 있는 첫 블록 찾기: 뒤의 글자로 블록을 찾고 ▾로 고르게 안내
+function ddTip(it){
+  const fromParts = ps => {
+    for (let i = 0; i < ps.length; i++){
+      const p = ps[i];
+      if (p && p.d !== undefined){
+        const word = x => typeof x === 'string' ? x : x.n !== undefined ? x.n : x.t !== undefined ? x.t : '( )';
+        const after = ps.slice(i + 1).map(word);
+        return {d:p.d, text:(after.length ? after : ps.filter(x => typeof x === 'string')).join(' ')};
+      }
+      const inner = p && (p.r || p.b); if (inner){ const f = fromParts(inner.p); if (f) return f; }
+    }
+  };
+  const walk = bs => { for (const b of bs){ const f = fromParts(b.p) || (b.k && walk(b.k)) || (b.e && walk(b.e)); if (f) return f; } };
+  for (const sc of it.scripts){ const f = fromParts(sc.h.p) || walk(sc.b); if (f) return f; }
+}
 const negatives = it => [...new Set((JSON.stringify(it.scripts).match(/"n":"?-[\d.]+/g) || []).map(s => s.replace(/"n":"?/, '')))];
 
 /* ---------- 화면 ---------- */
@@ -408,7 +466,7 @@ function home(){
 
 function detail(i){
   const it = ITEMS[i], l = LV[it.lv], list = inLv(it.lv), pos = list.findIndex(x => x.i === i);
-  const prev = list[pos - 1], next = list[pos + 1], negs = negatives(it);
+  const prev = list[pos - 1], next = list[pos + 1], negs = negatives(it), tip = ddTip(it);
   setLv(it.lv);
   app.innerHTML = `
     <div class="top">
@@ -421,6 +479,8 @@ function detail(i){
         <div class="stage" id="stage"><div class="ch" id="ch">${it.ch}</div></div>
         <div id="ctrls"></div></div>
       <div class="box"><h4><i class="ti ti-puzzle"></i> 엔트리 코드</h4>
+        ${tip ? `<div class="tip"><i class="ti ti-hand-finger"></i><div><b>세모(▾) 칸 찾는 법</b><br>
+          먼저 뒤의 글자 <b>'${tip.text}'</b>(으)로 블록을 찾고, ▾를 눌러 <span class="dd" style="background:#7a8ea6">${tip.d}</span>을(를) 골라요.</div></div>` : ''}
         ${negs.length ? `<div class="warn"><i class="ti ti-alert-triangle"></i><div><b>주의!</b> 빼기(-) 꼭 확인하기: ${negs.map(v => `<b>${v}</b>`).join(', ')}</div></div>` : ''}
         <div class="code"><div class="scripts">${it.scripts.map(script).join('')}</div></div></div>
     </div>
@@ -628,6 +688,76 @@ function preview(it){
       document.getElementById('go').onclick = jumpOnce;
       document.getElementById('go3').onclick = three;
       onKey(e => { if (e.code === 'Space'){ e.preventDefault(); jumpOnce(); flash('go'); } }); break;
+    }
+    case 'clickface': {
+      let f = 0;
+      ch.style.cursor = 'pointer';
+      ch.onclick = () => { ch.textContent = it.frames[f = (f + 1) % it.frames.length]; pop(); };
+      hint('얼굴을 클릭해 보세요'); break;
+    }
+    case 'stamp': {
+      const seq = () => {
+        stage.querySelectorAll('.stamp').forEach(e => e.remove());
+        for (let i = 0; i < 10; i++) later(() => {
+          const x = 8 + i * 9.2; add('stamp', '🐾').style.left = x + '%'; ch.style.left = (x + 9.2) + '%';
+        }, i * 350);
+        later(seq, 5200);
+      };
+      ch.style.opacity = '.5'; seq(); hint('도장을 찍고 40만큼 옆으로, 10번 반복!'); break;
+    }
+    case 'paint': {
+      const cv = document.createElement('canvas'); cv.className = 'paint'; stage.insertBefore(cv, ch);
+      cv.width = stage.clientWidth; cv.height = stage.clientHeight;
+      const g = cv.getContext('2d'); g.lineWidth = 5; g.lineCap = 'round'; g.strokeStyle = '#ff6b8b';
+      let last = null;
+      ch.style.fontSize = '40px'; ch.style.pointerEvents = 'none';
+      const m = e => { const r = stage.getBoundingClientRect(), p = e.touches ? e.touches[0] : e, x = p.clientX - r.left, y = p.clientY - r.top;
+        if (last){ g.beginPath(); g.moveTo(last[0], last[1]); g.lineTo(x, y); g.stroke(); }
+        last = [x, y]; ch.style.left = (x + 14) + 'px'; ch.style.bottom = (r.height - y - 6) + 'px'; };
+      stage.addEventListener('mousemove', m); stage.addEventListener('touchmove', m, {passive:true});
+      stage.addEventListener('mouseleave', () => last = null);
+      stage.style.cursor = 'crosshair';
+      ctrls.innerHTML = `<div class="ctrls"><button class="pill" id="clr">지우기</button></div><p class="hint">미리보기 칸 위에서 마우스를 움직여 그려 보세요</p>`;
+      document.getElementById('clr').onclick = () => g.clearRect(0, 0, cv.width, cv.height); break;
+    }
+    case 'holdmove': {
+      let x = 10, down = false;
+      ctrls.innerHTML = `<div class="ctrls"><button class="key wide" id="go"><i class="ti ti-space"></i> 누르고 있기</button></div><p class="hint">버튼이나 스페이스 키를 <b>누르고 있는 동안만</b> 달려요</p>`;
+      const go = document.getElementById('go');
+      const set = v => { down = v; go.classList.toggle('on', v); };
+      go.onpointerdown = () => set(true); go.onpointerup = go.onpointerleave = () => set(false);
+      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); set(true); } });
+      const up = e => { if (e.code === 'Space') set(false); };
+      addEventListener('keyup', up); cleanups.push(() => removeEventListener('keyup', up));
+      ch.style.transform = 'translateX(-50%) scaleX(-1)';
+      timers.push(setInterval(() => { if (down){ x = x >= 92 ? 8 : x + 0.8; ch.style.left = x + '%'; } }, 30)); break;
+    }
+    case 'hoverElse':
+      ch.onmouseenter = () => { ch.textContent = '😆'; pop(); };
+      ch.onmouseleave = () => ch.textContent = '😴';
+      hint('얼굴에 마우스를 올렸다가 빼 보세요'); break;
+    case 'clone': {
+      ch.style.display = 'none';
+      timers.push(setInterval(() => {
+        const st = add('ch', '⭐'); st.style.fontSize = '36px'; st.style.left = (8 + Math.random() * 84) + '%'; st.style.bottom = '250px';
+        st.style.transition = 'bottom 3s linear'; void st.offsetWidth; st.style.bottom = '-50px';
+        setTimeout(() => st.remove(), 3100);
+      }, 500));
+      hint('0.5초마다 복제본이 생겨서 아래로 떨어지고, 다 떨어지면 삭제돼요'); break;
+    }
+    case 'funcStar': {
+      ch.style.display = 'none';
+      const star = (x0, y0) => { let x = x0, y = y0, a = 0; const pts = [[x, y]];
+        for (let i = 0; i < 5; i++){ x += 60 * Math.cos(a); y += 60 * Math.sin(a); pts.push([x, y]); a += 144 * Math.PI / 180; }
+        return pts.map(q => q.map(v => v.toFixed(1)).join(',')).join(' '); };
+      const drawAll = () => {
+        stage.querySelector('svg')?.remove();
+        stage.insertAdjacentHTML('beforeend', `<svg viewBox="0 0 300 200" style="position:absolute;inset:0;width:100%;height:100%">
+          ${[0, 1, 2].map(i => `<polyline points="${star(25 + i * 95, 80)}" fill="none" stroke="#f5b400" stroke-width="4" stroke-linejoin="round"
+            style="stroke-dasharray:300;stroke-dashoffset:300;animation:drawOnce 1s linear forwards;animation-delay:${i * 1.2}s"/>`).join('')}</svg>`);
+      };
+      drawAll(); timers.push(setInterval(drawAll, 5500));
+      hint('별 그리기 함수 → 옆으로 이동, 3번 반복!'); break;
     }
     case 'funcFlower': {
       ch.style.display = 'none';
