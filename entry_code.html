@@ -118,6 +118,14 @@
   .kdtip .pt3{margin-top:2px;color:#1e4f86}
   .kdtip .pt2 b{color:#e02424}
   @keyframes ddpulse{50%{box-shadow:0 0 0 8px rgba(255,212,59,.35);transform:scale(1.1)}}
+  .tbox{position:absolute;right:12px;top:12px;background:#fffbe6;border:3px dashed #e0a800;border-radius:10px;padding:6px 14px;font-size:20px;font-weight:800;z-index:2;white-space:nowrap}
+  .tbox.big{left:50%;right:auto;top:42%;transform:translate(-50%,-50%);font-size:34px;min-width:170px;text-align:center}
+  .tbox.click{cursor:pointer}
+  .wallb{position:absolute;bottom:36px;width:16px;height:130px;background:#8d6e63;border-radius:4px;transform:translateX(-50%);transition:background .1s}
+  .wallb.hit{background:#ff4d4d}
+  .goover{position:absolute;inset:0;background:rgba(40,30,60,.78);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;z-index:5;text-align:center;padding:0 10px}
+  @keyframes diag{0%{left:12%;bottom:36px}100%{left:88%;bottom:190px}}
+  @keyframes pop2{0%{transform:translate(-50%,-50%) scale(1.8)}100%{transform:translate(-50%,-50%) scale(1)}}
   .paint{position:absolute;inset:0}
   .stamp{position:absolute;bottom:36px;font-size:40px;transform:translateX(-50%)}
   .how{margin-top:20px}
@@ -242,6 +250,24 @@ const GOT = s => ({i:'broadcast', p:[D(s), '신호를 받았을 때']});
 const FUNC = name => ({c:'func', i:'math-function', p:['함수 정의하기', {f:name}]});
 const CALL = name => ({c:'func', p:[name]});
 const CLONE = {c:'flow', i:'copy', p:['복제본이 처음 생성되었을 때']};
+
+const KEYON = k => ({b:{c:'judge', p:[D(k), '키가 눌러져 있는가?']}});
+const TOUCH = w => ({b:{c:'judge', p:[D(w), '에 닿았는가?']}});
+const ifThen = (cond, k) => ({c:'flow', p:['만약', cond, '(이)라면'], k});
+const untilB = (cond, k) => ({c:'flow', p:[cond, D('이 될 때까지'), '반복하기'], k});
+const SCENE = {i:'movie', p:['장면이 시작되었을 때']};
+const NEXTSCENE = {c:'start', p:[D('다음'), '장면 시작하기']};
+const dx = v => ({c:'move', p:['x 좌표를', N(v), '만큼 바꾸기']});
+const dy = v => ({c:'move', p:['y 좌표를', N(v), '만큼 바꾸기']});
+const varOf = n => R('data', [`${n} 값`]);
+const setVar = (n, v) => ({c:'data', p:[D(n), '를', typeof v === 'object' ? v : N(v), '(으)로 정하기']});
+const addVar = (n, v) => ({c:'data', p:[D(n), '에', N(v), '만큼 더하기']});
+const joinB = (a, b) => R('calc', [typeof a === 'string' ? T(a) : a, '과(와)', typeof b === 'string' ? T(b) : b, '를 합치기']);
+const write = v => ({c:'looks', p:[typeof v === 'string' ? T(v) : v, '라고 글쓰기']});
+const append = v => ({c:'looks', p:[typeof v === 'string' ? T(v) : v, '라고 뒤에 이어쓰기']});
+const DEL = {c:'flow', p:['이 복제본 삭제하기']};
+const MAKE = n => ({c:'flow', p:[D(n), '의 복제본 만들기']});
+const xyTo = (x, y) => ({c:'move', p:['x:', x, 'y:', y, '위치로 이동하기']});
 const condHow = (what, where) => ({t:'알아 두기',
   intro:`<b>만약 ~ (이)라면</b> 블록은 질문이에요. ${what}`,
   steps:['<b>만약</b> 블록은 <b>흐름</b> 꾸러미에 있어요.', `육각형 <b>${where}</b> 블록은 <b>판단</b> 꾸러미에 있어요.`,
@@ -269,7 +295,7 @@ const funcHow = (name, why) => ({t:`'${name}' 함수 만드는 방법`,
 const LV = [
   {k:'초급', em:'🌱', s:'기본 명령어로 움직여요', c:'#3ccf7a', d:'#24a85c', lt:'#dcf8e6'},
   {k:'중급', em:'🌿', s:'변수 · 신호 · 묻고 대답하기', c:'#3ab0ff', d:'#1b8bd6', lt:'#dcefff'},
-  {k:'고급', em:'🌳', s:'리스트 · 함수', c:'#8e7dff', d:'#6a58e0', lt:'#ebe6ff'},
+  {k:'고급', em:'🌳', s:'글상자 연출 · 리스트 · 함수', c:'#8e7dff', d:'#6a58e0', lt:'#ebe6ff'},
 ];
 
 const ITEMS = [
@@ -325,11 +351,62 @@ const ITEMS = [
   {lv:0, em:'🖍️', ch:'🖍️', t:'마우스로 그림 그리기', s:'마우스를 따라다니며 선을 그려요', pv:'paint',
    scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']}, loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
 
+  {lv:0, em:'🐢', ch:'🐢', t:'4방향으로 움직이기', s:'위, 아래, 왼쪽, 오른쪽 방향키로 마음대로 움직여요', pv:'arrows4',
+   kd:'위쪽 화살표', kd2:'아래쪽·왼쪽·오른쪽 화살표 블록도 똑같이 바꿔요!',
+   scripts:[
+     {h:KEY('위쪽 화살표'), b:[dy(10)]},
+     {h:KEY('아래쪽 화살표'), b:[dy(-10)]},
+     {h:KEY('왼쪽 화살표'), b:[dx(-10)]},
+     {h:KEY('오른쪽 화살표'), b:[dx(10)]}]},
+  {lv:0, em:'📍', ch:'🐿️', t:'바꾸기와 이동하기', s:'같은 숫자인데 가는 곳이 달라요! 눌러서 비교해 봐요', pv:'setmove',
+   scripts:[
+     {o:'🅰 바꾸기 — 지금 자리에서 100만큼 더 가요', h:CLICK, b:[dx(100)]},
+     {o:'🅱 이동하기 — x가 100인 자리로 바로 가요', h:CLICK, b:[xyTo(N(100), N(0))]}],
+   how:{t:'알아 두기',
+     intro:'<b>바꾸기</b>는 지금 자리에서 <b>더하는</b> 거예요. <b>위치로 이동하기</b>는 <b>그 자리로 바로</b> 가요.',
+     steps:['버튼 <b>A</b>를 여러 번 눌러 보세요. 누를 때마다 100씩 더 가요.',
+       '버튼 <b>B</b>를 여러 번 눌러 보세요. 몇 번을 눌러도 x가 100인 자리예요.',
+       'A는 <b>지금 자리 + 100</b>, B는 <b>x = 100 자리</b>!']}},
+  {lv:0, em:'🦅', ch:'🦅', t:'대각선으로 날기', s:'x와 y를 같이 바꾸면 비스듬히 날아가요', pv:'diag',
+   scripts:[{h:START, b:[loop([dx(5), dy(5)])]}]},
+  {lv:0, em:'🛸', ch:'🛸', t:'부드럽게 날아가기', s:'클릭하면 2초 동안 스르르 날아가요', pv:'glide',
+   scripts:[{h:CLICK, b:[{c:'move', p:[N(2), '초 동안 x:', N(0), 'y:', N(100), '위치로 이동하기']}]}],
+   how:{t:'알아 두기',
+     intro:'<b>N초 동안 x: y: 위치로 이동하기</b>는 순간이동과 달리 <b>천천히 스르르</b> 가요. 걸리는 시간은 맨 앞 숫자로 정해요.',
+     steps:['이 블록은 <b>움직임</b> 꾸러미에 있어요.', '<b>2</b>를 5로 바꾸면 5초 동안 더 느리게 가요.', 'x와 y는 도착할 자리의 좌표예요.']}},
+  {lv:0, em:'🍪', ch:'🍪', t:'찾았다! 커지며 사라지기', s:'클릭하면 쑥쑥 커지면서 투명해져요', pv:'found',
+   kd:{from:'색깔', to:'투명도', w:'효과를 10만큼 주기', cat:'looks'},
+   scripts:[{h:CLICK, b:[times(10, [{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}, {c:'looks', p:[D('투명도'), '효과를', N(10), '만큼 주기']}])]}]},
+  {lv:0, em:'🎬', ch:'🌞', t:'장면 넘기기', s:'클릭하면 다음 장면으로 넘어가요', pv:'scene',
+   scripts:[{o:'장면 1', h:CLICK, b:[NEXTSCENE]}, {o:'장면 2', h:SCENE, b:[say('장면 2가 되었어요!', 2)]}],
+   how:{t:"'장면 2' 만드는 방법",
+     intro:'장면은 게임의 <b>방</b>이에요. 장면 1에서 <b>다음 장면 시작하기</b>를 하면 장면 2의 코드가 시작돼요.',
+     steps:['화면 맨 위 장면 이름 옆의 <b>+</b> 버튼을 눌러요.', '<b>장면 2</b>가 생기면 이름을 눌러 이동해요.',
+       '장면 2에서는 <b>장면이 시작되었을 때</b> 블록으로 시작해요.', '<b>다음 장면 시작하기</b>는 <b>시작</b> 꾸러미에 있어요.']}},
+  {lv:0, em:'🧲', ch:'🧲', t:'마우스 끌고 가기', s:'클릭하면 마우스를 졸졸 따라와요', pv:'drag',
+   scripts:[{h:CLICK, b:[loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
   /* ---------- 중급 ---------- */
   {lv:1, em:'🏃', ch:'🏃', t:'누르고 있으면 달리기', s:'스페이스 키를 누르고 있는 동안만 앞으로 가요', pv:'holdmove',
    scripts:[{h:START, b:[loop([{c:'flow', p:['만약', {b:{c:'judge', p:[D('스페이스'), '키가 눌러져 있는가?']}}, '(이)라면'],
      k:[{c:'move', p:['x 좌표를', N(5), '만큼 바꾸기']}]}])]}],
    how:condHow('스페이스 키가 눌러져 있으면 앞으로 가고, 아니면 아무것도 안 해요. 계속 반복하기 안에 넣어야 계속 물어봐요.', '키가 눌러져 있는가?')},
+  {lv:1, em:'🐧', ch:'🐧', t:'펭귄 좌우 이동', s:'계속 확인하면서 키를 누르는 동안 부드럽게 움직여요', pv:'penguin',
+   scripts:[{h:START, b:[loop([
+     ifThen(KEYON('오른쪽 화살표'), [dx(10)]),
+     ifThen(KEYON('왼쪽 화살표'), [dx(-10)])])]}],
+   how:{t:'알아 두기 — 계속 확인하기',
+     intro:'<b>계속 반복하기</b> 안에 <b>만약 ~ 키가 눌러져 있는가?</b>를 넣으면 컴퓨터가 계속 "지금 눌렀어?" 하고 물어봐요. 그래서 누르고 있는 동안 <b>끊기지 않고 부드럽게</b> 가요.',
+     steps:['<b>계속 반복하기</b> 안에 <b>만약</b> 블록을 넣어요. 블록 안에 블록이 들어가는 걸 <b>겹쳐 쓰기</b>라고 해요.',
+       '만약 블록에 육각형 <b>키가 눌러져 있는가?</b>를 끼우고 ▾에서 <b>오른쪽 화살표</b>를 골라요.',
+       'x 좌표를 <b>10</b>만큼 바꾸기를 안에 넣어요.', '왼쪽도 똑같이 하나 더 만들고 숫자를 <b>-10</b>으로 바꿔요.',
+       '미리보기의 <b>키를 눌렀을 때</b> 버튼과 비교해 보세요.']}},
+  {lv:1, em:'🚀', ch:'🚀', t:'4방향 계속 확인하기', s:'위·아래·왼쪽·오른쪽, 두 키를 같이 누르면 비스듬히도 가요', pv:'hold4',
+   scripts:[{h:START, b:[loop([
+     ifThen(KEYON('위쪽 화살표'), [dy(10)]), ifThen(KEYON('아래쪽 화살표'), [dy(-10)]),
+     ifThen(KEYON('왼쪽 화살표'), [dx(-10)]), ifThen(KEYON('오른쪽 화살표'), [dx(10)])])]}],
+   how:{t:'알아 두기',
+     intro:'만약 블록 4개를 <b>계속 반복하기</b> 안에 나란히 넣었어요. 키 두 개를 같이 누르면 만약 두 개가 모두 실행돼서 <b>대각선</b>으로도 움직여요.',
+     steps:['한 개를 만든 뒤 <b>우클릭 → 코드 복사 &amp; 붙여넣기</b>로 3개를 더 만들면 빨라요.', '키 이름과 x, y 중 무엇을 바꾸는지만 꼭 고쳐 주세요.']}},
   {lv:1, em:'😴', ch:'😴', t:'만지면 깨어나기', s:'마우스가 닿으면 깨고, 아니면 다시 잠들어요', pv:'hoverElse',
    scripts:[{h:START, b:[loop([ifElse({b:{c:'judge', p:[D('마우스포인터'), '에 닿았는가?']}},
      [{c:'looks', p:[D('깬 얼굴'), '모양으로 바꾸기']}], [{c:'looks', p:[D('자는 얼굴'), '모양으로 바꾸기']}])])]}],
@@ -375,6 +452,61 @@ const ITEMS = [
      steps:['<b>복제본 만들기</b>, <b>복제본이 처음 생성되었을 때</b>, <b>이 복제본 삭제하기</b>는 모두 <b>흐름</b> 꾸러미에 있어요.',
        '다 떨어진 복제본은 <b>삭제</b>해야 컴퓨터가 느려지지 않아요.']}},
 
+  {lv:1, em:'🔢', ch:'⭐', t:'글상자 점수판', s:'점수가 오를 때마다 글상자에 점수가 써져요', pv:'textscore',
+   scripts:[{o:'⭐ 별', h:CLICK, b:[addVar('점수', 1)]},
+            {o:'🔤 글상자', h:START, b:[setVar('점수', 0), loop([write(joinB('점수: ', varOf('점수')))])]}],
+   how:{t:'글상자 만드는 방법',
+     intro:'글상자는 <b>글자를 보여 주는 오브젝트</b>예요. 점수 변수의 값을 글상자에 계속 써 주면 점수판이 돼요.',
+     steps:['<b>오브젝트 추가하기</b>를 눌러요.', '맨 위 탭에서 <b>글상자</b>를 골라요.', '내용을 쓰고 <b>추가하기</b>를 눌러요.',
+       '글쓰기 블록은 <b>생김새</b> 꾸러미에서 찾고, <b>점수</b> 변수는 앞에서 만든 그대로 써요.']}},
+  {lv:1, em:'🍎', ch:'🤖', t:'닿으면 사라지기', s:'엔트리봇이 사과에 닿으면 사과가 사라져요', pv:'eat',
+   scripts:[{o:'🍎 사과', h:START, b:[loop([ifThen(TOUCH('엔트리봇'), [{c:'looks', p:['모양 숨기기']}])])]}],
+   how:condHow('엔트리봇이 닿았으면 모양 숨기기가 실행돼요. 닿지 않았으면 아무 일도 없어요.', '에 닿았는가?')},
+  {lv:1, em:'🧱', ch:'🤖', t:'벽에 닿으면 되돌아가기', s:'벽에 부딪히면 뒤로 밀려나서 지나갈 수 없어요', pv:'wall',
+   scripts:[{h:KEY('오른쪽 화살표'), b:[dx(10), ifThen(TOUCH('벽'), [dx(-10)])]},
+            {h:KEY('왼쪽 화살표'), b:[dx(-10), ifThen(TOUCH('벽'), [dx(10)])]}],
+   how:{t:'알아 두기',
+     intro:'먼저 움직이고, 벽에 닿았으면 <b>똑같은 만큼 반대로</b> 되돌려요. 그러면 벽 앞에서 멈춘 것처럼 보여요.',
+     steps:['움직이는 숫자와 되돌리는 숫자는 <b>같은 크기, 반대 부호</b>예요. (10 ↔ -10)', '미로에서는 위·아래도 똑같이 만들어요.']}},
+  {lv:1, em:'🔫', ch:'🚀', t:'총알 발사', s:'스페이스 키를 누르면 총알이 위로 날아가요', pv:'shoot',
+   scripts:[{o:'🚀 우주선', h:KEY('스페이스'), b:[MAKE('총알')]},
+            {o:'🔹 총알 복제본', h:CLONE, b:[untilB(TOUCH('위쪽 벽'), [dy(5)]), DEL]}],
+   how:{t:'알아 두기',
+     intro:'총알 복제본이 생기면 <b>위쪽 벽에 닿을 때까지</b> 위로 가요. 도착하면 <b>삭제</b>해서 컴퓨터가 느려지지 않게 해요.',
+     steps:['<b>~ 이 될 때까지 반복하기</b>는 <b>흐름</b> 꾸러미에 있어요.', '<b>~에 닿았는가?</b>에서 ▾로 <b>위쪽 벽</b>을 골라요.', '다 날아간 복제본은 꼭 <b>삭제</b>해요.']}},
+  {lv:1, em:'🐟', ch:'🐟', t:'바닥에 닿을 때까지 떨어지기', s:'아무 곳에서 생겨서 바닥까지 떨어져요', pv:'fall',
+   scripts:[{o:'🐟 원본', h:START, b:[loop([wait(1), MAKE('자신')])]},
+            {o:'🐟 복제본', h:CLONE, b:[xyTo(rnd(-220, 220), N(130)), untilB(TOUCH('아래쪽 벽'), [dy(-3)]), DEL]}],
+   how:{t:'알아 두기',
+     intro:'떨어지는 속도는 <b>y 좌표 바꾸기</b>의 숫자로 정해요. <b>-3</b>은 천천히, <b>-10</b>은 빠르게!',
+     steps:['복제본은 <b>복제본이 처음 생성되었을 때</b> 블록으로 시작해요.', '<b>아래쪽 벽</b>에 닿으면 반복이 끝나고 복제본이 삭제돼요.']}},
+  {lv:1, em:'🐧', ch:'🐧', t:'닿으면 점수 +1', s:'떨어지는 물고기를 받으면 점수가 올라가요', pv:'catch',
+   scripts:[{o:'🐟 물고기 복제본', h:CLONE, b:[xyTo(rnd(-220, 220), N(130)),
+     untilB(TOUCH('아래쪽 벽'), [dy(-3), ifThen(TOUCH('펭귄'), [addVar('점수', 1), DEL])]), DEL]}],
+   how:varHow('점수', '펭귄에 닿을 때마다 1점씩 올라가고, 닿은 물고기는 삭제돼요.')},
+  {lv:1, em:'🐹', ch:'🐹', t:'두더지 잡기', s:'이리저리 나타나는 두더지를 클릭하면 점수!', pv:'mole',
+   scripts:[{o:'🐹 두더지', h:START, b:[loop([xyTo(rnd(-200, 200), rnd(-100, 100)), wait(1)])]},
+            {o:'🐹 두더지', h:CLICK, b:[addVar('점수', 1)]}],
+   how:varHow('점수', '두더지를 클릭할 때마다 1점씩 올라가요.')},
+  {lv:1, em:'⏱️', ch:'🏃', t:'시간 끝나면 멈추기', s:'10초가 지나면 게임이 딱 멈춰요', pv:'stopwatch',
+   scripts:[{h:START, b:[{c:'calc', p:['초시계', D('시작하기')]},
+     loop([ifThen({b:{c:'judge', p:[R('calc', ['초시계 값']), '>', N(10)]}},
+       [{c:'calc', p:['초시계', D('정지하기')]}, {c:'flow', p:[D('모든'), '코드 멈추기']}])])]}],
+   how:{t:'알아 두기',
+     intro:'<b>초시계 시작하기</b>를 하면 시간이 흘러요. <b>초시계 값</b>이 10보다 커지면 <b>모든 코드 멈추기</b>로 게임을 끝내요.',
+     steps:['<b>초시계</b> 블록은 <b>계산</b> 꾸러미에 있어요. ▾에서 시작하기 / 정지하기를 골라요.',
+       '<b>초시계 값 &gt; 10</b>은 <b>판단</b> 꾸러미의 육각형 블록에 <b>초시계 값</b>을 끼워서 만들어요.', '<b>모든 코드 멈추기</b>는 <b>흐름</b> 꾸러미에 있어요.']}},
+  {lv:1, em:'🪨', ch:'🐻', t:'장애물이 다가오기', s:'바위가 다가와요! 점프해서 피하고, 닿으면 게임오버', pv:'obstacle',
+   scripts:[{o:'🪨 바위 원본', h:START, b:[{c:'looks', p:['모양 숨기기']}, loop([wait(2), MAKE('자신')])]},
+            {o:'🪨 바위 복제본', h:CLONE, b:[{c:'looks', p:['모양 보이기']}, loop([dx(-2), ifThen(TOUCH('곰'), [NEXTSCENE])])]}],
+   how:{t:'알아 두기',
+     intro:'바위 복제본이 <b>x 좌표를 -2씩</b> 바꾸면서 곰 쪽으로 다가와요. 곰에 닿으면 <b>다음 장면(게임오버)</b>을 시작해요.',
+     steps:['곰이 점프하는 코드는 <b>점프하기</b>를 참고하세요.', '게임오버 장면은 <b>장면 넘기기</b>처럼 장면 2를 만들어요.']}},
+  {lv:1, em:'🔄', ch:'🛩️', t:'끝에 닿으면 반대편에서 나오기', s:'오른쪽 끝으로 나가면 왼쪽 끝에서 다시 나와요', pv:'wrap',
+   scripts:[{h:START, b:[loop([dx(5), ifThen({b:{c:'judge', p:[R('move', ['x 좌표값']), '>', N(240)]}}, [{c:'move', p:['x 좌표를', N(-240), '(으)로 정하기']}])])]}],
+   how:{t:'알아 두기',
+     intro:'엔트리 화면의 가로는 <b>-240 ~ 240</b>이에요. x가 240보다 커지면 오른쪽 끝을 넘은 거라서, <b>-240(왼쪽 끝)</b>으로 옮겨 줘요.',
+     steps:['<b>x 좌표값</b> 블록은 <b>움직임</b> 꾸러미에 있어요.', '<b>x 좌표를 ~(으)로 정하기</b>는 한 번에 그 자리로 가요.']}},
   /* ---------- 고급 ---------- */
   {lv:2, em:'🧺', ch:'🧺', t:'과일 바구니', s:'좋아하는 과일 3개를 물어보고 리스트에 담아요', pv:'listAdd',
    scripts:[{h:START, b:[times(3, [ask('좋아하는 과일은?'), {c:'data', p:[ANSWER, '항목을', D('과일'), '에 추가하기']}]),
@@ -404,9 +536,34 @@ const ITEMS = [
      {o:'함수 쓰기', h:START, b:[{c:'move', p:['x:', N(-150), 'y:', N(0), '위치로 이동하기']},
        times(3, [CALL('별 그리기'), {c:'move', p:['x 좌표를', N(120), '만큼 바꾸기']}])]}],
    how:funcHow('별 그리기', '별을 그리는 블록 묶음을 함수로 만들어 두면, 별 3개를 그릴 때 함수 블록만 3번 쓰면 돼요.')},
-];
 
-const ICON = {flow:'hierarchy', move:'arrows-move', looks:'circles', brush:'brush', data:'database', start:'broadcast', func:'math-function'};
+  {lv:2, em:'🎰', ch:'🎰', t:'✨ 점수 또로로로~ 몇 점!!', s:'숫자가 또로로로 돌다가 내 점수로 딱 멈춰요', pv:'rolling',
+   scripts:[{o:'🔤 글상자', h:CLICK, b:[times(20, [write(rnd(0, 100)), wait('0.05')]), write(joinB(varOf('점수'), '점!!'))]}],
+   how:{t:'알아 두기',
+     intro:'숫자를 아주 빠르게 바꿔 쓰다가 마지막에 진짜 점수를 써요. <b>0.05초</b>마다 바꾸면 또로로로 돌아가는 것처럼 보여요.',
+     steps:['<b>20번 반복하기</b> 안에 <b>무작위 수 글쓰기</b>와 <b>0.05초 기다리기</b>를 넣어요.',
+       '반복이 끝나면 <b>점수</b>와 <b>점!!</b>을 <b>합치기</b>로 붙여서 써요.', '합치기는 <b>계산</b>, 글쓰기는 <b>생김새</b> 꾸러미에 있어요.']}},
+  {lv:2, em:'⌨️', ch:'🧙', t:'✨ 한 글자씩 타자 치듯 쓰기', s:'글자가 한 글자씩 나타나요', pv:'typing',
+   scripts:[{o:'🔤 글상자', h:START, b:[write(''), setVar('번호', 0),
+     times(5, [addVar('번호', 1), append(R('calc', [T('반가워요!'), '의', varOf('번호'), '번째 글자'])), wait('0.2')])]}],
+   how:varHow('번호', '1, 2, 3… 번호를 하나씩 올리면서 그 번째 글자를 이어서 써요.')},
+  {lv:2, em:'🎬', ch:'🎬', t:'✨ 카운트다운 큰 글씨', s:'3, 2, 1, 시작! 하고 큰 글씨로 알려 줘요', pv:'bigcount',
+   scripts:[{o:'🔤 글상자', h:START, b:[setVar('숫자', 3), times(3, [write(varOf('숫자')), wait(1), addVar('숫자', -1)]), write('시작!')]}],
+   how:varHow('숫자', '3에서 시작해서 1초마다 -1씩 줄여요.')},
+  {lv:2, em:'🏆', ch:'⭐', t:'✨ 신기록!', s:'최고 점수를 넘으면 신기록을 알려 줘요', pv:'record',
+   scripts:[{o:'⭐ 별', h:CLICK, b:[addVar('점수', 1),
+     ifThen({b:{c:'judge', p:[varOf('점수'), '>', varOf('최고점수')]}}, [setVar('최고점수', varOf('점수')), {c:'start', p:[D('신기록'), '신호 보내기']}])]},
+            {o:'🔤 글상자', h:GOT('신기록'), b:[write('신기록!'), wait(1), write('')]}],
+   how:{t:'알아 두기',
+     intro:'<b>점수</b>와 <b>최고점수</b> 변수를 비교해서 점수가 더 크면 최고점수를 바꾸고 <b>신기록 신호</b>를 보내요.',
+     steps:['변수 <b>점수</b>, <b>최고점수</b> 두 개를 만들어요.', '비교는 <b>판단</b> 꾸러미의 <b>( ) &gt; ( )</b> 블록에 변수 값을 끼워요.', '<b>신기록</b> 신호는 <b>시작</b> 꾸러미에서 만들어요.']}},
+  {lv:2, em:'🏁', ch:'🎯', t:'✨ 게임오버 점수 발표', s:'시간이 끝나면 "당신의 점수는 N점!"을 알려 줘요', pv:'gameover',
+   scripts:[{o:'🔤 글상자', h:GOT('게임오버'), b:[write(joinB('당신의 점수는 ', joinB(varOf('점수'), '점!')))]}],
+   how:{t:'알아 두기',
+     intro:'<b>합치기</b> 안에 <b>합치기</b>를 한 번 더 끼우면 글자 세 조각을 한 줄로 이을 수 있어요.',
+     steps:['안쪽 합치기: <b>점수</b> + <b>점!</b>', '바깥쪽 합치기: <b>당신의 점수는</b> + (안쪽 합치기)', '게임이 끝나는 곳에서 <b>게임오버 신호 보내기</b>를 해요.']}},];
+
+const ICON = {flow:'hierarchy', move:'arrows-move', looks:'circles', brush:'brush', data:'database', start:'broadcast', func:'math-function', calc:'calculator'};
 
 /* ---------- 블록 그리기 ---------- */
 let z;
@@ -558,6 +715,33 @@ function preview(it){
     inp.oninput = () => err.textContent = '';
   };
   const jumpOnce = () => { ch.classList.remove('jumping'); void ch.offsetWidth; ch.classList.add('jumping'); };
+  // ----- 새 항목 공통 도우미 -----
+  const clamp = (a, b, v) => Math.max(a, Math.min(b, v));
+  const hit = (a, b) => { const r = a.getBoundingClientRect(), q = b.getBoundingClientRect();
+    return r.left < q.right - 10 && r.right > q.left + 10 && r.top < q.bottom - 10 && r.bottom > q.top + 10; };
+  const trackKeys = () => {
+    const held = new Set();
+    const pid = e => 'p' + e.key.slice(5)[0];
+    const dn = e => { if (e.key.startsWith('Arrow')){ e.preventDefault(); held.add(e.key); document.getElementById(pid(e))?.classList.add('on'); } };
+    const up = e => { held.delete(e.key); document.getElementById(pid(e))?.classList.remove('on'); };
+    addEventListener('keydown', dn); addEventListener('keyup', up);
+    cleanups.push(() => { removeEventListener('keydown', dn); removeEventListener('keyup', up); });
+    return held;
+  };
+  const pad = (held, four, tap) => {
+    ctrls.innerHTML = `${four ? '<div class="ctrls"><button class="key" id="pU"><i class="ti ti-arrow-up"></i></button></div>' : ''}
+      <div class="ctrls"><button class="key" id="pL"><i class="ti ti-arrow-left"></i></button>${four ? '<button class="key" id="pD"><i class="ti ti-arrow-down"></i></button>' : ''}<button class="key" id="pR"><i class="ti ti-arrow-right"></i></button></div>`;
+    [['U', 'ArrowUp'], ['D', 'ArrowDown'], ['L', 'ArrowLeft'], ['R', 'ArrowRight']].forEach(([i, k]) => {
+      const b = document.getElementById('p' + i); if (!b) return;
+      if (tap){ b.onclick = () => tap(k); return; }
+      b.onpointerdown = () => { held.add(k); b.classList.add('on'); };
+      b.onpointerup = b.onpointerleave = () => { held.delete(k); b.classList.remove('on'); };
+    });
+  };
+  const extra = html => ctrls.insertAdjacentHTML('beforeend', html);
+  const resetBtn = fn => { extra('<div class="ctrls"><button class="pill" id="rs">다시 하기</button></div>'); document.getElementById('rs').onclick = fn; };
+  const flip = d => ch.style.transform = `translateX(-50%) scaleX(${d > 0 ? -1 : 1})`;
+  const keyDir = {ArrowLeft:-1, ArrowRight:1};
 
   switch (it.pv){
     case 'frames': {
@@ -797,6 +981,202 @@ function preview(it){
       };
       drawAll(); timers.push(setInterval(drawAll, 5500));
       hint('별 그리기 함수 → 옆으로 이동, 3번 반복!'); break;
+    }
+    case 'arrows4': {
+      let x = 50, y = 36;
+      ch.style.transition = 'left .12s, bottom .12s';
+      const mv = k => { const d = {ArrowUp:[0, 16], ArrowDown:[0, -16], ArrowLeft:[-8, 0], ArrowRight:[8, 0]}[k]; if (!d) return;
+        x = clamp(8, 92, x + d[0]); y = clamp(36, 190, y + d[1]); ch.style.left = x + '%'; ch.style.bottom = y + 'px'; if (d[0]) flip(d[0]); };
+      pad(null, true, mv); extra('<p class="hint">버튼이나 키보드 방향키를 눌러 보세요</p>');
+      onKey(e => { if (e.key.startsWith('Arrow')){ e.preventDefault(); mv(e.key); } }); break;
+    }
+    case 'setmove': {
+      let x = 0; const lab = add('score', 'x: 0');
+      ch.style.transition = 'left .35s';
+      const put = () => { ch.style.left = (50 + x / 5) + '%'; lab.textContent = 'x: ' + x; };
+      ctrls.innerHTML = `<div class="ctrls"><button class="key sm" id="bA">🅰 바꾸기<br>(+100)</button><button class="key sm" id="bB" style="background:#16b84a;box-shadow:0 6px 0 #0e9139">🅱 이동하기<br>(x: 100)</button></div>
+        <p class="hint">A는 누를 때마다 <b>100씩 더</b> 가고, B는 몇 번을 눌러도 <b>x가 100인 곳</b>이에요</p>`;
+      document.getElementById('bA').onclick = () => { x = x >= 200 ? -200 : x + 100; put(); };
+      document.getElementById('bB').onclick = () => { x = 100; put(); };
+      resetBtn(() => { x = 0; put(); }); break;
+    }
+    case 'diag':
+      ch.style.animation = 'diag 3s linear infinite'; hint('x도 5, y도 5씩 바꾸면 비스듬히 날아가요'); break;
+    case 'glide': {
+      let busy = false; ch.style.cursor = 'pointer';
+      ch.onclick = () => { if (busy) return; busy = true; ch.style.transition = 'bottom 2s ease-in-out'; ch.style.bottom = '180px';
+        later(() => { ch.style.transition = 'none'; ch.style.bottom = '36px'; busy = false; }, 2600); };
+      hint('우주선을 클릭해 보세요. <b>2초 동안</b> 스르르 날아가요'); break;
+    }
+    case 'found': {
+      let busy = false; ch.style.cursor = 'pointer'; ch.style.transformOrigin = '50% 100%';
+      ch.onclick = () => { if (busy) return; busy = true; ch.style.transition = 'transform .6s, opacity .6s';
+        ch.style.transform = 'translateX(-50%) scale(2.2)'; ch.style.opacity = '0';
+        later(() => { ch.style.transition = 'none'; ch.style.transform = 'translateX(-50%)'; ch.style.opacity = '1'; busy = false; }, 2200); };
+      hint('쿠키를 클릭해 보세요'); break;
+    }
+    case 'scene': {
+      let sc = 1; const lab = add('score', '장면 1'), b = bubble(); b.style.display = 'none'; ch.style.cursor = 'pointer';
+      ch.onclick = () => { if (sc === 2) return; sc = 2; lab.textContent = '장면 2'; stage.style.backgroundColor = '#2b2f6b'; ch.textContent = '🌙';
+        b.style.display = ''; b.textContent = '장면 2가 되었어요!';
+        later(() => { sc = 1; lab.textContent = '장면 1'; stage.style.backgroundColor = ''; ch.textContent = '🌞'; b.style.display = 'none'; }, 3000); };
+      hint('해를 클릭하면 장면 2로 넘어가요'); break;
+    }
+    case 'drag': {
+      let on = false; ch.style.transition = 'left .1s, bottom .1s'; ch.style.cursor = 'pointer';
+      const m = e => { if (!on) return; const r = stage.getBoundingClientRect(), q = e.touches ? e.touches[0] : e;
+        ch.style.left = (q.clientX - r.left) + 'px'; ch.style.bottom = (r.bottom - q.clientY - 32) + 'px'; };
+      stage.addEventListener('mousemove', m); stage.addEventListener('touchmove', m, {passive:true});
+      ch.onclick = () => { on = true; pop(); };
+      ctrls.innerHTML = '<p class="hint">자석을 <b>클릭한 다음</b> 마우스를 움직여 보세요</p>';
+      resetBtn(() => { on = false; ch.style.left = '50%'; ch.style.bottom = '36px'; }); break;
+    }
+    case 'penguin': {
+      let x = 50, mode = 'loop'; const held = trackKeys();
+      ch.style.transition = 'none';
+      pad(held, false);
+      ctrls.insertAdjacentHTML('afterbegin', `<div class="ctrls"><button class="pill on" data-m="loop">계속 확인하기</button><button class="pill" data-m="key">키를 눌렀을 때</button></div>`);
+      extra('<p class="hint" id="ph"></p>');
+      const say2 = () => document.getElementById('ph').innerHTML = mode === 'loop'
+        ? '방향키를 <b>꾹 누르고</b> 있어 보세요. 끊기지 않고 부드럽게 가요'
+        : '방향키를 <b>꾹 누르고</b> 있어 보세요. 처음에 멈칫하고 키보드 설정대로 움직여요';
+      say2();
+      const stepKey = d => { x = clamp(8, 92, x + d * 8); ch.style.left = x + '%'; flip(d); };
+      ctrls.querySelectorAll('.pill').forEach(b => b.onclick = () => { mode = b.dataset.m;
+        ctrls.querySelectorAll('.pill').forEach(q => q.classList.toggle('on', q === b)); say2(); });
+      ['pL', 'pR'].forEach((id, i) => document.getElementById(id).addEventListener('pointerdown', () => { if (mode === 'key') stepKey(i ? 1 : -1); }));
+      onKey(e => { if (mode === 'key' && keyDir[e.key]) stepKey(keyDir[e.key]); });
+      timers.push(setInterval(() => { if (mode !== 'loop') return; const d = (held.has('ArrowRight') ? 1 : 0) - (held.has('ArrowLeft') ? 1 : 0);
+        if (d){ x = clamp(8, 92, x + d * .9); ch.style.left = x + '%'; flip(d); } }, 30)); break;
+    }
+    case 'hold4': {
+      let x = 50, y = 36; const held = trackKeys(); ch.style.transition = 'none';
+      pad(held, true); extra('<p class="hint">키 두 개를 <b>같이</b> 눌러 보세요 (비스듬히 가요!)</p>');
+      timers.push(setInterval(() => {
+        const dx = (held.has('ArrowRight') ? 1 : 0) - (held.has('ArrowLeft') ? 1 : 0), dy = (held.has('ArrowUp') ? 1 : 0) - (held.has('ArrowDown') ? 1 : 0);
+        if (!dx && !dy) return; x = clamp(8, 92, x + dx * .9); y = clamp(36, 190, y + dy * 2.4);
+        ch.style.left = x + '%'; ch.style.bottom = y + 'px'; if (dx) flip(dx); }, 30)); break;
+    }
+    case 'textscore': {
+      let sc = 0; const box = add('tbox', '점수: 0'); ch.style.cursor = 'pointer'; ch.style.left = '30%';
+      ch.onclick = () => { box.textContent = '점수: ' + (++sc); pop(); };
+      hint('별을 클릭해 보세요. 오른쪽 <b>글상자</b>에 점수가 써져요'); break;
+    }
+    case 'eat': {
+      let x = 25; ch.style.left = x + '%'; ch.style.transition = 'left .12s';
+      const apple = add('ch', '🍎'); apple.style.left = '70%'; apple.style.fontSize = '44px';
+      const mv = d => { x = clamp(8, 92, x + d * 8); ch.style.left = x + '%'; flip(d); if (Math.abs(x - 70) < 9) apple.style.visibility = 'hidden'; };
+      pad(null, false, k => keyDir[k] && mv(keyDir[k])); extra('<p class="hint">엔트리봇을 사과 쪽으로 움직여 보세요</p>');
+      onKey(e => { if (keyDir[e.key]){ e.preventDefault(); mv(keyDir[e.key]); } });
+      resetBtn(() => { x = 25; ch.style.left = x + '%'; apple.style.visibility = ''; }); break;
+    }
+    case 'wall': {
+      let x = 20; ch.style.left = x + '%'; ch.style.transition = 'left .12s';
+      const wall = add('wallb'); wall.style.left = '62%';
+      const mv = d => { flip(d); if (Math.abs(x + d * 8 - 62) < 9){ wall.classList.add('hit'); later(() => wall.classList.remove('hit'), 200); return; }
+        x = clamp(8, 92, x + d * 8); ch.style.left = x + '%'; };
+      pad(null, false, k => keyDir[k] && mv(keyDir[k])); extra('<p class="hint">벽 쪽으로 가 보세요. 벽 앞에서 더 못 가요</p>');
+      onKey(e => { if (keyDir[e.key]){ e.preventDefault(); mv(keyDir[e.key]); } }); break;
+    }
+    case 'shoot': {
+      const fire = () => { const b = add('ch', '🔹'); b.style.fontSize = '26px'; b.style.left = '50%'; b.style.bottom = '100px';
+        b.style.transition = 'bottom 1s linear'; void b.offsetWidth; b.style.bottom = '260px'; setTimeout(() => b.remove(), 1050); };
+      ctrls.innerHTML = '<div class="ctrls"><button class="key wide" id="go"><i class="ti ti-space"></i> 스페이스</button></div><p class="hint">스페이스 키를 눌러 총알을 쏴 보세요</p>';
+      document.getElementById('go').onclick = fire;
+      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); fire(); flash('go'); } }); break;
+    }
+    case 'fall': {
+      ch.style.display = 'none';
+      const drop = () => { const f = add('ch', '🐟'); f.style.fontSize = '36px'; f.style.left = (8 + Math.random() * 84) + '%'; f.style.bottom = '230px';
+        f.style.transition = 'bottom 2.2s linear'; void f.offsetWidth; f.style.bottom = '36px'; setTimeout(() => f.remove(), 2300); };
+      drop(); timers.push(setInterval(drop, 1000)); hint('1초마다 복제본이 생겨서 바닥에 닿으면 삭제돼요'); break;
+    }
+    case 'catch': {
+      let x = 50, sc = 0; const lab = add('score', '점수 0'); const held = trackKeys(); ch.style.transition = 'none'; ch.style.fontSize = '56px';
+      pad(held, false); extra('<p class="hint">펭귄을 좌우로 움직여 물고기를 받아 보세요</p>');
+      const fish = [];
+      const drop = () => { const el = add('ch', '🐟'); el.style.fontSize = '30px'; const f = {el, x:8 + Math.random() * 84, y:230}; el.style.left = f.x + '%'; el.style.bottom = f.y + 'px'; fish.push(f); };
+      timers.push(setInterval(drop, 900));
+      timers.push(setInterval(() => {
+        const d = (held.has('ArrowRight') ? 1 : 0) - (held.has('ArrowLeft') ? 1 : 0);
+        if (d){ x = clamp(8, 92, x + d * 1.1); ch.style.left = x + '%'; flip(d); }
+        for (let i = fish.length - 1; i >= 0; i--){ const f = fish[i]; f.y -= 2.4; f.el.style.bottom = f.y + 'px';
+          if (Math.abs(f.x - x) < 10 && f.y < 90){ lab.textContent = '점수 ' + (++sc); f.el.remove(); fish.splice(i, 1); }
+          else if (f.y <= 36){ f.el.remove(); fish.splice(i, 1); } } }, 30)); break;
+    }
+    case 'mole': {
+      let sc = 0; const lab = add('score', '점수 0'); ch.style.cursor = 'pointer'; ch.style.fontSize = '50px'; ch.style.transition = 'none';
+      const tp = () => { ch.style.left = (16 + Math.random() * 68) + '%'; ch.style.bottom = (40 + Math.random() * 120) + 'px'; };
+      ch.onclick = () => { lab.textContent = '점수 ' + (++sc); pop(); };
+      tp(); timers.push(setInterval(tp, 1000)); hint('1초마다 나타나는 두더지를 클릭해 보세요'); break;
+    }
+    case 'stopwatch': {
+      let f = 1; const sc = add('score'), b = bubble(); b.style.display = 'none';
+      ctrls.innerHTML = '<div class="ctrls"><button class="pill on" data-f="1">보통</button><button class="pill" data-f="3">3배 빠르게 보기</button></div><p class="hint">초시계가 10을 넘으면 모든 코드가 멈춰요</p>';
+      ctrls.querySelectorAll('.pill').forEach(q => q.onclick = () => { f = +q.dataset.f; ctrls.querySelectorAll('.pill').forEach(z => z.classList.toggle('on', z === q)); });
+      const run = () => { b.style.display = 'none'; sc.textContent = '초시계 0.0'; ch.style.animation = 'float 1s ease-in-out infinite';
+        let t = 0; const iv = setInterval(() => { t += 0.1 * f;
+          if (t > 10){ clearInterval(iv); sc.textContent = '초시계 10.0'; ch.style.animation = 'none'; b.style.display = ''; b.textContent = '게임 끝!'; later(run, 3000); }
+          else sc.textContent = '초시계 ' + t.toFixed(1); }, 100); timers.push(iv); };
+      run(); break;
+    }
+    case 'obstacle': {
+      ch.style.left = '20%'; ch.style.fontSize = '56px';
+      const rocks = []; let over = false, tk = 0; const ov = document.createElement('div'); ov.className = 'goover'; ov.style.display = 'none'; ov.textContent = '게임오버!'; stage.appendChild(ov);
+      const jump = () => { if (!over) jumpOnce(); };
+      ctrls.innerHTML = '<div class="ctrls"><button class="key wide" id="go"><i class="ti ti-space"></i> 점프</button></div><p class="hint">바위가 오면 스페이스 키로 점프해서 피하세요</p>';
+      document.getElementById('go').onclick = jump;
+      onKey(e => { if (e.code === 'Space'){ e.preventDefault(); jump(); flash('go'); } });
+      const restart = () => { rocks.splice(0).forEach(r => r.el.remove()); over = false; ov.style.display = 'none'; tk = 0; };
+      timers.push(setInterval(() => { if (over) return; tk++;
+        if (tk % 70 === 1){ const el = add('ch', '🪨'); el.style.fontSize = '40px'; el.style.left = '104%'; rocks.push({el, x:104}); }
+        for (let i = rocks.length - 1; i >= 0; i--){ const r = rocks[i]; r.x -= 0.7; r.el.style.left = r.x + '%';
+          if (hit(ch, r.el)){ over = true; ov.style.display = 'flex'; later(restart, 2000); }
+          if (r.x < -6){ r.el.remove(); rocks.splice(i, 1); } } }, 30)); break;
+    }
+    case 'wrap': {
+      let x = -200; const lab = add('score', 'x: -200'); ch.style.transition = 'none';
+      timers.push(setInterval(() => { x += 4; if (x > 240) x = -240; ch.style.left = (50 + x * 42 / 240) + '%'; lab.textContent = 'x: ' + x; }, 30));
+      hint('x가 240보다 커지면 -240으로 정해서 반대편에서 나와요'); break;
+    }
+    case 'rolling': {
+      ch.style.display = 'none'; let busy = false;
+      const box = add('tbox big click', '클릭!');
+      box.onclick = () => { if (busy) return; busy = true; let n = 0; const score = 60 + Math.floor(Math.random() * 40);
+        const iv = setInterval(() => { box.textContent = Math.floor(Math.random() * 101);
+          if (++n >= 20){ clearInterval(iv); box.textContent = score + '점!!'; box.style.animation = 'none'; void box.offsetWidth; box.style.animation = 'pop2 .5s';
+            later(() => { box.textContent = '클릭!'; busy = false; }, 2500); } }, 50); timers.push(iv); };
+      hint('글상자를 클릭해 보세요. 또로로로~ 하다가 점수가 나와요'); break;
+    }
+    case 'typing': {
+      ch.style.left = '22%'; const box = add('tbox big', ''); box.style.top = '36%';
+      const run = () => { const str = '반가워요!'; let n = 0; box.textContent = '';
+        const iv = setInterval(() => { box.textContent = str.slice(0, ++n); if (n >= str.length){ clearInterval(iv); later(run, 2500); } }, 200); timers.push(iv); };
+      run(); hint('0.2초마다 한 글자씩 이어서 써요'); break;
+    }
+    case 'bigcount': {
+      ch.style.display = 'none'; const box = add('tbox big', '');
+      const run = () => { const seq = ['3', '2', '1', '시작!']; let i = 0;
+        const step = () => { box.textContent = seq[i]; box.style.fontSize = '60px'; box.style.animation = 'none'; void box.offsetWidth; box.style.animation = 'pop2 .5s'; i++;
+          if (i < seq.length) later(step, 1000); else later(run, 2500); }; step(); };
+      run(); hint('1초마다 숫자를 줄이면서 큰 글씨로 보여 줘요'); break;
+    }
+    case 'record': {
+      let sc = 0, best = 0; const s1 = add('score', '점수 0'), s2 = add('score', '최고 0'); s2.style.left = 'auto'; s2.style.right = '12px';
+      const nb = bubble(); nb.style.display = 'none'; ch.style.cursor = 'pointer';
+      ch.onclick = () => { sc++; s1.textContent = '점수 ' + sc; pop();
+        if (sc > best){ best = sc; s2.textContent = '최고 ' + best; nb.style.display = ''; nb.textContent = '신기록!'; later(() => nb.style.display = 'none', 800); } };
+      ctrls.innerHTML = '<p class="hint">별을 클릭해 점수를 올려 보세요. 최고점수를 넘을 때만 <b>신기록!</b></p>';
+      resetBtn(() => { sc = 0; s1.textContent = '점수 0'; }); break;
+    }
+    case 'gameover': {
+      let sc = 0, left = 5, playing = false, iv; const s1 = add('score', '점수 0'), s2 = add('score', '남은 시간 5'); s2.style.left = 'auto'; s2.style.right = '12px';
+      const box = add('tbox big', ''); box.style.display = 'none'; ch.style.cursor = 'pointer';
+      ch.onclick = () => { if (!playing) return; s1.textContent = '점수 ' + (++sc); pop(); };
+      ctrls.innerHTML = '<div class="ctrls"><button class="key sm" id="st">시작!</button></div><p class="hint">시작을 누르고 5초 동안 과녁을 클릭해 보세요</p>';
+      document.getElementById('st').onclick = () => { if (playing) return; playing = true; sc = 0; left = 5; s1.textContent = '점수 0'; s2.textContent = '남은 시간 5'; box.style.display = 'none';
+        iv = setInterval(() => { s2.textContent = '남은 시간 ' + (--left);
+          if (left <= 0){ clearInterval(iv); playing = false; box.style.display = ''; box.style.fontSize = '24px'; box.textContent = '당신의 점수는 ' + sc + '점!'; } }, 1000); timers.push(iv); }; break;
     }
     case 'funcFlower': {
       ch.style.display = 'none';
