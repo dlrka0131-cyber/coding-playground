@@ -434,11 +434,11 @@ const ITEMS = [
   {lv:1, em:'🌠', ch:'⭐', t:'별똥별 복제', s:'별을 복제해서 하늘에서 별비가 내려요', pv:'clone',
    scripts:[{o:'원본', h:START, b:[{c:'looks', p:['모양 숨기기']}, loop([{c:'flow', p:[D('자신'), '의 복제본 만들기']}, wait('0.5')])]},
             {o:'복제본', h:CLONE, b:[{c:'move', p:['x:', rnd(-200, 200), 'y:', N(130), '위치로 이동하기']}, {c:'looks', p:['모양 보이기']},
-              times(30, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}]), {c:'flow', p:['이 복제본 삭제하기']}]}],
+              loop([{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}])]}],
    how:{t:'알아 두기',
      intro:'<b>복제</b>는 오브젝트를 똑같이 하나 더 만드는 마법이에요. 원본은 숨어서 복제본만 계속 만들고, 복제본은 생기자마자 아래로 떨어져요.',
-     steps:['<b>복제본 만들기</b>, <b>복제본이 처음 생성되었을 때</b>, <b>이 복제본 삭제하기</b>는 모두 <b>흐름</b> 꾸러미에 있어요.',
-       '다 떨어진 복제본은 <b>삭제</b>해야 컴퓨터가 느려지지 않아요.']}},
+     steps:['<b>복제본 만들기</b>와 <b>복제본이 처음 생성되었을 때</b>는 모두 <b>흐름</b> 꾸러미에 있어요.',
+       '<b>계속 반복하기</b> 안에 y 좌표를 -10만큼 바꾸기를 넣으면 계속 아래로 내려가요.']}},
 
   {lv:1, em:'🔢', ch:'⭐', t:'글상자 점수판', s:'점수가 오를 때마다 글상자에 점수가 써져요', pv:'textscore',
    scripts:[{o:'⭐ 별', h:CLICK, b:[addVar('점수', 1)]},
@@ -450,12 +450,6 @@ const ITEMS = [
   {lv:1, em:'🍎', ch:'🤖', t:'닿으면 사라지기', s:'엔트리봇이 사과에 닿으면 사과가 사라져요', pv:'eat',
    scripts:[{o:'🍎 사과', h:START, b:[loop([ifThen(TOUCH('엔트리봇'), [{c:'looks', p:['모양 숨기기']}])])]}],
    how:condHow('엔트리봇이 닿았으면 모양 숨기기가 실행돼요. 닿지 않았으면 아무 일도 없어요.', '에 닿았는가?')},
-  {lv:1, em:'🧱', ch:'🤖', t:'벽에 닿으면 되돌아가기', s:'벽에 부딪히면 뒤로 밀려나서 지나갈 수 없어요', pv:'wall',
-   scripts:[{h:KEY('오른쪽 화살표'), b:[dx(10), ifThen(TOUCH('벽'), [dx(-10)])]},
-            {h:KEY('왼쪽 화살표'), b:[dx(-10), ifThen(TOUCH('벽'), [dx(10)])]}],
-   how:{t:'알아 두기',
-     intro:'먼저 움직이고, 벽에 닿았으면 <b>똑같은 만큼 반대로</b> 되돌려요. 그러면 벽 앞에서 멈춘 것처럼 보여요.',
-     steps:['움직이는 숫자와 되돌리는 숫자는 <b>같은 크기, 반대 부호</b>예요. (10 ↔ -10)', '미로에서는 위·아래도 똑같이 만들어요.']}},
   {lv:1, em:'🔫', ch:'🚀', t:'총알 발사', s:'스페이스 키를 누르면 총알이 위로 날아가요', pv:'shoot',
    scripts:[{o:'🚀 우주선', h:KEY('스페이스'), b:[MAKE('총알')]},
             {o:'🔹 총알 복제본', h:CLONE, b:[untilB(TOUCH('위쪽 벽'), [dy(5)]), DEL]}],
@@ -951,7 +945,7 @@ function preview(it){
         st.style.transition = 'bottom 3s linear'; void st.offsetWidth; st.style.bottom = '-50px';
         setTimeout(() => st.remove(), 3100);
       }, 500));
-      hint('0.5초마다 복제본이 생겨서 아래로 떨어지고, 다 떨어지면 삭제돼요'); break;
+      hint('0.5초마다 복제본이 생겨서 계속 아래로 떨어져요'); break;
     }
     case 'funcStar': {
       ch.style.display = 'none';
@@ -1035,14 +1029,6 @@ function preview(it){
       pad(null, false, k => keyDir[k] && mv(keyDir[k])); extra('<p class="hint">엔트리봇을 사과 쪽으로 움직여 보세요</p>');
       onKey(e => { if (keyDir[e.key]){ e.preventDefault(); mv(keyDir[e.key]); } });
       resetBtn(() => { x = 25; ch.style.left = x + '%'; apple.style.visibility = ''; }); break;
-    }
-    case 'wall': {
-      let x = 20; ch.style.left = x + '%'; ch.style.transition = 'left .12s';
-      const wall = add('wallb'); wall.style.left = '62%';
-      const mv = d => { flip(d); if (Math.abs(x + d * 8 - 62) < 9){ wall.classList.add('hit'); later(() => wall.classList.remove('hit'), 200); return; }
-        x = clamp(8, 92, x + d * 8); ch.style.left = x + '%'; };
-      pad(null, false, k => keyDir[k] && mv(keyDir[k])); extra('<p class="hint">벽 쪽으로 가 보세요. 벽 앞에서 더 못 가요</p>');
-      onKey(e => { if (keyDir[e.key]){ e.preventDefault(); mv(keyDir[e.key]); } }); break;
     }
     case 'shoot': {
       const fire = () => { const b = add('ch', '🔹'); b.style.fontSize = '26px'; b.style.left = '50%'; b.style.bottom = '100px';
