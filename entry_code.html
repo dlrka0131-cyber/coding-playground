@@ -388,7 +388,7 @@ const ITEMS = [
        '만약 블록에 육각형 <b>키가 눌러져 있는가?</b>를 끼우고 ▾에서 <b>오른쪽 화살표</b>를 골라요.',
        'x 좌표를 <b>10</b>만큼 바꾸기를 안에 넣어요.', '왼쪽도 똑같이 하나 더 만들고 숫자를 <b>-10</b>으로 바꿔요.',
        '미리보기의 <b>키를 눌렀을 때</b> 버튼과 비교해 보세요.']}},
-  {lv:1, em:'🚀', ch:'🚀', t:'4방향 계속 확인하기', s:'위·아래·왼쪽·오른쪽, 두 키를 같이 누르면 비스듬히도 가요', pv:'hold4',
+  {lv:1, em:'🚀', ch:'🚀', t:'4방향으로 움직이기', s:'위·아래·왼쪽·오른쪽, 두 키를 같이 누르면 비스듬히도 가요', pv:'hold4',
    scripts:[{h:START, b:[loop([
      ifThen(KEYON('위쪽 화살표'), [dy(10)]), ifThen(KEYON('아래쪽 화살표'), [dy(-10)]),
      ifThen(KEYON('왼쪽 화살표'), [dx(-10)]), ifThen(KEYON('오른쪽 화살표'), [dx(10)])])]}],
@@ -408,14 +408,14 @@ const ITEMS = [
      times(10, [wait(1), {c:'data', p:[D('시간'), '에', N(-1), '만큼 더하기']}]),
      say('시간 끝!', 2)]}],
    how:varHow('시간', '시간 상자에 <b>-1</b>을 더하면 1씩 줄어들어요. 10번 반복하면 10 → 0이 돼요!')},
-  {lv:1, em:'📨', ch:'🐢', t:'신호 보내기', s:'닭이 출발 신호를 보내면 거북이가 달려요', pv:'signal',
-   scripts:[{o:'🐔 닭', h:START, b:[say('준비, 출발!', 2), {c:'start', p:[D('출발'), '신호 보내기']}]},
+  {lv:1, em:'📨', ch:'🐢', t:'신호 보내기', s:'토끼가 출발 신호를 보내면 거북이가 달려요', pv:'signal',
+   scripts:[{o:'🐰 토끼', h:START, b:[say('준비, 출발!', 2), {c:'start', p:[D('출발'), '신호 보내기']}]},
             {o:'🐢 거북이', h:GOT('출발'), b:[times(20, [{c:'move', p:['x 좌표를', N(10), '만큼 바꾸기']}])]}],
    how:{t:"'출발' 신호 만드는 방법",
-     intro:'신호는 오브젝트끼리 주고받는 <b>쪽지</b>예요. 닭이 출발 쪽지를 보내면, 쪽지를 받은 거북이가 움직여요.',
+     intro:'신호는 오브젝트끼리 주고받는 <b>쪽지</b>예요. 토끼가 출발 쪽지를 보내면, 쪽지를 받은 거북이가 움직여요.',
      steps:['블록 꾸러미에서 <b>시작</b>을 눌러요.', '<b>신호 추가하기</b> 버튼을 눌러요.',
        '신호 이름 칸에 <b>출발</b>이라고 쓰고 <b>확인</b>을 눌러요.',
-       '닭에게는 <b>출발 신호 보내기</b>, 거북이에게는 <b>출발 신호를 받았을 때</b> 블록을 넣어요.']}},
+       '토끼에게는 <b>출발 신호 보내기</b>, 거북이에게는 <b>출발 신호를 받았을 때</b> 블록을 넣어요.']}},
   {lv:1, em:'🙋', ch:'🤖', t:'이름 묻기', s:'이름을 물어보고 대답해 준 이름으로 인사해요', pv:'ask',
    scripts:[{h:START, b:[ask('이름이 뭐야?'), say(R('calc', [T('반가워, '), '과(와)', ANSWER, '를 합치기']), 2)]}],
    how:{t:'알아 두기',
@@ -834,7 +834,7 @@ function preview(it){
       run(); hint('1초마다 시간 상자에 <b>-1</b>을 더해서 1씩 줄어요'); break;
     }
     case 'signal': {
-      const hen = add('ch', '🐔'); hen.style.left = '14%';
+      const hen = add('ch', '🐰'); hen.style.left = '14%';
       const b = bubble(), sig = add('sig', '📨 출발 신호!');
       b.style.left = '14%';
       const seq = () => {
@@ -844,7 +844,7 @@ function preview(it){
         later(() => { ch.style.transition = 'left 2s linear'; ch.style.left = '86%'; }, 2700);
         later(seq, 6000);
       };
-      seq(); hint('닭이 신호를 보내면, 신호를 받은 거북이가 달려요'); break;
+      seq(); hint('토끼가 신호를 보내면, 신호를 받은 거북이가 달려요'); break;
     }
     case 'ask': {
       const b = bubble('이름이 뭐야?');
@@ -1015,7 +1015,7 @@ function preview(it){
       timers.push(setInterval(() => {
         const dx = (held.has('ArrowRight') ? 1 : 0) - (held.has('ArrowLeft') ? 1 : 0), dy = (held.has('ArrowUp') ? 1 : 0) - (held.has('ArrowDown') ? 1 : 0);
         if (!dx && !dy) return; x = clamp(8, 92, x + dx * .9); y = clamp(36, 190, y + dy * 2.4);
-        ch.style.left = x + '%'; ch.style.bottom = y + 'px'; if (dx) flip(dx); }, 30)); break;
+        ch.style.left = x + '%'; ch.style.bottom = y + 'px'; }, 30)); break;
     }
     case 'textscore': {
       let sc = 0; const box = add('tbox', '점수: 0'); ch.style.cursor = 'pointer'; ch.style.left = '30%';
