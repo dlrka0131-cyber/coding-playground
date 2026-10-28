@@ -100,6 +100,24 @@
   .tip i{font-size:28px;color:#3a8ee6}
   .tip b{color:#1b6fd1}
   .tip .dd{color:#fff;font-weight:700;margin:0 2px}
+  .kdtip{background:#eef6ff;border:3px solid #9cccff;border-radius:18px;padding:12px 14px 16px;margin:0 0 14px}
+  .kdno{font-size:18px;font-weight:800;color:#e02424;line-height:1.4;word-break:keep-all;margin-bottom:12px}
+  .kdno i{font-size:26px;vertical-align:-4px;margin-right:4px}
+  .kdrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .kdcol small{display:block;font-size:14px;font-weight:800;color:#1b6fd1;margin-bottom:8px}
+  .kdcol .ec{font-size:15px;padding-bottom:4px}
+  .kdarr{font-size:30px;font-weight:800;color:#3a8ee6}
+  .kdtip .b .dd{transition:none}
+  .kdtip .dd.pulse{animation:ddpulse 1s ease-in-out infinite;box-shadow:0 0 0 3px #ffd43b}
+  .kdtip .pt{display:block;margin:0;font-size:15px;font-weight:800;color:#d9480f}
+  .kdtip .fg{display:inline-block;font-style:normal;animation:bob 1.2s ease-in-out infinite}
+  .kdtip .fg{font-size:22px;line-height:1}
+  .kdtip .car{position:relative;font-style:normal;font-size:30px;line-height:1;vertical-align:-3px;margin-left:2px}
+  .kdtip .dd.pulse{padding:2px 8px 2px 12px}
+  .kdtip .pt2{white-space:nowrap}
+  .kdtip .pt3{margin-top:2px;color:#1e4f86}
+  .kdtip .pt2 b{color:#e02424}
+  @keyframes ddpulse{50%{box-shadow:0 0 0 8px rgba(255,212,59,.35);transform:scale(1.1)}}
   .paint{position:absolute;inset:0}
   .stamp{position:absolute;bottom:36px;font-size:40px;transform:translateX(-50%)}
   .how{margin-top:20px}
@@ -256,13 +274,13 @@ const LV = [
 
 const ITEMS = [
   /* ---------- 초급 ---------- */
-  {lv:0, em:'🐣', ch:'🥚', t:'애니메이션', s:'그림을 하나씩 빠르게 바꾸면 움직이는 것처럼 보여요', pv:'frames', frames:['🥚','🐣','🐥'],
+  {lv:0, em:'🐣', ch:'🥚', t:'애니메이션', notip:true, s:'그림을 하나씩 빠르게 바꾸면 움직이는 것처럼 보여요', pv:'frames', frames:['🥚','🐣','🐥'],
    scripts:[{h:START, b:[loop([{c:'looks', p:[D('다음'), '모양으로 바꾸기']}, wait('0.1')])]}]},
-  {lv:0, em:'🐸', ch:'🐸', t:'점프하기', s:'스페이스 키를 누르면 폴짝 뛰어올라요', pv:'jump',
+  {lv:0, em:'🐸', ch:'🐸', t:'점프하기', s:'스페이스 키를 누르면 폴짝 뛰어올라요', pv:'jump', kd:'스페이스',
    scripts:[{h:KEY('스페이스'), b:[
      times(10, [{c:'move', p:['y 좌표를', N(10), '만큼 바꾸기']}]),
      times(10, [{c:'move', p:['y 좌표를', N(-10), '만큼 바꾸기']}])]}]},
-  {lv:0, em:'🚗', ch:'🚗', t:'화살표로 움직이기', s:'화살표 키로 왼쪽, 오른쪽으로 움직여요', pv:'arrows',
+  {lv:0, em:'🚗', ch:'🚗', t:'화살표로 움직이기', s:'화살표 키로 왼쪽, 오른쪽으로 움직여요', pv:'arrows', kd:'오른쪽 화살표', kd2:'왼쪽 화살표 블록도 똑같이 바꿔요!',
    scripts:[
      {h:KEY('오른쪽 화살표'), b:[{c:'move', p:['x 좌표를', N(10), '만큼 바꾸기']}]},
      {h:KEY('왼쪽 화살표'), b:[{c:'move', p:['x 좌표를', N(-10), '만큼 바꾸기']}]}]},
@@ -276,7 +294,7 @@ const ITEMS = [
    scripts:[{h:START, b:[
      loop([times(10, [{c:'looks', p:['크기를', N(5), '만큼 바꾸기']}]),
            times(10, [{c:'looks', p:['크기를', N(-5), '만큼 바꾸기']}])])]}]},
-  {lv:0, em:'🐭', ch:'🐭', t:'마우스 따라가기', s:'마우스가 가는 곳으로 졸졸 따라가요', pv:'follow',
+  {lv:0, em:'🐭', ch:'🐭', t:'마우스 따라가기', notip:true, s:'마우스가 가는 곳으로 졸졸 따라가요', pv:'follow',
    scripts:[{h:START, b:[loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
   {lv:0, em:'👻', ch:'👻', t:'숨바꼭질', s:'나타났다 사라졌다 해요', pv:'hide',
    scripts:[{h:START, b:[loop([{c:'looks', p:['모양 숨기기']}, wait('0.5'), {c:'looks', p:['모양 보이기']}, wait('0.5')])]}]},
@@ -285,7 +303,7 @@ const ITEMS = [
   {lv:0, em:'✏️', ch:'✏️', t:'네모 그리기', s:'붓으로 네모를 그려요', pv:'draw',
    scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']},
      times(4, [{c:'move', p:['이동 방향으로', N(100), '만큼 움직이기']}, {c:'move', p:['방향을', N(90), '만큼 회전하기']}])]}]},
-  {lv:0, em:'🦄', ch:'🦄', t:'무지개 색 바꾸기', s:'색깔이 알록달록 계속 바뀌어요', pv:'hue',
+  {lv:0, em:'🦄', ch:'🦄', t:'무지개 색 바꾸기', notip:true, s:'색깔이 알록달록 계속 바뀌어요', pv:'hue',
    scripts:[{h:START, b:[loop([{c:'looks', p:[D('색깔'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
   {lv:0, em:'🚀', ch:'🚀', t:'카운트다운', s:'3, 2, 1 숫자를 세고 하늘로 슝 날아가요', pv:'rocket', lines:['3', '2', '1', '출발!'],
    scripts:[{h:START, b:[say('3', 1), say('2', 1), say('1', 1), say('출발!', 1),
@@ -295,11 +313,11 @@ const ITEMS = [
   {lv:0, em:'☁️', ch:'☁️', t:'둥실둥실', s:'구름처럼 위아래로 둥실둥실 떠다녀요', pv:'float',
    scripts:[{h:START, b:[loop([times(10, [{c:'move', p:['y 좌표를', N(2), '만큼 바꾸기']}]),
      times(10, [{c:'move', p:['y 좌표를', N(-2), '만큼 바꾸기']}])])]}]},
-  {lv:0, em:'✨', ch:'🧚', t:'스르르 사라지기', s:'조금씩 투명해지다가 사라져요', pv:'fade',
+  {lv:0, em:'✨', ch:'🧚', t:'스르르 사라지기', kd:{from:'색깔', to:'투명도', w:'효과를 10만큼 주기', cat:'looks'}, s:'조금씩 투명해지다가 사라져요', pv:'fade',
    scripts:[{h:START, b:[times(10, [{c:'looks', p:[D('투명도'), '효과를', N(10), '만큼 주기']}, wait('0.1')])]}]},
   {lv:0, em:'🍄', ch:'🍄', t:'누르면 커지기', s:'클릭할 때마다 쑥쑥 커져요', pv:'clickgrow',
    scripts:[{h:CLICK, b:[{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}]}]},
-  {lv:0, em:'😆', ch:'😀', t:'표정 바꾸기', s:'클릭할 때마다 표정이 바뀌어요', pv:'clickface', frames:['😀', '😆', '😮', '😴'],
+  {lv:0, em:'😆', ch:'😀', t:'표정 바꾸기', notip:true, s:'클릭할 때마다 표정이 바뀌어요', pv:'clickface', frames:['😀', '😆', '😮', '😴'],
    scripts:[{h:CLICK, b:[{c:'looks', p:[D('다음'), '모양으로 바꾸기']}]}]},
   {lv:0, em:'🐾', ch:'🐾', t:'도장 찍기', s:'옆으로 가면서 발자국 도장을 쾅쾅 찍어요', pv:'stamp',
    scripts:[{h:START, b:[{c:'move', p:['x:', N(-180), 'y:', N(0), '위치로 이동하기']},
@@ -432,6 +450,24 @@ function ddTip(it){
   const walk = bs => { for (const b of bs){ const f = fromParts(b.p) || (b.k && walk(b.k)) || (b.e && walk(b.e)); if (f) return f; } };
   for (const sc of it.scripts){ const f = fromParts(sc.h.p) || walk(sc.b); if (f) return f; }
 }
+// '키를 눌렀을 때'는 엔트리에서 처음에 q로 나와서, 학생이 '스페이스 키를 눌렀을 때' 블록을 찾지 못하는 문제를 그림으로 안내
+const kdHat = (key, pulse) => `<div class="ec"><div class="b hat start"><span class="hc"><i class="ti ti-keyboard"></i></span>
+  <span class="dd${pulse ? ' pulse' : ''}">${key} <i class="car">▾</i></span><span>키를 눌렀을 때</span></div></div>`;
+const kdTip = (key, more) => `<div class="kdtip">
+  <div class="kdno"><i class="ti ti-search-off"></i>'${key} 키를 눌렀을 때' 블록은 없어요! 'q 키를 눌렀을 때'를 꺼내서 바꿔요.</div>
+  <div class="kdrow">
+    <div class="kdcol"><small>① 엔트리에서 처음 나오는 블록</small>${kdHat('q', true)}<span class="pt"><i class="fg">👆</i> 여기 ▾를 눌러요!</span></div>
+    <div class="kdarr">→</div>
+    <div class="kdcol"><small>② ${key}(으)로 골라요</small>${kdHat(key)}<span class="pt pt2"><i class="fg">👆</i> 여기 ▾를 누르고 키보드에서 <b>${key} 키</b>를 눌러요!!</span>${more ? `<span class="pt pt3">${more}</span>` : ''}</div>
+  </div></div>`;
+const kdBlock = (k, from, pulse) => `<div class="ec"><div class="b ${k.cat}"><span class="dd${pulse ? ' pulse' : ''}">${from} <i class="car">▾</i></span><span>${k.w}</span>${icon(k.cat)}</div></div>`;
+const kdTipDd = k => `<div class="kdtip">
+  <div class="kdno"><i class="ti ti-search-off"></i>'${k.to} ${k.w.replace(/\d+만큼 /, '')}' 블록은 없어요! '${k.from} ${k.w.replace(/\d+만큼 /, '')}'를 꺼내서 바꿔요.</div>
+  <div class="kdrow">
+    <div class="kdcol"><small>① 엔트리에서 처음 나오는 블록</small>${kdBlock(k, k.from, true)}<span class="pt"><i class="fg">👆</i> 여기 ▾를 눌러요!</span></div>
+    <div class="kdarr">→</div>
+    <div class="kdcol"><small>② ${k.to}(으)로 골라요</small>${kdBlock(k, k.to)}<span class="pt pt2"><i class="fg">👆</i> 여기 ▾를 누르고 <b>${k.to}</b> 골라요!!</span></div>
+  </div></div>`;
 const negatives = it => [...new Set((JSON.stringify(it.scripts).match(/"n":"?-[\d.]+/g) || []).map(s => s.replace(/"n":"?/, '')))];
 
 /* ---------- 화면 ---------- */
@@ -466,7 +502,7 @@ function home(){
 
 function detail(i){
   const it = ITEMS[i], l = LV[it.lv], list = inLv(it.lv), pos = list.findIndex(x => x.i === i);
-  const prev = list[pos - 1], next = list[pos + 1], negs = negatives(it), tip = ddTip(it);
+  const prev = list[pos - 1], next = list[pos + 1], negs = negatives(it), tip = it.lv === 0 && !it.notip ? ddTip(it) : null;
   setLv(it.lv);
   app.innerHTML = `
     <div class="top">
@@ -479,7 +515,7 @@ function detail(i){
         <div class="stage" id="stage"><div class="ch" id="ch">${it.ch}</div></div>
         <div id="ctrls"></div></div>
       <div class="box"><h4><i class="ti ti-puzzle"></i> 엔트리 코드</h4>
-        ${tip ? `<div class="tip"><i class="ti ti-hand-finger"></i><div><b>세모(▾) 칸 찾는 법</b><br>
+        ${it.kd ? (typeof it.kd === 'object' ? kdTipDd(it.kd) : kdTip(it.kd, it.kd2)) : tip ? `<div class="tip"><i class="ti ti-hand-finger"></i><div><b>세모(▾) 칸 찾는 법</b><br>
           먼저 뒤의 글자 <b>'${tip.text}'</b>(으)로 블록을 찾고, ▾를 눌러 <span class="dd" style="background:#7a8ea6">${tip.d}</span>을(를) 골라요.</div></div>` : ''}
         ${negs.length ? `<div class="warn"><i class="ti ti-alert-triangle"></i><div><b>주의!</b> 빼기(-) 꼭 확인하기: ${negs.map(v => `<b>${v}</b>`).join(', ')}</div></div>` : ''}
         <div class="code"><div class="scripts">${it.scripts.map(script).join('')}</div></div></div>
@@ -490,6 +526,9 @@ function detail(i){
       ${prev ? `<a class="btn" href="#/${prev.i + 1}"><i class="ti ti-chevron-left"></i> ${prev.it.t}</a>` : '<span></span>'}
       ${next ? `<a class="btn" href="#/${next.i + 1}">${next.it.t} <i class="ti ti-chevron-right"></i></a>` : '<span></span>'}
     </div>`;
+  // 손가락을 ▾ 바로 아래에 맞춤 (블록 너비는 키 이름에 따라 달라짐)
+  app.querySelectorAll('.kdcol').forEach(col => { const c = col.querySelector('.car'), pt = col.querySelector('.pt'), f = pt.querySelector('.fg');
+    pt.style.marginLeft = Math.max(0, c.getBoundingClientRect().left + c.offsetWidth / 2 - col.getBoundingClientRect().left - f.offsetWidth * 0.45) + 'px'; });
   preview(it);
 }
 
