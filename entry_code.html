@@ -345,9 +345,8 @@ const ITEMS = [
    scripts:[{h:CLICK, b:[{c:'looks', p:['크기를', N(10), '만큼 바꾸기']}]}]},
   {lv:0, em:'😆', ch:'😀', t:'표정 바꾸기', notip:true, s:'클릭할 때마다 표정이 바뀌어요', pv:'clickface', frames:['😀', '😆', '😮', '😴'],
    scripts:[{h:CLICK, b:[{c:'looks', p:[D('다음'), '모양으로 바꾸기']}]}]},
-  {lv:0, em:'🐾', ch:'🐾', t:'도장 찍기', s:'옆으로 가면서 발자국 도장을 쾅쾅 찍어요', pv:'stamp',
-   scripts:[{h:START, b:[{c:'move', p:['x:', N(-180), 'y:', N(0), '위치로 이동하기']},
-     times(10, [{c:'brush', p:['도장 찍기']}, {c:'move', p:['x 좌표를', N(40), '만큼 바꾸기']}])]}]},
+  {lv:0, em:'🐾', ch:'🐾', t:'도장 찍기', s:'마우스를 클릭하면 그 자리에 발자국 도장이 쾅!', pv:'stamp',
+   scripts:[{h:{i:'mouse', p:['마우스를 클릭했을 때']}, b:[{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}, {c:'brush', p:['도장 찍기']}]}]},
   {lv:0, em:'🖍️', ch:'🖍️', t:'마우스로 그림 그리기', s:'마우스를 따라다니며 선을 그려요', pv:'paint',
    scripts:[{h:START, b:[{c:'brush', p:['그리기 시작하기']}, loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
 
@@ -358,15 +357,6 @@ const ITEMS = [
      {h:KEY('아래쪽 화살표'), b:[dy(-10)]},
      {h:KEY('왼쪽 화살표'), b:[dx(-10)]},
      {h:KEY('오른쪽 화살표'), b:[dx(10)]}]},
-  {lv:0, em:'📍', ch:'🐿️', t:'바꾸기와 이동하기', s:'같은 숫자인데 가는 곳이 달라요! 눌러서 비교해 봐요', pv:'setmove',
-   scripts:[
-     {o:'🅰 바꾸기 — 지금 자리에서 100만큼 더 가요', h:CLICK, b:[dx(100)]},
-     {o:'🅱 이동하기 — x가 100인 자리로 바로 가요', h:CLICK, b:[xyTo(N(100), N(0))]}],
-   how:{t:'알아 두기',
-     intro:'<b>바꾸기</b>는 지금 자리에서 <b>더하는</b> 거예요. <b>위치로 이동하기</b>는 <b>그 자리로 바로</b> 가요.',
-     steps:['버튼 <b>A</b>를 여러 번 눌러 보세요. 누를 때마다 100씩 더 가요.',
-       '버튼 <b>B</b>를 여러 번 눌러 보세요. 몇 번을 눌러도 x가 100인 자리예요.',
-       'A는 <b>지금 자리 + 100</b>, B는 <b>x = 100 자리</b>!']}},
   {lv:0, em:'🦅', ch:'🦅', t:'대각선으로 날기', s:'x와 y를 같이 바꾸면 비스듬히 날아가요', pv:'diag',
    scripts:[{h:START, b:[loop([dx(5), dy(5)])]}]},
   {lv:0, em:'🛸', ch:'🛸', t:'부드럽게 날아가기', s:'클릭하면 2초 동안 스르르 날아가요', pv:'glide',
@@ -383,8 +373,6 @@ const ITEMS = [
      intro:'장면은 게임의 <b>방</b>이에요. 장면 1에서 <b>다음 장면 시작하기</b>를 하면 장면 2의 코드가 시작돼요.',
      steps:['화면 맨 위 장면 이름 옆의 <b>+</b> 버튼을 눌러요.', '<b>장면 2</b>가 생기면 이름을 눌러 이동해요.',
        '장면 2에서는 <b>장면이 시작되었을 때</b> 블록으로 시작해요.', '<b>다음 장면 시작하기</b>는 <b>시작</b> 꾸러미에 있어요.']}},
-  {lv:0, em:'🧲', ch:'🧲', t:'마우스 끌고 가기', s:'클릭하면 마우스를 졸졸 따라와요', pv:'drag',
-   scripts:[{h:CLICK, b:[loop([{c:'move', p:[D('마우스포인터'), '위치로 이동하기']}])]}]},
   /* ---------- 중급 ---------- */
   {lv:1, em:'🏃', ch:'🏃', t:'누르고 있으면 달리기', s:'스페이스 키를 누르고 있는 동안만 앞으로 가요', pv:'holdmove',
    scripts:[{h:START, b:[loop([{c:'flow', p:['만약', {b:{c:'judge', p:[D('스페이스'), '키가 눌러져 있는가?']}}, '(이)라면'],
@@ -919,14 +907,11 @@ function preview(it){
       hint('얼굴을 클릭해 보세요'); break;
     }
     case 'stamp': {
-      const seq = () => {
-        stage.querySelectorAll('.stamp').forEach(e => e.remove());
-        for (let i = 0; i < 10; i++) later(() => {
-          const x = 8 + i * 9.2; add('stamp', '🐾').style.left = x + '%'; ch.style.left = (x + 9.2) + '%';
-        }, i * 350);
-        later(seq, 5200);
-      };
-      ch.style.opacity = '.5'; seq(); hint('도장을 찍고 40만큼 옆으로, 10번 반복!'); break;
+      ch.style.fontSize = '40px'; ch.style.transition = 'left .1s, bottom .1s'; ch.style.opacity = '.5'; stage.style.cursor = 'pointer';
+      stage.onclick = e => { const r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = r.bottom - e.clientY - 20;
+        const st = add('stamp', '🐾'); st.style.left = x + 'px'; st.style.bottom = y + 'px'; ch.style.left = x + 'px'; ch.style.bottom = y + 'px'; };
+      ctrls.innerHTML = '<div class="ctrls"><button class="pill" id="clr">지우기</button></div><p class="hint">미리보기 칸을 <b>클릭</b>해 보세요. 누른 자리에 도장이 찍혀요</p>';
+      document.getElementById('clr').onclick = () => stage.querySelectorAll('.stamp').forEach(e => e.remove()); break;
     }
     case 'paint': {
       const cv = document.createElement('canvas'); cv.className = 'paint'; stage.insertBefore(cv, ch);
@@ -990,16 +975,6 @@ function preview(it){
       pad(null, true, mv); extra('<p class="hint">버튼이나 키보드 방향키를 눌러 보세요</p>');
       onKey(e => { if (e.key.startsWith('Arrow')){ e.preventDefault(); mv(e.key); } }); break;
     }
-    case 'setmove': {
-      let x = 0; const lab = add('score', 'x: 0');
-      ch.style.transition = 'left .35s';
-      const put = () => { ch.style.left = (50 + x / 5) + '%'; lab.textContent = 'x: ' + x; };
-      ctrls.innerHTML = `<div class="ctrls"><button class="key sm" id="bA">🅰 바꾸기<br>(+100)</button><button class="key sm" id="bB" style="background:#16b84a;box-shadow:0 6px 0 #0e9139">🅱 이동하기<br>(x: 100)</button></div>
-        <p class="hint">A는 누를 때마다 <b>100씩 더</b> 가고, B는 몇 번을 눌러도 <b>x가 100인 곳</b>이에요</p>`;
-      document.getElementById('bA').onclick = () => { x = x >= 200 ? -200 : x + 100; put(); };
-      document.getElementById('bB').onclick = () => { x = 100; put(); };
-      resetBtn(() => { x = 0; put(); }); break;
-    }
     case 'diag':
       ch.style.animation = 'diag 3s linear infinite'; hint('x도 5, y도 5씩 바꾸면 비스듬히 날아가요'); break;
     case 'glide': {
@@ -1021,15 +996,6 @@ function preview(it){
         b.style.display = ''; b.textContent = '장면 2가 되었어요!';
         later(() => { sc = 1; lab.textContent = '장면 1'; stage.style.backgroundColor = ''; ch.textContent = '🌞'; b.style.display = 'none'; }, 3000); };
       hint('해를 클릭하면 장면 2로 넘어가요'); break;
-    }
-    case 'drag': {
-      let on = false; ch.style.transition = 'left .1s, bottom .1s'; ch.style.cursor = 'pointer';
-      const m = e => { if (!on) return; const r = stage.getBoundingClientRect(), q = e.touches ? e.touches[0] : e;
-        ch.style.left = (q.clientX - r.left) + 'px'; ch.style.bottom = (r.bottom - q.clientY - 32) + 'px'; };
-      stage.addEventListener('mousemove', m); stage.addEventListener('touchmove', m, {passive:true});
-      ch.onclick = () => { on = true; pop(); };
-      ctrls.innerHTML = '<p class="hint">자석을 <b>클릭한 다음</b> 마우스를 움직여 보세요</p>';
-      resetBtn(() => { on = false; ch.style.left = '50%'; ch.style.bottom = '36px'; }); break;
     }
     case 'penguin': {
       let x = 50, mode = 'loop'; const held = trackKeys();
