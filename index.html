@@ -40,6 +40,8 @@
     --badge-entry-deep: #3AA6E8;
     --badge-conv: #D5F5EE;
     --badge-conv-deep: #2FB59A;
+    --badge-quiz: #FFE0DA;
+    --badge-quiz-deep: #F0675A;
     --badge-mc: #E1F0D8;
     --badge-mc-deep: #63A946;
   }
@@ -272,6 +274,8 @@
   .quest-card:hover .quest-badge, .quest-card:focus-visible .quest-badge {
     background: #FFFFFF;
   }
+  .quest-card.closed { opacity: .6; filter: grayscale(.55); cursor: not-allowed; pointer-events: none; position: relative; }
+  .quest-card.closed::after { content: "🚧 공사중"; position: absolute; top: 10px; right: 10px; background: #ffb02e; color: #fff; font-weight: 800; font-size: 14px; padding: 3px 12px; border-radius: 999px; }
   .quest-card h2 {
     font-family: 'Dongle', sans-serif;
     font-weight: 700;
@@ -415,6 +419,16 @@
         <h2>코드로 바꾸기 연습</h2>
         <p>말을 코드로 바꿔요</p>
       </a>
+      <a href="entry_quiz.html" class="quest-card" style="--badge: var(--badge-quiz); --badge-deep: var(--badge-quiz-deep)">
+        <div class="quest-badge">📝</div>
+        <h2>엔트리퀴즈연습</h2>
+        <p>혼자 연습해요</p>
+      </a>
+      <div class="quest-card closed" style="--badge: var(--badge-quiz); --badge-deep: var(--badge-quiz-deep)" aria-disabled="true">
+        <div class="quest-badge">🏆</div>
+        <h2>엔트리퀴즈대회</h2>
+        <p>🚧 공사중이에요</p>
+      </div>
       <a href="mc_menu.html" class="quest-card" style="--badge: var(--badge-mc); --badge-deep: var(--badge-mc-deep)">
         <div class="quest-badge">⛏️</div>
         <h2>마크 명령어 연습</h2>
