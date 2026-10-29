@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드로 바꾸기 연습</title>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: #fff7e0;
+            margin: 0;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;      /* 아주 작은 화면일 때만 스크롤 */
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            color: #4a3b2c;
+            line-height: 1.6;
+            letter-spacing: .01em;
+            word-break: keep-all;
+        }
+        .home-btn { background: #fff; color: #e0852e; border-color: #e0852e;
+            top: 14px; left: 14px; padding: 8px 22px; font-size: 20px; border-width: 3px; font-family: inherit; font-weight: 800; }
+        .home-btn:hover { background: #e0852e; color: #fff; }
+
+        #wrap { flex: 1; min-height: 0; width: 100%; max-width: 1560px; margin: 0 auto; padding: 1.5vh 20px 0;
+            text-align: center; display: flex; flex-direction: column; }
+        h1 { font-size: clamp(28px, 5.4vh, 50px); margin: 0; color: #e0852e; font-weight: 900; line-height: 1.2; }
+        .subtitle { font-size: clamp(14px, 2.5vh, 23px); color: #6b5844; margin: .5vh 0 1.2vh; font-weight: 600; line-height: 1.5; }
+
+        .levels { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.6vh; flex-wrap: wrap; }
+        .lvbtn { font-family: inherit; font-weight: 800; font-size: clamp(15px, 2.6vh, 22px); padding: .8vh 24px; border-radius: 999px; cursor: pointer;
+            border: 3px solid #e0852e; background: #fff; color: #e0852e; }
+        .lvbtn.on { background: #e0852e; color: #fff; }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        .panel { flex: 1; min-height: 0; background: #fff; border: 5px solid #ffb86b; border-radius: 32px; padding: 1.4vh 32px 1.6vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(8px, 2vh, 24px); }
+        .progress { font-size: clamp(15px, 2.6vh, 24px); color: #6b5844; font-weight: 700; line-height: 1.5; }
+        .progress b { color: #e0852e; }
+
+        .legend { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .legend span { background: #fff4cb; border: 3px dashed #e0b32e; border-radius: 16px; padding: .5vh 20px; font-size: clamp(15px, 3vh, 26px); line-height: 1.5; letter-spacing: .02em; font-weight: 700; }
+        .legend b { color: #d4700b; font-size: clamp(18px, 3.2vh, 28px); }
+
+        .sentence { font-size: clamp(28px, 6.6vh, 60px); font-weight: 800; line-height: 1.5; letter-spacing: .02em; }
+        .sentence mark { background: #ffe9a8; border-radius: 10px; padding: .05em .14em; }
+
+        .expr { display: inline-flex; align-items: center; gap: 16px; letter-spacing: .02em; font-size: clamp(24px, 5.2vh, 46px); font-weight: 800; background: #e8f6ff;
+            border: 4px solid #3aa6e8; border-radius: 26px; padding: 1.2vh 30px; flex-wrap: wrap; justify-content: center; }
+        .expr .w { color: #2b7fb8; }
+        .slot { min-width: clamp(100px, 17vh, 160px); height: clamp(52px, 10vh, 86px); border: 4px dashed #9ad4f2; border-radius: 18px; background: #fff;
+            display: inline-flex; align-items: center; justify-content: center; }
+        .slot.first { min-width: clamp(150px, 25vh, 250px); }
+        .slot.over { background: #fff3b8; border-color: #e0b32e; }
+        .slot.bad { border-color: #ff4d6d; animation: shake .4s; }
+        @keyframes shake { 25% { translate: -6px 0; } 75% { translate: 6px 0; } }
+
+        .tray { min-height: clamp(64px, 13vh, 112px); display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; row-gap: 14px;
+            background: #fff8ec; border: 4px dashed #f0dcc0; border-radius: 22px; padding: 1.1vh 18px; width: 100%; }
+        .piece { font-size: clamp(22px, 4.8vh, 42px); font-weight: 800; padding: 1vh 24px; border-radius: 16px; color: #fff; cursor: grab; letter-spacing: .03em; line-height: 1.3; touch-action: none;
+            box-shadow: 0 4px 0 rgba(0,0,0,.2); white-space: nowrap; }
+        .piece:hover { filter: brightness(1.08); }
+        .piece.dragging { position: fixed; z-index: 99; pointer-events: none; transform: scale(1.06); cursor: grabbing;
+            box-shadow: 0 14px 22px rgba(0,0,0,.28); }
+        .slot .piece { box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+        .k-var { background: #e05fd0; }
+        .k-op { background: #4f80ff; min-width: 64px; text-align: center; }
+        .k-num { background: #f4af18; color: #3a2a00; }
+
+        .msg { min-height: 1.3em; font-size: clamp(16px, 3vh, 28px); font-weight: 700; line-height: 1.45; text-align: center; }
+        .msg.ok { color: #17a24a; font-size: clamp(26px, 6vh, 54px); font-weight: 900; } .msg.no { color: #e0345a; }
+        
+        .actions { display: flex; gap: 18px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .btn { font-family: inherit; font-weight: 800; font-size: clamp(20px, 3.8vh, 34px); border: 0; border-radius: 999px; padding: 1.3vh 38px; letter-spacing: .03em; color: #fff; cursor: pointer; }
+        .go { background: #ff7fa8; box-shadow: 0 5px 0 #e35d8a; }
+        .nx { background: #3ccf7a; box-shadow: 0 5px 0 #2aa862; }
+        .rs { background: #9aa5b1; box-shadow: 0 5px 0 #7b8693; }
+        .btn:active { transform: translateY(4px); }
+        .btn[hidden] { display: none; }
+        .result { font-size: clamp(30px, 6.4vh, 60px); font-weight: 900; line-height: 1.5; }
+        .result small { display: block; font-size: .55em; font-weight: 700; color: #6b5844; margin-top: .4em; }
+        .result .big-emoji { display: block; font-size: 1.8em; line-height: 1.2; }
+        .panel.done .progress, .panel.done .legend, .panel.done .sentence, .panel.done .expr, .panel.done .tray { display: none; }
+        .panel.done .msg { order: -1; min-height: 0; }
+        .help { font-family: inherit; font-weight: 800; font-size: clamp(14px, 2.4vh, 20px); padding: .6vh 16px; border-radius: 999px; cursor: pointer;
+            border: 3px solid #3aa6e8; background: #fff; color: #3aa6e8; }
+        .help:hover { background: #3aa6e8; color: #fff; }
+
+        .tutwrap { position: fixed; inset: 0; background: rgba(74,59,44,.55); display: flex; align-items: center; justify-content: center; z-index: 200; }
+        .tutwrap[hidden] { display: none; }
+        .tutcard { background: #fff; border: 6px solid #ffb86b; border-radius: 36px; width: min(1000px, 94vw); max-height: 94vh; padding: 3.2vh 44px 3.2vh;
+            text-align: center; display: flex; flex-direction: column; gap: 2.2vh; }
+        .tutcard h2 { margin: 0; font-size: clamp(26px, 5vh, 46px); color: #e0852e; font-weight: 900; }
+        .tutbody { font-size: clamp(20px, 4vh, 38px); font-weight: 800; line-height: 1.65; letter-spacing: .02em; color: #3a2d20; min-height: 26vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2.2vh; }
+        .tutbody .big { font-size: clamp(60px, 14vh, 130px); line-height: 1; }
+        .tutbody b { color: #e0852e; }
+        .tp { display: inline-block; font-size: clamp(24px, 5vh, 44px); font-weight: 800; padding: .8vh 20px; border-radius: 14px; color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
+        .tprow { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+        .tpcol { display: flex; flex-direction: column; align-items: center; gap: .6vh; }
+        .tpcol small { font-size: clamp(16px, 3vh, 26px); color: #5a4636; font-weight: 800; }
+        .tpcol .arrow { font-size: clamp(18px, 3vh, 28px); color: #8a7660; }
+        .steps { text-align: left; display: flex; flex-direction: column; gap: 1.8vh; line-height: 1.6; font-size: clamp(18px, 3.2vh, 30px); }
+        .steps div { background: #fff8ec; border: 3px dashed #f0dcc0; border-radius: 18px; padding: 1.4vh 24px; }
+        .tsent { font-size: 1.15em; font-weight: 800; line-height: 1.6; }
+        .tsent span { padding: .05em .3em; border-radius: 10px; color: #6b5844; }
+        .tsent span.hl { background: #ffe08c; color: #3a2d20; box-shadow: 0 0 0 4px #ffd24d; }
+        .tslots { display: flex; gap: 14px; justify-content: center; align-items: center; }
+        .tslot { min-width: clamp(130px, 21vh, 210px); min-height: clamp(64px, 11.5vh, 104px); padding: .9vh 16px; border: 4px dashed #9ad4f2; border-radius: 20px; background: #f4fbff;
+            display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 3vh, 26px); color: #5a4636; font-weight: 800; }
+        .tslot.now { border-color: #ff9f1c; background: #fff3d6; animation: nowpulse 1s ease-in-out infinite; }
+        @keyframes nowpulse { 50% { box-shadow: 0 0 0 6px rgba(255,159,28,.35); } }
+        .tchoices { display: flex; gap: 16px; justify-content: center; }
+        .tchoices .tp { cursor: pointer; border: 0; font-family: inherit; }
+        .tchoices .tp:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .tchoices .tp.shake { animation: shake .4s; }
+        .thint { font-size: clamp(16px, 3vh, 26px); color: #5a4636; min-height: 1.6em; line-height: 1.6; }
+        .thint.no { color: #e0345a; } .thint.ok { color: #17a24a; font-size: clamp(20px, 3.8vh, 34px); font-weight: 900; }
+        .dots { display: flex; gap: 10px; justify-content: center; }
+        .dots i { width: 14px; height: 14px; border-radius: 50%; background: #f0dcc0; }
+        .dots i.on { background: #e0852e; }
+        .tutbtns { display: flex; gap: 14px; justify-content: center; align-items: center; }
+        .skip { background: none; border: 0; font-family: inherit; font-size: clamp(14px, 2.4vh, 20px); color: #8a7660; cursor: pointer; text-decoration: underline; }
+        .celebrate { position: fixed; inset: 0; pointer-events: none; z-index: 150; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .celebrate .big { font-size: clamp(80px, 26vh, 260px); font-weight: 900; letter-spacing: -2px; white-space: nowrap;
+            background: linear-gradient(90deg, #ff5e8a, #ffb02e, #3ccf7a, #3aa6e8, #8e7dff, #ff5e8a); background-size: 200% 100%;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            filter: drop-shadow(0 6px 0 rgba(255,255,255,.9)) drop-shadow(0 10px 18px rgba(0,0,0,.28));
+            animation: pop 1.7s ease-out forwards, shine 1.2s linear infinite; }
+        @keyframes pop { 0% { transform: scale(0) rotate(-14deg); opacity: 0; } 22% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+            36% { transform: scale(.95) rotate(-3deg); } 48% { transform: scale(1.05) rotate(1deg); } 62% { transform: scale(1) rotate(0); opacity: 1; }
+            100% { transform: scale(1.15); opacity: 0; } }
+        @keyframes shine { to { background-position: -200% 0; } }
+        .celebrate .flash { position: absolute; inset: 0; background: radial-gradient(circle, rgba(255,236,150,.75), rgba(255,236,150,0) 62%); animation: flash 1.2s ease-out forwards; }
+        @keyframes flash { 0% { opacity: 0; transform: scale(.4); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.6); } }
+        .footer { margin: 0 !important; line-height: 1.3 !important; padding: .6vh 0; font-size: 14px !important; font-family: inherit !important; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-btn">🏠 처음으로</a>
+
+    <div id="wrap">
+        <h1>코드로 바꾸기 연습</h1>
+        <div class="subtitle">말을 컴퓨터가 알아듣는 코드로 바꿔 봐요!</div>
+
+        <div class="levels" id="levels"></div>
+
+        <div class="panel" id="panel">
+            <div class="progress" id="progress"></div>
+            <div class="legend" id="legend"></div>
+            <div class="sentence" id="sentence"></div>
+            <div class="expr" id="expr"></div>
+            <div class="tray" id="tray"></div>
+            <div class="actions">
+                <button class="btn go" id="check">확인하기</button>
+                <button class="btn nx" id="next" hidden>다음 문제 ▶</button>
+                <button class="btn rs" id="again">다시 놓기</button>
+            </div>
+            <div class="msg" id="msg"></div>
+        </div>
+    </div>
+
+    <div class="tutwrap" id="tut" hidden>
+        <div class="tutcard">
+            <h2>코드로 바꾸기, 이렇게 해요!</h2>
+            <div class="tutbody" id="tutBody"></div>
+            <div class="dots" id="tutDots"></div>
+            <div class="tutbtns">
+                <button class="btn nx" id="tutNext">다음 ▶</button>
+                <button class="skip" id="tutSkip">건너뛰기</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer" style="color:#8a7660">제작: 김정이 선생님 ❤️ | © 2026 Coding Playground</div>
+
+<script>
+// 문제 데이터: s=문장(<mark>로 강조할 부분), a=[이름, 기호, 숫자] 정답, kw=기호를 정하는 말, dv=헷갈리게 하는 이름, dn=헷갈리게 하는 숫자, why=정답 뒤 설명
+const RULE = {
+    '크다':'>', '작다':'<', '많다':'>', '적다':'<', '같다':'=', '크거나 같다':'≥', '작거나 같다':'≤'
+};
+const MEAN = {
+    '>':'왼쪽이 더 커요, 같으면 안 돼요', '<':'왼쪽이 더 작아요, 같으면 안 돼요', '=':'두 쪽이 똑같아요',
+    '≥':'같거나 더 커요', '≤':'같거나 더 작아요'
+};
+const LEVELS = [
+    { name:'시작하기', tut:true, ops:['>','<','='], legend:['크다','작다','같다'], qs:[
+        {s:'별이 10개보다 <mark>많다</mark>면', a:['별','>','10'], kw:'많다'},
+        {s:'체력이 0<mark>이라</mark>면', a:['체력','=','0'], kw:'같다'},
+        {s:'시간이 5초보다 <mark>작다</mark>면', a:['시간','<','5'], kw:'작다'},
+    ]},
+    { name:'1단계', ops:['>','<','='], legend:['크다','작다','같다'], qs:[
+        {s:'별이 10개보다 <mark>많다</mark>면', a:['별','>','10'], kw:'많다', dv:'체력', dn:'5'},
+        {s:'체력이 0<mark>이라</mark>면', a:['체력','=','0'], kw:'같다', dv:'점수', dn:'1'},
+        {s:'시간이 5초보다 <mark>작다</mark>면', a:['시간','<','5'], kw:'작다', dv:'거리', dn:'10'},
+        {s:'사과가 3개보다 <mark>많다</mark>면', a:['사과','>','3'], kw:'많다', dv:'별', dn:'30'},
+        {s:'점수가 100점<mark>이라</mark>면', a:['점수','=','100'], kw:'같다', dv:'시간', dn:'10'},
+        {s:'거리가 20보다 <mark>작다</mark>면', a:['거리','<','20'], kw:'작다', dv:'속도', dn:'2'},
+    ]},
+    { name:'2단계', ops:['>','<','='], legend:[], qs:[
+        {s:'코인이 7개보다 <mark>적다</mark>면', a:['코인','<','7'], kw:'적다', dv:'생명', dn:'17'},
+        {s:'생명이 0<mark>이라</mark>면', a:['생명','=','0'], kw:'같다', dv:'코인', dn:'10'},
+        {s:'속도가 50보다 <mark>크다</mark>면', a:['속도','>','50'], kw:'크다', dv:'시간', dn:'5'},
+        {s:'나이가 8살<mark>이라</mark>면', a:['나이','=','8'], kw:'같다', dv:'점수', dn:'18'},
+        {s:'별이 0개<mark>라면</mark>', a:['별','=','0'], kw:'같다', dv:'체력', dn:'1'},
+        {s:'시간이 30초보다 <mark>크다</mark>면', a:['시간','>','30'], kw:'크다', dv:'거리', dn:'3'},
+    ]},
+    { name:'3단계', ops:['>','<','=','≥','≤'], legend:['크다','작다','같다','크거나 같다','작거나 같다'], qs:[
+        {s:'점수가 100보다 <mark>크거나 같다</mark>면', a:['점수','≥','100'], kw:'크거나 같다', dv:'시간', dn:'10'},
+        {s:'체력이 10보다 <mark>작거나 같다</mark>면', a:['체력','≤','10'], kw:'작거나 같다', dv:'점수', dn:'0'},
+        {s:'코인이 5보다 <mark>크다</mark>면', a:['코인','>','5'], kw:'크다', dv:'점수', dn:'50', why:'“5보다 크다”는 5가 안 들어가요. 5일 때는 아니에요!'},
+        {s:'코인이 5보다 <mark>크거나 같다</mark>면', a:['코인','≥','5'], kw:'크거나 같다', dv:'점수', dn:'50', why:'“5보다 크거나 같다”는 5도 들어가요. 5일 때도 맞아요!'},
+        {s:'시간이 3초보다 <mark>작거나 같다</mark>면', a:['시간','≤','3'], kw:'작거나 같다', dv:'거리', dn:'30'},
+        {s:'생명이 1보다 <mark>작다</mark>면', a:['생명','<','1'], kw:'작다', dv:'코인', dn:'0', why:'1보다 작으면 0이에요. 1은 들어가지 않아요.'},
+    ]},
+];
+
+const LBL = {'크다':'크다 · 많다', '작다':'작다 · 적다'};   // 약속 카드에는 두 말을 같이 보여줘요
+let lv = 0, qi = 0, slots, tray, solved, tries, firstTry;
+const $ = id => document.getElementById(id);
+const eun = w => ((w.charCodeAt(w.length - 1) - 0xAC00) % 28 !== 0 ? '은' : '는');   // 받침에 따라 은/는
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function buildLevels() {
+    $('levels').innerHTML = '';
+    LEVELS.forEach((L, i) => {
+        const b = document.createElement('button');
+        b.className = 'lvbtn' + (i === lv ? ' on' : ''); b.textContent = L.name;
+        b.onclick = () => { lv = i; qi = 0; buildLevels(); loadQ(); };
+        $('levels').appendChild(b);
+    });
+    const h = document.createElement('button');
+    h.className = 'help'; h.textContent = '❓ 방법 보기'; h.onclick = showTut;
+    $('levels').appendChild(h);
+}
+
+function loadQ() {
+    const L = LEVELS[lv];
+    $('panel').classList.remove('done');
+    if (qi >= L.qs.length) return showResult();
+    const q = L.qs[qi];
+    solved = false; tries = 0; firstTry = true;
+    slots = [null, null, null];
+    // 조각: 이름 2개, 기호 전부, 숫자 2개 (정답 + 헷갈리는 것)
+    tray = L.tut
+        ? shuffle([{k:'var', t:q.a[0] + ' 값'}, {k:'op', t:q.a[1]}, {k:'num', t:q.a[2]}])
+        : shuffle([
+            {k:'var', t:q.a[0] + ' 값'}, {k:'var', t:q.dv + ' 값'},
+            ...L.ops.map(o => ({k:'op', t:o})),
+            {k:'num', t:q.a[2]}, {k:'num', t:q.dn},
+        ]);
+    $('progress').innerHTML = `<b>${L.name}</b> · 문제 ${qi + 1} / ${L.qs.length}`;
+    $('legend').innerHTML = L.legend.length
+        ? L.legend.map(w => `<span>${LBL[w] || w} → <b>${RULE[w]}</b></span>`).join('')
+        : '<span>기호 약속을 떠올려 봐요!</span>';
+    $('sentence').innerHTML = q.s;
+    $('msg').textContent = ''; $('msg').className = 'msg';
+    $('check').hidden = false; $('next').hidden = true; $('again').hidden = false;
+    render();
+}
+
+function pieceEl(p, where, idx) {
+    const d = document.createElement('div');
+    d.className = 'piece k-' + p.k; d.textContent = p.t;
+    if (!solved) d.addEventListener('pointerdown', e => startDrag(e, d, p, where, idx));
+    return d;
+}
+
+function render(badSlots) {
+    const ex = $('expr'); ex.innerHTML = '<span class="w">만약</span>';
+    slots.forEach((p, i) => {
+        const s = document.createElement('div'); s.className = 'slot' + (i === 0 ? ' first' : '') + (badSlots && badSlots.includes(i) ? ' bad' : ''); s.dataset.i = i;
+        if (p) s.appendChild(pieceEl(p, 'slot', i));
+        ex.appendChild(s);
+    });
+    ex.insertAdjacentHTML('beforeend', '<span class="w">(이)라면</span>');
+    const t = $('tray'); t.innerHTML = '';
+    tray.forEach((p, i) => t.appendChild(pieceEl(p, 'tray', i)));
+}
+
+const hit = (el, x, y) => { const r = el.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+
+function startDrag(e, el, p, from, idx) {
+    e.preventDefault();
+    const r = el.getBoundingClientRect(), ox = e.clientX - r.left, oy = e.clientY - r.top, sx = e.clientX, sy = e.clientY;
+    let moved = false;
+    el.classList.add('dragging'); el.style.left = r.left + 'px'; el.style.top = r.top + 'px';
+    document.body.appendChild(el);
+    const mv = ev => {
+        if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 5) moved = true;
+        el.style.left = (ev.clientX - ox) + 'px'; el.style.top = (ev.clientY - oy) + 'px';
+        document.querySelectorAll('.slot').forEach(s => s.classList.toggle('over', hit(s, ev.clientX, ev.clientY)));
+    };
+    const up = ev => {
+        document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up);
+        el.remove();
+        // 먼저 원래 자리에서 빼요
+        if (from === 'tray') tray.splice(idx, 1); else slots[idx] = null;
+        let target = -1;
+        document.querySelectorAll('.slot').forEach(s => { if (hit(s, ev.clientX, ev.clientY)) target = +s.dataset.i; });
+        if (!moved) {                                    // 그냥 클릭: 트레이 ↔ 첫 빈칸
+            if (from === 'tray') { const e0 = slots.indexOf(null); if (e0 >= 0) slots[e0] = p; else tray.push(p); }
+            else tray.push(p);
+        } else if (target >= 0) {
+            if (slots[target]) tray.push(slots[target]);  // 이미 있던 조각은 트레이로
+            slots[target] = p;
+        } else tray.push(p);
+        render();
+    };
+    document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up);
+}
+
+$('check').onclick = () => {
+    if (solved) return;
+    const q = LEVELS[lv].qs[qi], m = $('msg');
+    if (slots.includes(null)) { m.className = 'msg no'; m.textContent = '빈칸을 모두 채워 봐요!'; return; }
+    tries++;
+    const want = [q.a[0] + ' 값', q.a[1], q.a[2]];
+    const bad = slots.map((p, i) => p.t !== want[i] ? i : -1).filter(i => i >= 0);
+    if (!bad.length) {
+        solved = true; render();
+        celebrate();
+        m.className = 'msg';
+        m.textContent = '';
+        $('check').hidden = true; $('again').hidden = true; $('next').hidden = false;
+        $('next').textContent = qi + 1 >= LEVELS[lv].qs.length ? '결과 보기 ▶' : '다음 문제 ▶';
+    } else {
+        firstTry = false; render(bad);
+        m.className = 'msg no';
+        m.innerHTML = bad.includes(1)
+            ? `기호를 다시 봐요! <b>${q.kw}</b>${eun(q.kw)} 어떤 기호였죠?` + (tries >= 2 ? `  ·  힌트: ${q.kw} → ${q.a[1]}` : '')
+            : '문장에 나온 이름과 숫자를 다시 찾아봐요!';
+    }
+};
+$('next').onclick = () => { qi++; loadQ(); };
+$('again').onclick = () => { slots.forEach(p => p && tray.push(p)); slots = [null, null, null]; $('msg').textContent = ''; render(); };
+
+function showResult() {
+    const L = LEVELS[lv];
+    const hasNext0 = lv + 1 < LEVELS.length;
+    $('panel').classList.add('done');
+    $('msg').className = 'msg';
+    $('msg').innerHTML = `<div class="result"><span class="big-emoji">🎉</span>${L.tut ? '연습 끝!' : L.name + ' 끝!'}` +
+        `<small>${L.tut ? '아주 잘했어요! 이제 1단계에 도전해 봐요.' : hasNext0 ? '끝까지 해냈어요! 다음 단계도 도전해 봐요.' : '모든 단계를 끝냈어요! 정말 대단해요!'}</small></div>`;
+    $('check').hidden = true; $('again').hidden = true; $('next').hidden = false;
+    const hasNext = lv + 1 < LEVELS.length;
+    $('next').textContent = hasNext ? '다음 단계 ▶' : '처음부터 다시 ▶';
+    $('next').onclick = () => { qi = 0; lv = hasNext ? lv + 1 : 0; $('next').onclick = () => { qi++; loadQ(); }; buildLevels(); loadQ(); };
+}
+
+// ---------- 정답 축하 ----------
+function celebrate() {
+    const c = document.createElement('div'); c.className = 'celebrate';
+    c.innerHTML = '<div class="flash"></div><div class="big">정답!!</div>';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1800);
+}
+
+// ---------- 튜토리얼 ----------
+const SLIDES = [
+    `<div class="big">🤖</div>
+     <div>컴퓨터는 우리가 하는 <b>말</b>을 몰라요.<br>그래서 말을 <b>코드</b>로 바꿔 줘야 해요!</div>`,
+    'INTERACTIVE',
+    `<div class="steps">
+        <div>① 조각을 끌어서 <b>빈칸</b>에 놓아요. (눌러도 돼요!)</div>
+        <div>② 다 놓으면 <b>확인하기</b>를 눌러요.</div>
+        <div>③ 틀려도 괜찮아요. 다시 하면 돼요!</div>
+     </div>`,
+];
+let si = 0;
+// 2번 안내: 말의 부분을 하나씩 강조하고, 알맞은 조각을 직접 골라 빈칸에 채워요
+const ROUNDS = [
+    { sent: [['별이', 0], ['10개', 2], ['보다'], ['많다면', 1]],
+      steps: [
+        {kind:'var', ask:'먼저 <b>“별이”</b>는 어떤 조각일까요?', pick:'별 값', opts:['별 값', '체력 값'], label:'이름'},
+        {kind:'op',  ask:'다음은 <b>“많다면”</b>! 알맞은 기호를 골라요.', pick:'>', opts:['>', '<', '='], label:'기호'},
+        {kind:'num', ask:'마지막은 <b>“10개”</b>! 알맞은 숫자를 골라요.', pick:'10', opts:['10', '5'], label:'숫자'},
+      ], done:'짠! 이름 · 기호 · 숫자, 세 조각이 모였어요!' },
+    { sent: [['체력이', 0], ['10', 2], ['보다'], ['작다면', 1]],
+      steps: [
+        {kind:'var', ask:'이번엔 <b>“체력이”</b>는 어떤 조각일까요?', pick:'체력 값', opts:['시간 값', '체력 값'], label:'이름'},
+        {kind:'op',  ask:'<b>“작다면”</b>은 어떤 기호일까요? 많다면과 달라요!', pick:'<', opts:['<', '>', '='], label:'기호'},
+        {kind:'num', ask:'마지막은 <b>“10”</b>! 알맞은 숫자를 골라요.', pick:'10', opts:['3', '10'], label:'숫자'},
+      ], done:'잘했어요! 많다면은 &gt;, 작다면은 &lt; 예요!' },
+];
+const esc = t => t.replace('>', '&gt;').replace('<', '&lt;');
+let tround = 0, tstep = 0, tmsg = '';
+function drawInteractive() {
+    const R = ROUNDS[tround], T = R.steps;
+    const sent = '<div class="tsent">“' + R.sent.map(w => {
+        const on = tstep < 3 && w[1] === tstep;
+        return w.length > 1 ? `<span class="${on ? 'hl' : ''}">${w[0]}</span>` : w[0];
+    }).join(' ').replace(' 보다', '보다') + '”</div>';
+    const slots = T.map((t, i) => i < tstep
+        ? `<div class="tslot"><span class="tp k-${t.kind}">${esc(t.pick)}</span></div>`
+        : `<div class="tslot${i === tstep ? ' now' : ''}">${t.label}</div>`).join('');
+    let bottom;
+    if (tstep < 3) {
+        const t = T[tstep], opts = tstep % 2 ? t.opts.slice().reverse() : t.opts;
+        bottom = `<div>${t.ask}</div><div class="tchoices">${opts.map(o => `<button class="tp k-${t.kind}" data-v="${o}">${esc(o)}</button>`).join('')}</div>
+                  <div class="thint ${tmsg ? 'no' : ''}">${tmsg}</div>`;
+    } else bottom = `<div class="thint ok">${R.done}</div>`;
+    $('tutBody').innerHTML = `${sent}<div class="tslots">${slots}</div>${bottom}`;
+    document.querySelectorAll('.tchoices .tp').forEach(b => b.onclick = () => tutPick(b));
+}
+function tutPick(btn) {
+    if (btn.dataset.v === ROUNDS[tround].steps[tstep].pick) { tstep++; tmsg = ''; drawSlide(); }
+    else { tmsg = '앗, 다시 한번 골라 봐요!'; drawInteractive(); const b = [...document.querySelectorAll('.tchoices .tp')].find(x => x.dataset.v === btn.dataset.v); if (b) b.classList.add('shake'); }
+}
+function drawSlide() {
+    const interactive = SLIDES[si] === 'INTERACTIVE';
+    if (interactive) drawInteractive(); else $('tutBody').innerHTML = SLIDES[si];
+    $('tutNext').hidden = interactive && tstep < 3;
+    $('tutDots').innerHTML = SLIDES.map((_, i) => `<i class="${i === si ? 'on' : ''}"></i>`).join('');
+    $('tutNext').textContent = si < SLIDES.length - 1 ? '다음 ▶' : '시작하기!';
+}
+function showTut() { si = 0; tround = 0; tstep = 0; tmsg = ''; $('tut').hidden = false; drawSlide(); }
+$('tutNext').onclick = () => {
+    if (SLIDES[si] === 'INTERACTIVE' && tround < ROUNDS.length - 1) { tround++; tstep = 0; tmsg = ''; drawSlide(); return; }   // 다음 말(작다면)도 연습
+    if (si < SLIDES.length - 1) { si++; drawSlide(); } else $('tut').hidden = true;
+};
+$('tutSkip').onclick = () => { $('tut').hidden = true; };
+
+buildLevels(); loadQ(); showTut();
+</script>
+</body>
+</html>
