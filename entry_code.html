@@ -498,6 +498,21 @@ const ITEMS = [
    menu:['짜장면', '피자', '김밥', '떡볶이', '치킨'],
    scripts:[{h:CLICK, b:[say(R('data', [D('메뉴'), '의', rnd(1, R('data', [D('메뉴'), '항목 수'])), '번째 항목']), 2)]}],
    how:listHow('메뉴', '1부터 항목 수 사이의 무작위 번호를 뽑아서, 그 번째 항목을 말해요.', '짜장면, 피자, 김밥, 떡볶이, 치킨')},
+  {lv:2, em:'🍔', ch:'🍽️', t:'메뉴 접시에 올리기', s:'뽑은 메뉴가 나타나서 접시 위로 쏙 올라가요', pv:'listPlate',
+   menu:['짜장면', '피자', '김밥', '떡볶이', '치킨'], food:['🍜', '🍕', '🍙', '🍢', '🍗'],
+   scripts:[{o:'🍽️ 접시', h:CLICK, b:[setVar('고른메뉴', R('data', [D('메뉴'), '의', rnd(1, R('data', [D('메뉴'), '항목 수'])), '번째 항목'])),
+              say(varOf('고른메뉴'), 1), {c:'start', p:[D('메뉴고름'), '신호 보내기']}]},
+            {o:'🍜 음식', h:START, b:[{c:'looks', p:['모양 숨기기']}]},
+            {o:'🍜 음식', h:GOT('메뉴고름'), b:[{c:'looks', p:[varOf('고른메뉴'), '모양으로 바꾸기']}, xyTo(N(-150), N(120)),
+              {c:'looks', p:['모양 보이기']}, {c:'looks', p:['맨 앞으로 가져오기']},
+              {c:'move', p:[N(1), '초 동안 x:', N(0), 'y:', N(-40), '위치로 이동하기']}]}],
+   how:{t:'알아 두기',
+     intro:'메뉴를 뽑은 다음 <b>신호</b>로 음식 오브젝트에게 알려 줘요. 신호를 받은 음식은 모양을 <b>고른메뉴</b>와 같은 이름으로 바꾸고, 접시 위로 스르르 날아가요.',
+     steps:['<b>고른메뉴</b> 변수를 만들고, 메뉴 리스트에서 뽑은 항목을 담아요 (변수 만드는 방법은 앞 카드 참고).',
+       '음식 오브젝트에 모양을 5개 추가하고, 모양 이름을 <b>짜장면, 피자, 김밥, 떡볶이, 치킨</b>으로 똑같이 지어요.',
+       '접시 코드 끝에 <b>메뉴고름 신호 보내기</b>를 붙이고, 음식 오브젝트에서 <b>메뉴고름 신호를 받았을 때</b>로 시작해요.',
+       '<b>맨 앞으로 가져오기</b>를 꼭 넣어요. 안 넣으면 음식이 접시 뒤에 가려져요.',
+       '도착 y 값(-40)은 접시 위치에 맞춰 바꿔요. 접시를 클릭하면 나오는 x, y를 참고하세요.']}},
   {lv:2, em:'🐇', ch:'🐇', t:'점프 함수', s:'점프 블록 묶음을 함수 하나로 만들어 써요', pv:'funcJump',
    scripts:[{o:'함수 만들기', h:FUNC('점프'), b:[
        times(10, [{c:'move', p:['y 좌표를', N(10), '만큼 바꾸기']}]),
@@ -884,6 +899,26 @@ function preview(it){
         b.style.display = 'none'; spin();
       };
       hint('접시를 클릭해 보세요'); break;
+    }
+    case 'listPlate': {
+      ch.style.left = '30%'; ch.style.cursor = 'pointer';
+      const b = bubble(), box = listBox('메뉴', it.menu);
+      b.style.left = '22%';
+      const fd = add('ch', ''); fd.style.display = 'none'; fd.style.fontSize = '44px'; fd.style.left = '30%'; fd.style.zIndex = 2;
+      let busy = false;
+      ch.onclick = () => {
+        if (busy) return; busy = true;
+        const k = Math.floor(Math.random() * it.menu.length);
+        [...box.ol.children].forEach((li, i) => li.classList.toggle('on', i === k));
+        b.style.display = ''; b.textContent = it.menu[k]; pop();
+        fd.style.transition = 'none'; fd.style.left = '8%'; fd.style.bottom = '190px'; fd.textContent = it.food[k]; fd.style.display = 'none';
+        later(() => {
+          fd.style.display = ''; void fd.offsetWidth;
+          fd.style.transition = 'left 1s ease-in-out, bottom 1s ease-in-out'; fd.style.left = '30%'; fd.style.bottom = '66px';
+        }, 600);
+        later(() => { busy = false; }, 1700);
+      };
+      hint('접시를 클릭하면 뽑은 메뉴가 날아와 접시 위에 올라가요'); break;
     }
     case 'funcJump': {
       ctrls.innerHTML = `<div class="ctrls"><button class="key" id="go"><i class="ti ti-space"></i> 스페이스</button>
