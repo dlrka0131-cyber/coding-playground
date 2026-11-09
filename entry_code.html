@@ -65,14 +65,18 @@
   .card .em{font-size:54px;line-height:1.2;margin:8px 0 6px}
   .card h3{font-size:19px;font-weight:800;margin:0 0 6px;word-break:keep-all}
   .card p{font-size:14px;font-weight:500;margin:0;opacity:.75;line-height:1.4;word-break:keep-all}
-  /* 초급 작품 묶음 */
-  .grp{background:rgba(255,255,255,.18);border-radius:24px;padding:14px 16px 20px;margin-bottom:18px}
+  /* 초급 작품 묶음 — 작품마다 다른 파스텔 칸 */
+  .grp{--gc:#3ccf7a;background:#fff;border-radius:24px;padding:14px 16px 20px;margin-bottom:18px;box-shadow:0 6px 0 rgba(0,0,0,.12)}
   .grp:last-child{margin-bottom:0}
-  .gh{display:flex;align-items:center;gap:12px;margin:0 4px 14px;color:#fff}
-  .gh .gi{flex:0 0 auto;width:48px;height:48px;border-radius:16px;background:#fff;color:var(--bd);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 4px 0 var(--bd)}
-  .gh .gn{font-size:14px;font-weight:800;background:var(--bd);border-radius:999px;padding:3px 10px;margin-right:8px;vertical-align:3px}
+  .grp:nth-child(1){background:#fff1c9;--gc:#f5b400}.grp:nth-child(2){background:#d6efff;--gc:#3ab0ff}.grp:nth-child(3){background:#ffe0ec;--gc:#ff6b8b}
+  .grp:nth-child(4){background:#e6ddff;--gc:#8e7dff}.grp:nth-child(5){background:#ffe2cf;--gc:#ff9f43}.grp:nth-child(6){background:#dcf3ff;--gc:#2b8fd6}
+  .grp .card{box-shadow:0 5px 0 rgba(0,0,0,.10)}
+  .grp .card:hover{box-shadow:0 11px 0 rgba(0,0,0,.10)}
+  .gh{display:flex;align-items:center;gap:12px;margin:0 4px 14px;color:var(--ink)}
+  .gh .gi{flex:0 0 auto;width:48px;height:48px;border-radius:16px;background:var(--gc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px}
+  .gh .gn{font-size:14px;font-weight:800;color:#fff;background:var(--gc);border-radius:999px;padding:3px 10px;margin-right:8px;vertical-align:3px}
   .gh b{font-size:24px;font-weight:900;word-break:keep-all}
-  .gh small{display:block;font-size:15px;font-weight:700;opacity:.92;margin-top:2px;word-break:keep-all}
+  .gh small{display:block;font-size:15px;font-weight:700;opacity:.75;margin-top:2px;word-break:keep-all}
   .card.done{cursor:default;border:3px dashed #ffd24a;background:#fffbea;box-shadow:0 6px 0 #e9b800;display:flex;flex-direction:column;align-items:center;justify-content:center}
   .card.done:hover{transform:none;box-shadow:0 6px 0 #e9b800}
   .card.done i{font-size:46px;color:#f5a300;margin-bottom:6px}.card.done h3{color:#b07600}
