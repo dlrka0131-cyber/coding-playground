@@ -65,6 +65,18 @@
   .card .em{font-size:54px;line-height:1.2;margin:8px 0 6px}
   .card h3{font-size:19px;font-weight:800;margin:0 0 6px;word-break:keep-all}
   .card p{font-size:14px;font-weight:500;margin:0;opacity:.75;line-height:1.4;word-break:keep-all}
+  /* 초급 작품 묶음 */
+  .grp{background:rgba(255,255,255,.18);border-radius:24px;padding:14px 16px 20px;margin-bottom:18px}
+  .grp:last-child{margin-bottom:0}
+  .gh{display:flex;align-items:center;gap:12px;margin:0 4px 14px;color:#fff}
+  .gh .gi{flex:0 0 auto;width:48px;height:48px;border-radius:16px;background:#fff;color:var(--bd);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 4px 0 var(--bd)}
+  .gh .gn{font-size:14px;font-weight:800;background:var(--bd);border-radius:999px;padding:3px 10px;margin-right:8px;vertical-align:3px}
+  .gh b{font-size:24px;font-weight:900;word-break:keep-all}
+  .gh small{display:block;font-size:15px;font-weight:700;opacity:.92;margin-top:2px;word-break:keep-all}
+  .card.done{cursor:default;border:3px dashed #ffd24a;background:#fffbea;box-shadow:0 6px 0 #e9b800;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .card.done:hover{transform:none;box-shadow:0 6px 0 #e9b800}
+  .card.done i{font-size:46px;color:#f5a300;margin-bottom:6px}.card.done h3{color:#b07600}
+  @media (max-width:560px){.grp{padding:10px 8px 14px}.gh b{font-size:19px}.gh small{font-size:13px}.gh .gi{width:40px;height:40px;font-size:24px}}
 
   /* ---------- 상세 ---------- */
   .btn{font-family:inherit;font-size:18px;font-weight:700;border:3px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;
@@ -632,9 +644,34 @@ function reset(){ timers.forEach(clearInterval); timers = []; cleanups.forEach(f
 let curLv = 0;
 try { curLv = +sessionStorage.getItem('entryLv') || 0; } catch (_) {}
 const setLv = l => { curLv = l; try { sessionStorage.setItem('entryLv', l); } catch (_) {} };
-const inLv = l => ITEMS.map((it, i) => ({it, i})).filter(x => x.it.lv === l);
+/* 초급은 '작품' 묶음 순서로 보여 줌 (ITEMS 순서·주소 #/번호는 그대로 둠) */
+const WORKS = [
+  {i:'ti-robot', t:'내가 조종하는 엔트리봇', g:'걷고, 방향키로 다니고, 스페이스로 폴짝!', it:['애니메이션', '점프하기', '화살표로 움직이기', '4방향으로 움직이기']},
+  {i:'ti-fish', t:'움직이는 바닷속', g:'바닷속 친구들이 저마다 다르게 움직여요', it:['벽에 튕기기', '둥실둥실', '빙글빙글 돌기', '동그랗게 날기']},
+  {i:'ti-confetti', t:'신나는 파티 무대', g:'표정·풍선·조명이 살아 있는 무대', it:['표정 바꾸기', '커졌다 작아지기', '무지개 색 바꾸기', '스르르 사라지기']},
+  {i:'ti-search', t:'숨은 친구 찾기', g:'뿅뿅 나타나는 친구를 클릭해서 찾아요', it:['숨바꼭질', '순간이동', '누르면 커지기', '찾았다! 커지며 사라지기']},
+  {i:'ti-palette', t:'나만의 그림판', g:'선 긋고, 네모 그리고, 도장도 쾅!', it:['마우스 따라가기', '네모 그리기', '마우스로 그림 그리기', '도장 찍기']},
+  {i:'ti-rocket', t:'우주로 슝! 이야기', g:'3, 2, 1! 로켓 타고 우주 장면으로', it:['말하기', '카운트다운', '대각선으로 날기', '부드럽게 날아가기', '장면 넘기기']},
+];
+const inLv = l => {
+  const all = ITEMS.map((it, i) => ({it, i})).filter(x => x.it.lv === l);
+  if (l !== 0) return all;
+  const out = WORKS.flatMap((w, wi) => w.it.map(t => ({...all.find(x => x.it.t === t), w:wi})));
+  return out.length === all.length && out.every(x => x.it) ? out : all;   // 이름이 안 맞으면 원래 순서로
+};
 const entryBtn = `<a class="home entry" href="${ENTRY_URL}" target="_blank" rel="noopener"><span class="hi"><i class="ti ti-external-link"></i></span>엔트리 열기</a>`;
 
+const cardHtml = ({it, i}, n) => `
+      <a class="card" href="#/${i + 1}">
+        <span class="no" style="background:${LV[curLv].c};color:#fff">${n + 1}</span><div class="em">${it.em}</div>
+        <h3>${it.t}</h3><p>${it.s}</p></a>`;
+function works(){
+  const list = inLv(0);
+  return WORKS.map((w, wi) => `<div class="grp"><div class="gh"><span class="gi"><i class="ti ${w.i}"></i></span>
+    <div><b><span class="gn">작품 ${wi + 1}</span>${w.t}</b><small>완성하면: ${w.g}</small></div></div>
+    <div class="grid">${list.map((x, n) => [x, n]).filter(([x]) => x.w === wi).map(([x, n]) => cardHtml(x, n)).join('')}${w.it.length < 5
+      ? `<div class="card done"><i class="ti ti-trophy"></i><h3>작품 완성!</h3><p>배운 코드를 모아<br>${w.t} 완성</p></div>` : ''}</div></div>`).join('');
+}
 const RAINBOW = ['#ff6b8b', '#ff9f43', '#f5c400', '#3ccf7a', '#3ab0ff', '#8e7dff'];
 function home(){
   let ci = 0;
@@ -647,10 +684,7 @@ function home(){
     <div style="--bc:${LV[curLv].c};--bd:${LV[curLv].d}"><div class="lvtabs">${LV.map((l, i) => `
       <button class="lv${i === curLv ? ' on' : ''}" data-lv="${i}" style="--lc:${l.c};--ld:${l.d};--lt:${l.lt}">
         <span class="le">${l.em}</span><span><b>${l.k} <small style="display:inline">${inLv(i).length}개</small></b><small>${l.s}</small></span></button>`).join('')}</div>
-    <div class="board"><div class="grid">${inLv(curLv).map(({it, i}, n) => `
-      <a class="card" href="#/${i + 1}">
-        <span class="no" style="background:${LV[curLv].c};color:#fff">${n + 1}</span><div class="em">${it.em}</div>
-        <h3>${it.t}</h3><p>${it.s}</p></a>`).join('')}</div></div></div>`;
+    <div class="board">${curLv === 0 && inLv(0)[0].w !== undefined ? works() : `<div class="grid">${inLv(curLv).map(cardHtml).join('')}</div>`}</div></div>`;
   app.querySelectorAll('.lv').forEach(b => b.onclick = () => { setLv(+b.dataset.lv); home(); });
 }
 
